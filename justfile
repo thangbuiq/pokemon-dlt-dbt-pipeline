@@ -1,5 +1,5 @@
 pipeline:
-  cd pokemon-dlt-pipeline && uv run python pipeline.py
+  cd pokemon-dlt-pipeline && uv run python pokemon_pipeline/pipeline.py
 
 transform:
   cd pokemon-dbt-pipeline && uv run dbt run

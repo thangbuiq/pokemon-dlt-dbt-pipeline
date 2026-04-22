@@ -1,5 +1,2 @@
-[tool.uv]
-workspace = true
-
 [tool.uv.workspace]
 members = ["pokemon-dlt-pipeline", "pokemon-dbt-pipeline"]
