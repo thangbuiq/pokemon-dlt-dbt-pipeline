@@ -1,13 +1,13 @@
 import { type PokemonType } from '@/lib/design-tokens';
 
-interface CardProps {
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   pokemonType?: PokemonType;
   className?: string;
   hover?: boolean;
 }
 
-export function Card({ children, pokemonType, className = '', hover = false }: CardProps) {
+export function Card({ children, pokemonType, className = '', hover = false, ...props }: CardProps) {
   const glowStyle = pokemonType
     ? { '--glow-color': `var(--type-${pokemonType})` } as React.CSSProperties
     : undefined;
@@ -23,6 +23,7 @@ export function Card({ children, pokemonType, className = '', hover = false }: C
       ]
         .filter(Boolean)
         .join(' ')}
+      {...props}
     >
       {children}
     </div>

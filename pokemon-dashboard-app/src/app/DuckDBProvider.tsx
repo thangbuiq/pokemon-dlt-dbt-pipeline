@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import * as duckdb from '@duckdb/duckdb-wasm';
-import { initDuckDB } from '@/lib/duckdb';
+import { initDuckDB, loadPokemonDB } from '@/lib/duckdb';
 
 interface DuckDBContextType {
   db: duckdb.AsyncDuckDB | null;
@@ -19,7 +19,10 @@ export function DuckDBProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     initDuckDB()
-      .then(setDb)
+      .then(async (database) => {
+        await loadPokemonDB();
+        setDb(database);
+      })
       .catch(setError)
       .finally(() => setLoading(false));
   }, []);

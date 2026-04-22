@@ -5,10 +5,10 @@ transform:
   cd pokemon-dbt-pipeline && uv run dbt run
 
 export:
-  cd pokemon-dlt-pipeline && uv run python -c "import duckdb; duckdb.execute('EXPORT DATABASE TO \"data/pokemon.db\" (FORMAT parquet)'); print('Exported to data/pokemon.db')"
+	cd pokemon-dlt-pipeline && uv run python -m pokemon_pipeline.export
 
 dashboard:
-  cd pokemon-dashboard-app && pnpm dev
+  cd pokemon-dashboard-app && bun dev
 
 test:
   echo "Running tests..."
@@ -16,7 +16,7 @@ test:
   cd pokemon-dbt-pipeline && uv run dbt test
 
 build:
-  cd pokemon-dashboard-app && pnpm build
+  cd pokemon-dashboard-app && bun build
 
 deploy:
   cd pokemon-dashboard-app && vercel --prod

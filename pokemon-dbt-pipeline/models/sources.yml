@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: raw_data
+    schema: raw_data
+    tables:
+      - name: pokemon_details
+      - name: pokemon_details__types
+      - name: pokemon_details__stats
+      - name: pokemon_details__abilities
+      - name: pokemon_species
+      - name: pokemon_types
+      - name: pokemon_abilities
+      - name: pokemon_moves
+      - name: evolution_chains
+      - name: evolution_chains__chain__evolves_to

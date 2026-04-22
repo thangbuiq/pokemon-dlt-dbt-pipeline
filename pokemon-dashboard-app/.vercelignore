@@ -1,0 +1,75 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+package-lock.json
+yarn.lock
+
+# Build outputs
+.next/
+dist/
+.turbo/
+
+# Version control
+.git/
+.gitignore
+
+# Data files (except pokemon.db which is in public/)
+data/
+*.duckdb
+*.duckdb.wal
+
+# Test files
+tests/
+__tests__/
+*.test.ts
+*.test.tsx
+*.test.js
+*.test.jsx
+*.spec.ts
+*.spec.tsx
+*.spec.js
+*.spec.jsx
+
+# Coverage
+coverage/
+.nyc_output/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment files (should be set in Vercel dashboard)
+.env
+.env.local
+.env.*.local
+
+# Documentation (keep DEPLOYMENT.md if needed in deployment)
+README.md
+CHANGELOG.md
+LICENSE
+
+# Python artifacts (from monorepo)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.venv/
+venv/
+
+# dbt artifacts (from monorepo)
+target/
+dbt_packages/
+logs/

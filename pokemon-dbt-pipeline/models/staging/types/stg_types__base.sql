@@ -1,5 +1,4 @@
-SELECT 
+SELECT DISTINCT
     id,
-    name,
-    damage_relations
+    name
 FROM {{ source('raw_data', 'pokemon_types') }}

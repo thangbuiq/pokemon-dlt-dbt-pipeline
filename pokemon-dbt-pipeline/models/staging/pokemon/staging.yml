@@ -1,0 +1,124 @@
+version: 2
+
+models:
+  - name: stg_pokemon__base
+    description: Base Pokemon data from API
+    columns:
+      - name: id
+        description: Unique Pokemon ID
+        tests:
+          - unique
+          - not_null
+      - name: name
+        description: Pokemon name
+        tests:
+          - not_null
+      - name: height
+        description: Pokemon height in decimeters
+      - name: weight
+        description: Pokemon weight in hectograms
+      - name: sprite_url
+        description: URL to Pokemon sprite image
+
+  - name: stg_pokemon__types
+    description: Pokemon type assignments
+    columns:
+      - name: pokemon_id
+        description: Foreign key to Pokemon
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_pokemon__base')
+              field: id
+      - name: type_name
+        description: Type name (e.g., fire, water)
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['normal', 'fighting', 'flying', 'poison', 'ground', 
+                       'rock', 'bug', 'ghost', 'steel', 'fire', 'water', 
+                       'grass', 'electric', 'psychic', 'ice', 'dragon', 
+                       'dark', 'fairy']
+      - name: slot
+        description: Type slot (1 for primary, 2 for secondary)
+
+  - name: stg_pokemon__stats
+    description: Pokemon base stats
+    columns:
+      - name: pokemon_id
+        description: Foreign key to Pokemon
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_pokemon__base')
+              field: id
+      - name: stat_name
+        description: Name of the stat (hp, attack, etc.)
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['hp', 'attack', 'defense', 'special-attack', 
+                       'special-defense', 'speed']
+      - name: base_stat
+        description: Base stat value
+        tests:
+          - not_null
+
+  - name: stg_pokemon__abilities
+    description: Pokemon abilities
+    columns:
+      - name: pokemon_id
+        description: Foreign key to Pokemon
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_pokemon__base')
+              field: id
+      - name: ability_name
+        description: Name of the ability
+        tests:
+          - not_null
+      - name: is_hidden
+        description: Whether this is a hidden ability
+
+  - name: stg_types__base
+    description: Pokemon types reference data
+    columns:
+      - name: id
+        description: Unique type ID
+        tests:
+          - unique
+          - not_null
+      - name: name
+        description: Type name
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['normal', 'fighting', 'flying', 'poison', 'ground', 
+                       'rock', 'bug', 'ghost', 'steel', 'fire', 'water', 
+                       'grass', 'electric', 'psychic', 'ice', 'dragon', 
+                       'dark', 'fairy', 'stellar', 'unknown']
+
+  - name: stg_species__base
+    description: Pokemon species data
+    columns:
+      - name: id
+        description: Unique species ID
+        tests:
+          - unique
+          - not_null
+      - name: pokemon_id
+        description: Foreign key to Pokemon
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_pokemon__base')
+              field: id
+      - name: color
+        description: Species color
+        tests:
+          - not_null
+      - name: capture_rate
+        description: Base capture rate
+      - name: base_happiness
+        description: Base happiness value

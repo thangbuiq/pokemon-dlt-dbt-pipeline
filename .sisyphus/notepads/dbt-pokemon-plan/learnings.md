@@ -1,0 +1,3 @@
+- Created dbt staging models for Pokemon data: stg_pokemon__base, stg_pokemon__types, stg_pokemon__stats, stg_pokemon__abilities, stg_species__base, stg_types__base.
+- Added sources.yml to define raw_data schema sources for pokemon_details, pokemon_species, and pokemon_types.
+- Verified plan remains read-only (PLAN.md not modified).

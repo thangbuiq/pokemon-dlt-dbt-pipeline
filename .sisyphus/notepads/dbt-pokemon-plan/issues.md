@@ -1,0 +1,2 @@
+- None reported yet. If dbt build fails, review UNNEST syntax compatibility with target DB.
+- Ensure sources.yml path and naming align with dbt version in use.

@@ -1,0 +1,109 @@
+.page {
+  padding: 20px;
+  font-family: ui-sans-serif, system-ui, -apple-system;
+  color: #e6e6e6;
+  background: linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.15));
+}
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.gridToolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+.searchBox {
+  position: relative;
+  width: 420px;
+}
+.searchInput {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.4);
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  outline: none;
+}
+.dropdown {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  right: 0;
+  max-height: 260px;
+  overflow: auto;
+  background: rgba(12,12,16,.95);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  z-index: 5;
+}
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.dropdownItem:hover {
+  background: rgba(255,255,255,.08);
+}
+.dropdownThumb {
+  width: 28px; height: 28px; border-radius: 6px; overflow: hidden; margin-right: 8px;
+}
+.dropdownThumb img { width: 100%; height: 100%; object-fit: cover; }
+.dropdownText { font-weight: 600; margin-right: 8px; }
+.dropdownTypes { display: flex; gap: 4px; margin-left: auto; }
+.smallType { font-size: 10px; padding: 2px 6px; border-radius: 999px; color: #111; }
+.copyBtn {
+  padding: 10px 14px; border-radius: 12px; border: none; cursor: pointer;
+  background: rgba(255,255,255,.15); color: #fff;
+}
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+  margin: 16px 0 24px 0;
+}
+.slot {
+  min-height: 120px; display: flex; align-items: center; justify-content: center;
+  border-radius: 18px; padding: 8px; background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.25);
+  position: relative; overflow: hidden;
+}
+.slotContent { width: 100%; display: flex; align-items: center; gap: 8px; padding: 8px; backdrop-filter: blur(6px); background: rgba(255,255,255,.08); border-radius: 14px; }
+.sprite { width: 64px; height: 64px; object-fit: contain; border-radius: 8px; }
+.slotMeta { display: flex; flex-direction: column; gap: 4px; }
+.slotName { font-weight: 700; }
+.slotTypes { display: flex; gap: 6px; flex-wrap: wrap; }
+.typeBadge { padding: 4px 8px; border-radius: 999px; font-size: 12px; color: #111; }
+.removeBtn { margin-left: auto; padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,.4); background: rgba(255,255,255,.15); cursor: pointer; }
+.slotEmpty { width: 100%; height: 100%; display: grid; place-items: center; border-radius: 12px; border: 1px dashed rgba(255,255,255,.4); color: #fff; font-size: 28px; }
+.plus { font-weight: 700; }
+.results { margin-top: 8px; }
+.sectionTitle { font-size: 20px; margin: 0 0 8px 0; }
+.coverageGrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+.coverageCard { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.2); border-radius: 12px; padding: 8px; min-height: 110px; }
+.coverageHeader { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.typeName { font-weight: 700; font-size: 12px; text-transform: uppercase; opacity: .9; }
+.badge { width: 12px; height: 12px; display: inline-block; border-radius: 3px; }
+.coverageBody { font-size: 12px; color: #ddd; }
+.coverageLine { margin-bottom: 6px; }
+.coverageLineSmall { opacity: .8; }
+.gapLabel { color: #f87171; font-weight: 600; font-size: 11px; }
+.dropdownItem + .dropdownItem { border-top: 1px solid rgba(255,255,255,.08); }
+
+@media (max-width: 1200px) {
+  .teamGrid { grid-template-columns: repeat(3, 1fr); }
+  .coverageGrid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 700px) {
+  .teamGrid { grid-template-columns: repeat(2, 1fr); }
+  .dropdown { max-height: 200px; }
+}

@@ -1,48 +1,63 @@
 import duckdb
 import os
+from pathlib import Path
 
 def export_pokemon_db():
-    raw_db_path = '../data/raw.duckdb'
-    curated_db_path = '../data/curated.duckdb'
-    export_db_path = '../data/pokemon.db'
+    script_dir = Path(__file__).parent
+    data_dir = script_dir.parent.parent / 'data'
+    raw_db_path = data_dir / 'raw.duckdb'
+    export_db_path = data_dir / 'pokemon.db'
 
-    conn = duckdb.connect(export_db_path)
+    print(f"Source: {raw_db_path}")
+    print(f"Target: {export_db_path}")
 
-    conn.execute(f"ATTACH '{raw_db_path}' AS raw_db (READ_ONLY)")
-    conn.execute(f"ATTACH '{curated_db_path}' AS curated_db (READ_ONLY)")
+    if export_db_path.exists():
+        os.remove(export_db_path)
+        print(f"Removed existing: {export_db_path}")
+
+    conn = duckdb.connect(str(export_db_path))
+    conn.execute(f"ATTACH '{raw_db_path}' AS src (READ_ONLY)")
 
     tables_to_export = [
         'dim_pokemon',
         'dim_pokemon_types',
         'dim_pokemon_stats',
-        'fct_type_matchup_matrix',
         'dim_evolution_tree',
         'fct_evolution_paths',
-        'dim_type_summary'
+        'pokemon_abilities',
+        'pokemon_abilities__effect_entries',
+        'pokemon_abilities__pokemon',
+        'pokemon_abilities__names',
+        'pokemon_details__abilities',
+        'pokemon_moves',
+        'pokemon_moves__effect_entries',
+        'pokemon_moves__names',
     ]
 
+    exported_count = 0
     for table in tables_to_export:
         try:
-            conn.execute(f"CREATE TABLE {table} AS SELECT * FROM curated_db.{table}")
-            print(f"Exported: {table}")
+            exists = conn.execute(
+                f"SELECT 1 FROM duckdb_tables() WHERE schema_name = 'raw_data' AND table_name = '{table}'"
+            ).fetchone()
+            if exists:
+                conn.execute(f"CREATE TABLE {table} AS SELECT * FROM src.raw_data.{table}")
+                count = conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+                print(f"  Exported: {table} ({count} rows)")
+                exported_count += 1
+            else:
+                print(f"  Skipped: {table} (not found)")
         except Exception as e:
-            print(f"Skipped {table}: {e}")
-
-    try:
-        conn.execute("CREATE TABLE pokemon_sprites AS SELECT id, name, sprites FROM raw_db.pokemon")
-        print("Exported: pokemon_sprites")
-    except Exception as e:
-        print(f"Skipped pokemon_sprites: {e}")
+            print(f"  Error exporting {table}: {e}")
 
     conn.execute("ANALYZE")
-
     conn.close()
 
-    size_mb = os.path.getsize(export_db_path) / (1024 * 1024)
-    print(f"Exported to {export_db_path} ({size_mb:.2f} MB)")
-
-    if size_mb > 100:
-        print("WARNING: File size exceeds 100MB Vercel limit!")
+    if export_db_path.exists():
+        size_mb = os.path.getsize(export_db_path) / (1024 * 1024)
+        print(f"\nExport complete: {exported_count} tables -> {export_db_path} ({size_mb:.2f} MB)")
+    else:
+        print("\nExport failed: pokemon.db not created")
 
     return export_db_path
 
