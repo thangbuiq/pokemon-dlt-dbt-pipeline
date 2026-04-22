@@ -1,14 +1,14 @@
-import { type PokemonType, typeColorMap } from '@/lib/design-tokens';
+import { type PokemonType, typeColorMap } from '@/lib/design-tokens'
 
 interface BadgeProps {
-  type: PokemonType;
-  label?: string;
-  className?: string;
+  type: PokemonType
+  label?: string
+  className?: string
 }
 
 export function Badge({ type, label, className = '' }: BadgeProps) {
-  const color = typeColorMap[type];
-  const displayLabel = label ?? type.charAt(0).toUpperCase() + type.slice(1);
+  const color = typeColorMap[type]
+  const displayLabel = label ?? type.charAt(0).toUpperCase() + type.slice(1)
 
   return (
     <span
@@ -28,5 +28,5 @@ export function Badge({ type, label, className = '' }: BadgeProps) {
     >
       {displayLabel}
     </span>
-  );
+  )
 }

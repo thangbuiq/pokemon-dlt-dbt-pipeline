@@ -1,4 +1,4 @@
-SELECT 
+SELECT
   evolves_from as from_pokemon,
   species_name as to_pokemon,
   evolution_trigger,

@@ -1,4 +1,4 @@
-SELECT 
+SELECT
   chain_id,
   species_name,
   stage,

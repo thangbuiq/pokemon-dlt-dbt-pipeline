@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import {
   RadarChart,
   PolarGrid,
@@ -10,30 +10,30 @@ import {
   Legend,
   ResponsiveContainer,
   Tooltip,
-} from 'recharts';
-import { useDuckDB } from '@/app/DuckDBProvider';
-import { useDuckDBQuery } from '@/lib/duckdb/hooks';
-import { Card } from '@/components/ui/Card';
-import { PokemonSprite } from '@/components/ui/PokemonSprite';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+} from 'recharts'
+import { useDuckDB } from '@/app/DuckDBProvider'
+import { useDuckDBQuery } from '@/lib/duckdb/hooks'
+import { Card } from '@/components/ui/Card'
+import { PokemonSprite } from '@/components/ui/PokemonSprite'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 interface PokemonStats {
-  id: number;
-  name: string;
-  hp: number;
-  attack: number;
-  defense: number;
-  special_attack: number;
-  special_defense: number;
-  speed: number;
+  id: number
+  name: string
+  hp: number
+  attack: number
+  defense: number
+  special_attack: number
+  special_defense: number
+  speed: number
 }
 
 interface RadarDataPoint {
-  stat: string;
-  fullMark: number;
-  [key: string]: string | number;
+  stat: string
+  fullMark: number
+  [key: string]: string | number
 }
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -45,10 +45,10 @@ const STAT_LABELS: Record<string, string> = {
   special_attack: 'Sp. Atk',
   special_defense: 'Sp. Def',
   speed: 'Speed',
-};
+}
 
-const STAT_KEYS = ['hp', 'attack', 'defense', 'special_attack', 'special_defense', 'speed'] as const;
-const MAX_STAT = 255;
+const STAT_KEYS = ['hp', 'attack', 'defense', 'special_attack', 'special_defense', 'speed'] as const
+const MAX_STAT = 255
 
 const COMPARISON_COLORS = [
   '#ff6b35', // fire-orange
@@ -57,36 +57,36 @@ const COMPARISON_COLORS = [
   '#facc15', // electric-yellow
   '#ec4899', // psychic-pink
   '#67e8f9', // ice-cyan
-];
+]
 
 const ALL_POKEMON_QUERY = `
   SELECT id, name, hp, attack, defense, special_attack, special_defense, speed
   FROM pokemon_db.dim_pokemon
   ORDER BY id
-`;
+`
 
-const MAX_SELECTED = 6;
+const MAX_SELECTED = 6
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function buildRadarData(pokemonList: PokemonStats[]): RadarDataPoint[] {
   return STAT_KEYS.map((key) => {
-    const point: RadarDataPoint = { stat: STAT_LABELS[key], fullMark: MAX_STAT };
+    const point: RadarDataPoint = { stat: STAT_LABELS[key], fullMark: MAX_STAT }
     for (const p of pokemonList) {
-      point[p.name] = p[key];
+      point[p.name] = p[key]
     }
-    return point;
-  });
+    return point
+  })
 }
 
 function getTotalStats(p: PokemonStats): number {
-  return p.hp + p.attack + p.defense + p.special_attack + p.special_defense + p.speed;
+  return p.hp + p.attack + p.defense + p.special_attack + p.special_defense + p.speed
 }
 
 // ─── Custom Tooltip ──────────────────────────────────────────────────────────
 
 function CustomTooltip({ active, payload, label }: any) {
-  if (!active || !payload?.length) return null;
+  if (!active || !payload?.length) return null
   return (
     <div className="glass rounded-lg px-3 py-2 text-xs border border-white/20">
       <p className="text-white font-semibold mb-1">{label}</p>
@@ -101,7 +101,7 @@ function CustomTooltip({ active, payload, label }: any) {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 // ─── Pokemon Selector ────────────────────────────────────────────────────────
@@ -111,32 +111,32 @@ function PokemonSelector({
   selected,
   onToggle,
 }: {
-  allPokemon: PokemonStats[];
-  selected: PokemonStats[];
-  onToggle: (pokemon: PokemonStats) => void;
+  allPokemon: PokemonStats[]
+  selected: PokemonStats[]
+  onToggle: (pokemon: PokemonStats) => void
 }) {
-  const [search, setSearch] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [search, setSearch] = useState('')
+  const [isOpen, setIsOpen] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setIsOpen(false);
+        setIsOpen(false)
       }
     }
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, []);
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
 
   const filtered = useMemo(() => {
-    const q = search.toLowerCase().trim();
-    if (!q) return allPokemon.slice(0, 50);
-    return allPokemon.filter((p) => p.name.toLowerCase().includes(q)).slice(0, 50);
-  }, [allPokemon, search]);
+    const q = search.toLowerCase().trim()
+    if (!q) return allPokemon.slice(0, 50)
+    return allPokemon.filter((p) => p.name.toLowerCase().includes(q)).slice(0, 50)
+  }, [allPokemon, search])
 
-  const selectedIds = useMemo(() => new Set(selected.map((p) => p.id)), [selected]);
-  const canSelectMore = selected.length < MAX_SELECTED;
+  const selectedIds = useMemo(() => new Set(selected.map((p) => p.id)), [selected])
+  const canSelectMore = selected.length < MAX_SELECTED
 
   return (
     <div ref={containerRef} className="relative">
@@ -148,9 +148,7 @@ function PokemonSelector({
         onClick={() => setIsOpen(!isOpen)}
         className="w-full glass rounded-lg px-4 py-3 text-left text-sm text-white/70 hover:bg-white/10 transition-colors flex items-center justify-between"
       >
-        <span>
-          {canSelectMore ? 'Search Pokemon...' : `Max ${MAX_SELECTED} selected`}
-        </span>
+        <span>{canSelectMore ? 'Search Pokemon...' : `Max ${MAX_SELECTED} selected`}</span>
         <svg
           className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
@@ -179,13 +177,13 @@ function PokemonSelector({
               <div className="px-4 py-6 text-center text-white/30 text-sm">No Pokemon found</div>
             ) : (
               filtered.map((p) => {
-                const isSelected = selectedIds.has(p.id);
-                const isDisabled = !isSelected && !canSelectMore;
+                const isSelected = selectedIds.has(p.id)
+                const isDisabled = !isSelected && !canSelectMore
                 return (
                   <button
                     key={p.id}
                     onClick={() => {
-                      if (!isDisabled) onToggle(p);
+                      if (!isDisabled) onToggle(p)
                     }}
                     disabled={isDisabled}
                     className={[
@@ -199,9 +197,15 @@ function PokemonSelector({
                   >
                     <PokemonSprite pokemonId={p.id} size={28} alt={p.name} />
                     <span className="capitalize font-medium">{p.name}</span>
-                    <span className="ml-auto text-white/30 text-xs">#{String(p.id).padStart(3, '0')}</span>
+                    <span className="ml-auto text-white/30 text-xs">
+                      #{String(p.id).padStart(3, '0')}
+                    </span>
                     {isSelected && (
-                      <svg className="w-4 h-4 text-[var(--type-fighting)]" fill="currentColor" viewBox="0 0 20 20">
+                      <svg
+                        className="w-4 h-4 text-[var(--type-fighting)]"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
                         <path
                           fillRule="evenodd"
                           d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -210,14 +214,14 @@ function PokemonSelector({
                       </svg>
                     )}
                   </button>
-                );
+                )
               })
             )}
           </div>
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // ─── Selected Pokemon Chips ──────────────────────────────────────────────────
@@ -226,10 +230,10 @@ function SelectedChips({
   selected,
   onRemove,
 }: {
-  selected: PokemonStats[];
-  onRemove: (id: number) => void;
+  selected: PokemonStats[]
+  onRemove: (id: number) => void
 }) {
-  if (selected.length === 0) return null;
+  if (selected.length === 0) return null
 
   return (
     <div className="flex flex-wrap gap-2">
@@ -241,7 +245,10 @@ function SelectedChips({
         >
           <div
             className="w-7 h-7 rounded-full flex items-center justify-center overflow-hidden"
-            style={{ backgroundColor: `${COMPARISON_COLORS[i]}20`, border: `1px solid ${COMPARISON_COLORS[i]}60` }}
+            style={{
+              backgroundColor: `${COMPARISON_COLORS[i]}20`,
+              border: `1px solid ${COMPARISON_COLORS[i]}60`,
+            }}
           >
             <PokemonSprite pokemonId={p.id} size={24} alt={p.name} />
           </div>
@@ -251,20 +258,26 @@ function SelectedChips({
             className="text-white/40 hover:text-white transition-colors"
             aria-label={`Remove ${p.name}`}
           >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+            <svg
+              className="w-3.5 h-3.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2.5}
+              viewBox="0 0 24 24"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 // ─── Stats Table ─────────────────────────────────────────────────────────────
 
 function StatsTable({ selected }: { selected: PokemonStats[] }) {
-  if (selected.length === 0) return null;
+  if (selected.length === 0) return null
 
   return (
     <Card className="overflow-hidden">
@@ -288,16 +301,19 @@ function StatsTable({ selected }: { selected: PokemonStats[] }) {
           </thead>
           <tbody>
             {STAT_KEYS.map((key) => {
-              const values = selected.map((p) => p[key]);
-              const maxVal = Math.max(...values);
+              const values = selected.map((p) => p[key])
+              const maxVal = Math.max(...values)
 
               return (
-                <tr key={key} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                <tr
+                  key={key}
+                  className="border-b border-white/5 hover:bg-white/[0.02] transition-colors"
+                >
                   <td className="py-3 px-4 text-white/70 font-medium">{STAT_LABELS[key]}</td>
                   {selected.map((p, i) => {
-                    const val = p[key];
-                    const isMax = val === maxVal && selected.length > 1;
-                    const barWidth = (val / MAX_STAT) * 100;
+                    const val = p[key]
+                    const isMax = val === maxVal && selected.length > 1
+                    const barWidth = (val / MAX_STAT) * 100
                     return (
                       <td key={p.id} className="py-3 px-4 text-center">
                         <div className="flex flex-col items-center gap-1">
@@ -322,17 +338,17 @@ function StatsTable({ selected }: { selected: PokemonStats[] }) {
                           </div>
                         </div>
                       </td>
-                    );
+                    )
                   })}
                 </tr>
-              );
+              )
             })}
             <tr className="border-t-2 border-white/10">
               <td className="py-3 px-4 text-white font-bold">Total</td>
               {selected.map((p, i) => {
-                const total = getTotalStats(p);
-                const totals = selected.map(getTotalStats);
-                const isMax = total === Math.max(...totals) && selected.length > 1;
+                const total = getTotalStats(p)
+                const totals = selected.map(getTotalStats)
+                const isMax = total === Math.max(...totals) && selected.length > 1
                 return (
                   <td key={p.id} className="py-3 px-4 text-center">
                     <span
@@ -342,47 +358,49 @@ function StatsTable({ selected }: { selected: PokemonStats[] }) {
                       {total}
                     </span>
                   </td>
-                );
+                )
               })}
             </tr>
           </tbody>
         </table>
       </div>
     </Card>
-  );
+  )
 }
 
 // ─── Main Page ───────────────────────────────────────────────────────────────
 
 export default function StatComparisonPage() {
-  const { db, loading: dbLoading, error: dbError } = useDuckDB();
-  const { data: allPokemon, loading: dataLoading, error: dataError } = useDuckDBQuery<PokemonStats>(
-    ALL_POKEMON_QUERY
-  );
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const { db, loading: dbLoading, error: dbError } = useDuckDB()
+  const {
+    data: allPokemon,
+    loading: dataLoading,
+    error: dataError,
+  } = useDuckDBQuery<PokemonStats>(ALL_POKEMON_QUERY)
+  const [selectedIds, setSelectedIds] = useState<number[]>([])
 
   const selectedPokemon = useMemo(() => {
-    if (!allPokemon) return [];
+    if (!allPokemon) return []
     return selectedIds
       .map((id) => allPokemon.find((p) => p.id === id))
-      .filter(Boolean) as PokemonStats[];
-  }, [allPokemon, selectedIds]);
+      .filter(Boolean) as PokemonStats[]
+  }, [allPokemon, selectedIds])
 
-  const radarData = useMemo(() => buildRadarData(selectedPokemon), [selectedPokemon]);
+  const radarData = useMemo(() => buildRadarData(selectedPokemon), [selectedPokemon])
 
   const handleToggle = useCallback((pokemon: PokemonStats) => {
     setSelectedIds((prev) => {
       if (prev.includes(pokemon.id)) {
-        return prev.filter((id) => id !== pokemon.id);
+        return prev.filter((id) => id !== pokemon.id)
       }
-      if (prev.length >= MAX_SELECTED) return prev;
-      return [...prev, pokemon.id];
-    });
-  }, []);
+      if (prev.length >= MAX_SELECTED) return prev
+      return [...prev, pokemon.id]
+    })
+  }, [])
 
   const handleRemove = useCallback((id: number) => {
-    setSelectedIds((prev) => prev.filter((pid) => pid !== id));
-  }, []);
+    setSelectedIds((prev) => prev.filter((pid) => pid !== id))
+  }, [])
 
   if (dbLoading || dataLoading) {
     return (
@@ -392,15 +410,25 @@ export default function StatComparisonPage() {
           LOADING POKEMON DATA...
         </p>
       </div>
-    );
+    )
   }
 
   if (dbError || dataError || !db) {
     return (
       <div className="flex flex-col items-center justify-center py-32 gap-3">
         <div className="w-12 h-12 rounded-full bg-red-500/20 border border-red-500/50 flex items-center justify-center">
-          <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          <svg
+            className="w-6 h-6 text-red-400"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
           </svg>
         </div>
         <p className="text-red-400 text-sm">Failed to load Pokemon data</p>
@@ -408,7 +436,7 @@ export default function StatComparisonPage() {
           <p className="text-white/40 text-xs">{(dbError || dataError)?.message}</p>
         )}
       </div>
-    );
+    )
   }
 
   return (
@@ -423,14 +451,23 @@ export default function StatComparisonPage() {
             }}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              />
             </svg>
           </div>
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-              Stat <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--type-fighting)] to-[var(--type-fire)]">Comparison</span>
+              Stat{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--type-fighting)] to-[var(--type-fire)]">
+                Comparison
+              </span>
             </h1>
-            <p className="text-white/40 text-sm">Compare base stats across Pokemon with radar charts</p>
+            <p className="text-white/40 text-sm">
+              Compare base stats across Pokemon with radar charts
+            </p>
           </div>
         </div>
       </div>
@@ -489,22 +526,31 @@ export default function StatComparisonPage() {
             {selectedPokemon.length === 0 ? (
               <div className="py-16 sm:py-24 text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-white/20" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  <svg
+                    className="w-8 h-8 text-white/20"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={1.5}
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    />
                   </svg>
                 </div>
                 <p className="text-white/30 text-sm">Select Pokemon to compare their stats</p>
-                <p className="text-white/20 text-xs mt-1">Choose up to {MAX_SELECTED} Pokemon from the sidebar</p>
+                <p className="text-white/20 text-xs mt-1">
+                  Choose up to {MAX_SELECTED} Pokemon from the sidebar
+                </p>
               </div>
             ) : (
               <>
                 <div className="w-full" style={{ minHeight: 380 }}>
                   <ResponsiveContainer width="100%" height={380}>
                     <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="70%">
-                      <PolarGrid
-                        stroke="rgba(255,255,255,0.08)"
-                        strokeDasharray="3 3"
-                      />
+                      <PolarGrid stroke="rgba(255,255,255,0.08)" strokeDasharray="3 3" />
                       <PolarAngleAxis
                         dataKey="stat"
                         tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 12, fontWeight: 600 }}
@@ -526,7 +572,12 @@ export default function StatComparisonPage() {
                           fillOpacity={0.15}
                           strokeWidth={2}
                           dot={{ r: 3, fill: COMPARISON_COLORS[i] }}
-                          activeDot={{ r: 5, fill: COMPARISON_COLORS[i], stroke: '#fff', strokeWidth: 1 }}
+                          activeDot={{
+                            r: 5,
+                            fill: COMPARISON_COLORS[i],
+                            stroke: '#fff',
+                            strokeWidth: 1,
+                          }}
                         />
                       ))}
                       <Tooltip content={<CustomTooltip />} />
@@ -549,7 +600,7 @@ export default function StatComparisonPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 // ─── Preset Button ───────────────────────────────────────────────────────────
@@ -561,16 +612,18 @@ function PresetButton({
   selectedIds,
   onSelect,
 }: {
-  label: string;
-  pokemonIds: number[];
-  allPokemon: PokemonStats[];
-  selectedIds: number[];
-  onSelect: (ids: number[]) => void;
+  label: string
+  pokemonIds: number[]
+  allPokemon: PokemonStats[]
+  selectedIds: number[]
+  onSelect: (ids: number[]) => void
 }) {
   const isActive = useMemo(
-    () => pokemonIds.length === selectedIds.length && pokemonIds.every((id) => selectedIds.includes(id)),
+    () =>
+      pokemonIds.length === selectedIds.length &&
+      pokemonIds.every((id) => selectedIds.includes(id)),
     [pokemonIds, selectedIds]
-  );
+  )
 
   return (
     <button
@@ -584,5 +637,5 @@ function PresetButton({
     >
       {label}
     </button>
-  );
+  )
 }

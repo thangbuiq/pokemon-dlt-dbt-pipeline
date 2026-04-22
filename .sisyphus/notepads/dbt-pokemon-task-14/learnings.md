@@ -1,6 +1,6 @@
 # Task 14 - dbt Curated Enriched Pokemon Model
 
-- Created enriched Pokemon model at models/intermediate/pokemon/int_pokemon__enriched.sql
+- Created enriched Pokemon model at models/intermediate/pokemon/int_pokemon\_\_enriched.sql
 - Created dims:
 - dim_pokemon.sql -> sources enriched
 - dim_pokemon_types.sql -> source types

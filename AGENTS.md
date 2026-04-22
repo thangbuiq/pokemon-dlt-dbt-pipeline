@@ -39,6 +39,7 @@ pokemon-dlt-dbt-pipeline/
 ## Key Conventions
 
 ### dlt Pipeline
+
 - Uses `@dlt.source(max_table_nesting=2)` — child tables created with `__` separator
 - Parent-child join pattern: `ON parent._dlt_id = child._dlt_parent_id`
 - Column names are flattened: `type__name` not `type->>'name'`
@@ -47,6 +48,7 @@ pokemon-dlt-dbt-pipeline/
 - Run: `just pipeline`
 
 ### dbt Models
+
 - **Staging**: Join child tables via `_dlt_id = _dlt_parent_id`, NOT UNNEST
 - **Intermediate**: Enriched Pokemon, evolution flattened (UNION for stages), type matchups
 - **Marts**: dim_pokemon, dim_pokemon_types, dim_pokemon_stats, dim_evolution_tree, fct_evolution_paths, fct_type_matchup_matrix
@@ -55,6 +57,7 @@ pokemon-dlt-dbt-pipeline/
 - Test: `cd pokemon-dbt-pipeline && dbt test`
 
 ### Dashboard (Next.js)
+
 - **ALL pages use `"use client"`** — DuckDB WASM requires client-side
 - Route structure: App Router with `/app/[page]/page.tsx`
 - Design: Retro Game Boy style (light theme, pixel fonts)
@@ -67,6 +70,7 @@ pokemon-dlt-dbt-pipeline/
 - Deploy: `just deploy`
 
 ### Data Flow
+
 ```bash
 just pipeline   # dlt → raw.duckdb (6+ PokeAPI endpoints)
 just transform  # dbt → raw.duckdb (staging → intermediate → marts)

@@ -3,15 +3,16 @@
 ## TL;DR
 
 > **Quick Summary**: Build a creative, beautiful, sleek cyberpunk-themed Pokemon dashboard for real fans. dlt pipeline fetches 6 PokeAPI endpoints with parallel transformers → DuckDB → dbt-duckdb curated models → exported .db served to Next.js dashboard via DuckDB WASM → deployed on Vercel. All 8 features: Pokedex Browser, Type Matchup Calculator, Team Builder, Stat Radar Charts, Evolution Visualizer, Move Explorer, Ability Explorer, "Who's That Pokemon?" Quiz.
-> 
+>
 > **Deliverables**:
+>
 > - Monorepo with Just + uv + pnpm orchestration
 > - dlt pipeline (6 PokeAPI endpoints, transformer pattern, parallel loading)
 > - dbt-duckdb transformation layer (curated models for type matchups, evolution trees, enriched data)
 > - Next.js dashboard with DuckDB WASM (8 feature pages, cyberpunk design system)
 > - Vercel deployment configuration
 > - Test suites (pipeline + dashboard)
-> 
+>
 > **Estimated Effort**: XL (8 features, polyglot monorepo, full-stack data app)
 > **Parallel Execution**: YES - 5 waves
 > **Critical Path**: Monorepo scaffold → dlt pipeline → dbt models → DuckDB export → Design system → Dashboard features → Integration → Deploy
@@ -21,10 +22,13 @@
 ## Context
 
 ### Original Request
+
 Build a Pokemon dashboard that is fun, interesting, and practical for actual Pokemon lovers. Must be monorepo designed. Use dlt with transformers pattern from https://dlthub.com/docs/examples/transformers. Load data from PokeAPI via https://dlthub.com/context/source/pokemon-api. Load to DuckDB.
 
 ### Interview Summary
+
 **Key Discussions**:
+
 - Features: ALL 8 selected — Pokedex Browser, Type Matchup Calculator, Team Builder + Coverage, Stat Comparison Radar Charts, Evolution Chain Visualizer, Move Set Explorer, Ability Explorer, "Who's That Pokemon?" Quiz
 - Visual design: Futuristic cyberpunk Pokedex — dark mode, glowing type-colored accents, glassmorphism, animated stat bars, particle effects
 - Frontend: Next.js + DuckDB WASM (fully client-side, zero server cost)
@@ -35,6 +39,7 @@ Build a Pokemon dashboard that is fun, interesting, and practical for actual Pok
 - Deployment: Vercel (static + DuckDB .db as static asset)
 
 **Research Findings**:
+
 - dlt Transformers: @dlt.transformer + @dlt.defer for parallel, pipe operator |, selected=False for intermediate, `from dlt.sources.helpers import requests` with auto-retries
 - PokeAPI: 6 endpoints, no auth, base URL https://pokeapi.co/api/v2/
 - RESTAPIConfig: Declarative endpoint setup with `rest_api_resources()`
@@ -43,7 +48,9 @@ Build a Pokemon dashboard that is fun, interesting, and practical for actual Pok
 - Next.js + DuckDB WASM: Turbopack hangs, SSR issues — must use client-only components, Pages Router may be safer
 
 ### Metis Review
+
 **Identified Gaps** (addressed):
+
 - Vercel 100MB static asset limit: First page only (20 Pokemon × 6 endpoints ≈ 2-5MB .db file — well under limit)
 - DuckDB WASM downloads entire file: Acceptable for small dataset (~5MB), add loading indicator
 - Next.js + DuckDB WASM SSR issues: Use "use client" directive, Pages Router, dynamic import with ssr:false
@@ -55,9 +62,11 @@ Build a Pokemon dashboard that is fun, interesting, and practical for actual Pok
 ## Work Objectives
 
 ### Core Objective
+
 Build a stunning cyberpunk-themed Pokemon dashboard that real fans love, powered by a dlt→DuckDB→dbt data pipeline, served client-side via DuckDB WASM, and deployed on Vercel.
 
 ### Concrete Deliverables
+
 - `pokemon-dlt-pipeline/` — dlt Python package with 6 PokeAPI endpoints, transformer pattern
 - `pokemon-dbt-pipeline/` — dbt-duckdb project with curated models
 - `pokemon-dashboard-app/` — Next.js app with 8 feature pages, DuckDB WASM, cyberpunk design
@@ -66,6 +75,7 @@ Build a stunning cyberpunk-themed Pokemon dashboard that real fans love, powered
 - Vercel deployment config
 
 ### Definition of Done
+
 - [ ] `just pipeline` runs dlt and populates data/raw.duckdb with 6 tables
 - [ ] `just transform` runs dbt and populates data/curated.duckdb with curated models
 - [ ] `just export` creates data/pokemon.db for dashboard consumption
@@ -74,6 +84,7 @@ Build a stunning cyberpunk-themed Pokemon dashboard that real fans love, powered
 - [ ] `just deploy` deploys to Vercel successfully
 
 ### Must Have
+
 - All 6 PokeAPI endpoints loaded via dlt transformers
 - dbt curated models for type matchups, evolution chains, enriched Pokemon
 - DuckDB WASM queries in browser (no backend)
@@ -84,6 +95,7 @@ Build a stunning cyberpunk-themed Pokemon dashboard that real fans love, powered
 - Test coverage for pipeline and dashboard
 
 ### Must NOT Have (Guardrails)
+
 - No authentication/user accounts
 - No backend API server
 - No persistent user state (team builder selections are session-only)
@@ -101,12 +113,14 @@ Build a stunning cyberpunk-themed Pokemon dashboard that real fans love, powered
 > **ZERO HUMAN INTERVENTION** - ALL verification is agent-executed.
 
 ### Test Decision
+
 - **Infrastructure exists**: NO (new project)
 - **Automated tests**: Tests After Implementation
 - **Framework**: pytest (Python pipeline/dbt), Vitest + React Testing Library (dashboard)
 - **Setup tasks included**: YES
 
 ### QA Policy
+
 Every task MUST include agent-executed QA scenarios.
 Evidence saved to `.sisyphus/evidence/task-{N}-{scenario-slug}.{ext}`.
 
@@ -179,41 +193,41 @@ Max Concurrent: 8 (Wave 4)
 
 ### Dependency Matrix
 
-| Task | Depends On | Blocks | Wave |
-|------|-----------|--------|------|
-| 1 | - | 2,3,4,5,6,7 | 1 |
-| 2 | 1 | 8,9,10,11 | 1 |
-| 3 | 1 | 12 | 1 |
-| 4 | 1 | 13,17,19 | 1 |
-| 5 | 1 | 17 | 1 |
-| 6 | 1 | 13 | 1 |
-| 7 | 1 | 18 | 1 |
-| 8 | 2 | 12 | 2 |
-| 9 | 2 | 12 | 2 |
-| 10 | 2 | 12 | 2 |
-| 11 | 2 | 12 | 2 |
-| 12 | 3,8,9,10,11 | 14,15,16 | 2 |
-| 13 | 4,6 | 20-27 | 2 |
-| 14 | 12 | 18,20,23,25,26,27 | 3 |
-| 15 | 12 | 18,21,22 | 3 |
-| 16 | 12 | 18,24 | 3 |
-| 17 | 4,5 | 20-27 | 3 |
-| 18 | 7,14,15,16 | 32 | 3 |
-| 19 | 4 | 20,27 | 3 |
-| 20 | 17,13,19 | 28,30,33 | 4 |
-| 21 | 17,13,15 | 30,33 | 4 |
-| 22 | 17,13,15 | 30,33 | 4 |
-| 23 | 17,13,14 | 30,33 | 4 |
-| 24 | 17,13,16 | 30,33 | 4 |
-| 25 | 17,13,14 | 30,33 | 4 |
-| 26 | 17,13,14 | 30,33 | 4 |
-| 27 | 17,13,14,19 | 30,33 | 4 |
-| 28 | 8,9,10,11 | 33 | 5 |
-| 29 | 14,15,16 | 33 | 5 |
-| 30 | 20-27 | 33 | 5 |
-| 31 | 13,20 | 33 | 5 |
-| 32 | 18,20-27 | 33 | 5 |
-| 33 | 28,29,30,31,32 | FINAL | 5 |
+| Task | Depends On     | Blocks            | Wave |
+| ---- | -------------- | ----------------- | ---- |
+| 1    | -              | 2,3,4,5,6,7       | 1    |
+| 2    | 1              | 8,9,10,11         | 1    |
+| 3    | 1              | 12                | 1    |
+| 4    | 1              | 13,17,19          | 1    |
+| 5    | 1              | 17                | 1    |
+| 6    | 1              | 13                | 1    |
+| 7    | 1              | 18                | 1    |
+| 8    | 2              | 12                | 2    |
+| 9    | 2              | 12                | 2    |
+| 10   | 2              | 12                | 2    |
+| 11   | 2              | 12                | 2    |
+| 12   | 3,8,9,10,11    | 14,15,16          | 2    |
+| 13   | 4,6            | 20-27             | 2    |
+| 14   | 12             | 18,20,23,25,26,27 | 3    |
+| 15   | 12             | 18,21,22          | 3    |
+| 16   | 12             | 18,24             | 3    |
+| 17   | 4,5            | 20-27             | 3    |
+| 18   | 7,14,15,16     | 32                | 3    |
+| 19   | 4              | 20,27             | 3    |
+| 20   | 17,13,19       | 28,30,33          | 4    |
+| 21   | 17,13,15       | 30,33             | 4    |
+| 22   | 17,13,15       | 30,33             | 4    |
+| 23   | 17,13,14       | 30,33             | 4    |
+| 24   | 17,13,16       | 30,33             | 4    |
+| 25   | 17,13,14       | 30,33             | 4    |
+| 26   | 17,13,14       | 30,33             | 4    |
+| 27   | 17,13,14,19    | 30,33             | 4    |
+| 28   | 8,9,10,11      | 33                | 5    |
+| 29   | 14,15,16       | 33                | 5    |
+| 30   | 20-27          | 33                | 5    |
+| 31   | 13,20          | 33                | 5    |
+| 32   | 18,20-27       | 33                | 5    |
+| 33   | 28,29,30,31,32 | FINAL             | 5    |
 
 ### Agent Dispatch Summary
 
@@ -306,7 +320,7 @@ Max Concurrent: 8 (Wave 4)
   - [ ] `ls packages/` shows pipeline/, transform/, dashboard/
   - [ ] `cat pyproject.toml` contains uv workspace config
   - [ ] `cat pnpm-workspace.yaml` points to pokemon-dashboard-app
-  - [ ] `.gitignore` contains *.duckdb, *.wal, node_modules, .next patterns
+  - [ ] `.gitignore` contains _.duckdb, _.wal, node_modules, .next patterns
 
   **QA Scenarios (MANDATORY)**:
 
@@ -348,13 +362,15 @@ Max Concurrent: 8 (Wave 4)
   - Create `pokemon-dlt-pipeline/pokemon_pipeline/sources/__init__.py`
   - Create `pokemon-dlt-pipeline/pokemon_pipeline/sources/pokemon_api.py` with RESTAPIConfig skeleton (6 endpoints declared but no transformer logic yet)
   - Create `pokemon-dlt-pipeline/.dlt/config.toml` with parallelism config:
+
     ```toml
     [pipeline]
     workers = 5
-    
+
     [normalize]
     workers = 3
     ```
+
   - Create `pokemon-dlt-pipeline/pokemon_pipeline/pipeline.py` with `create_pipeline()` that sets up DuckDB destination pointing to `data/raw.duckdb`, dataset_name `raw_data` (NOT `pokemon` to avoid DuckDB binder error)
   - Verify `uv sync` works in pokemon-dlt-pipeline/
 
@@ -422,7 +438,7 @@ Max Concurrent: 8 (Wave 4)
   - Create `pokemon-dbt-pipeline/dbt_project.yml`:
     ```yaml
     name: pokemon_transforms
-    version: '1.0.0'
+    version: "1.0.0"
     config-version: 2
     profile: pokemon_dbt
     model-paths: ["models"]
@@ -445,7 +461,7 @@ Max Concurrent: 8 (Wave 4)
       outputs:
         dev:
           type: duckdb
-          path: '../../data/raw.duckdb'
+          path: "../../data/raw.duckdb"
           schema: raw_data
           threads: 4
     ```
@@ -719,15 +735,22 @@ Max Concurrent: 8 (Wave 4)
 
   **What to do**:
   - Create `pokemon-dashboard-app/src/lib/types/pokemon.ts` with TypeScript interfaces matching PokeAPI response shapes:
+
     ```typescript
     // Core Pokemon type from PokeAPI
     interface Pokemon {
       id: number;
       name: string;
-      sprites: { front_default: string; other: { official: { front_default: string } } };
+      sprites: {
+        front_default: string;
+        other: { official: { front_default: string } };
+      };
       types: { type: { name: string; url: string } }[];
       stats: { base_stat: number; stat: { name: string } }[];
-      abilities: { ability: { name: string; url: string }; is_hidden: boolean }[];
+      abilities: {
+        ability: { name: string; url: string };
+        is_hidden: boolean;
+      }[];
       moves: { move: { name: string; url: string } }[];
       height: number;
       weight: number;
@@ -738,7 +761,10 @@ Max Concurrent: 8 (Wave 4)
       id: number;
       name: string;
       evolution_chain: { url: string };
-      flavor_text_entries: { flavor_text: string; language: { name: string } }[];
+      flavor_text_entries: {
+        flavor_text: string;
+        language: { name: string };
+      }[];
       genera: { genus: string; language: { name: string } }[];
       habitat: { name: string } | null;
       color: { name: string };
@@ -764,7 +790,11 @@ Max Concurrent: 8 (Wave 4)
     interface Ability {
       id: number;
       name: string;
-      effect_entries: { effect: string; short_effect: string; language: { name: string } }[];
+      effect_entries: {
+        effect: string;
+        short_effect: string;
+        language: { name: string };
+      }[];
       pokemon: { pokemon: { name: string; url: string }; is_hidden: boolean }[];
     }
 
@@ -787,7 +817,11 @@ Max Concurrent: 8 (Wave 4)
 
     interface EvolutionChainLink {
       species: { name: string; url: string };
-      evolution_details: { trigger: { name: string }; min_level: number | null; item: { name: string } | null }[];
+      evolution_details: {
+        trigger: { name: string };
+        min_level: number | null;
+        item: { name: string } | null;
+      }[];
       evolves_to: EvolutionChainLink[];
     }
 
@@ -811,6 +845,7 @@ Max Concurrent: 8 (Wave 4)
       coverage_percent: number;
     }
     ```
+
   - Create `pokemon-dashboard-app/src/lib/types/index.ts` barrel export
   - These types are used by both DuckDB query result parsing and UI components
 
@@ -944,41 +979,43 @@ Max Concurrent: 8 (Wave 4)
 
   **What to do**:
   - Implement `pokemon-dlt-pipeline/pokemon_pipeline/sources/pokemon_api.py` — the core dlt source:
+
     ```python
     import dlt
     from dlt.sources.helpers import requests  # auto-retry requests
-    
+
     POKEMON_API_URL = "https://pokeapi.co/api/v2"
-    
+
     @dlt.source(max_table_nesting=2)
     def pokemon_source(api_url: str = POKEMON_API_URL):
         @dlt.resource(write_disposition="replace", selected=False)
         def pokemon_list():
             """First page of Pokemon — NOT loaded, used as input to transformers"""
             yield requests.get(f"{api_url}/pokemon").json()["results"]
-        
+
         @dlt.transformer
         def pokemon_details(pokemons):
             """Fetch Pokemon details in parallel using @dlt.defer"""
             @dlt.defer
             def _get_pokemon(p):
                 return requests.get(p["url"]).json()
-            
+
             for p in pokemons:
                 yield _get_pokemon(p)
-        
+
         @dlt.transformer(parallelized=True)
         def pokemon_species(pokemon_details):
             """Fetch species details for each Pokemon"""
             species_data = requests.get(pokemon_details["species"]["url"]).json()
             species_data["pokemon_id"] = pokemon_details["id"]
             return species_data
-        
+
         return (
             pokemon_list | pokemon_details,
             pokemon_list | pokemon_details | pokemon_species,
         )
     ```
+
   - Wire into pipeline.py: `pipeline.run(pokemon_source())`
   - Test run: `just pipeline` should create `pokemon` and `pokemon_species` tables in `data/raw.duckdb` with 20 rows each
   - Verify `pokemon_list` table does NOT exist (selected=False)
@@ -1065,6 +1102,7 @@ Max Concurrent: 8 (Wave 4)
     - The `pokemon_species` transformer already defined in Task 8 gets enhanced here
   - Ensure Species data links back to Pokemon via `pokemon_id` field
   - Add Evolution Chain resource:
+
     ```python
     @dlt.resource(write_disposition="replace", selected=False)
     def evolution_chain_list():
@@ -1072,13 +1110,14 @@ Max Concurrent: 8 (Wave 4)
         # We already have species URLs from pokemon_species
         # Extract unique evolution_chain URLs
         yield requests.get(f"{api_url}/evolution-chain").json()["results"]
-    
+
     @dlt.transformer(parallelized=True)
     def evolution_chains(chain_list):
         """Fetch evolution chain details"""
         for chain in chain_list:
             yield requests.get(chain["url"]).json()
     ```
+
   - Wire evolution_chains into source return tuple
 
   **Must NOT do**:
@@ -1130,34 +1169,36 @@ Max Concurrent: 8 (Wave 4)
 
   **What to do**:
   - Add three more resources to the pokemon_api source:
+
     ```python
     @dlt.resource(write_disposition="replace", selected=False)
     def type_list():
         yield requests.get(f"{api_url}/type").json()["results"]
-    
+
     @dlt.transformer(parallelized=True)
     def pokemon_types(type_items):
         for t in type_items:
             yield requests.get(t["url"]).json()
-    
+
     @dlt.resource(write_disposition="replace", selected=False)
     def ability_list():
         yield requests.get(f"{api_url}/ability").json()["results"]
-    
+
     @dlt.transformer(parallelized=True)
     def pokemon_abilities(ability_items):
         for a in ability_items:
             yield requests.get(a["url"]).json()
-    
+
     @dlt.resource(write_disposition="replace", selected=False)
     def move_list():
         yield requests.get(f"{api_url}/move").json()["results"]
-    
+
     @dlt.transformer(parallelized=True)
     def pokemon_moves(move_items):
         for m in move_items:
             yield requests.get(m["url"]).json()
     ```
+
   - Wire all three into source return: `(type_list | pokemon_types, ability_list | pokemon_abilities, move_list | pokemon_moves)`
   - Ensure all resources use `@dlt.defer` or `parallelized=True` for parallel fetching
 
@@ -1309,7 +1350,7 @@ Max Concurrent: 8 (Wave 4)
   - `https://duckdb.org/docs/sql/querying/unnest` — UNNEST for flattening arrays
 
   **WHY Each Reference Matters**:
-  - dbt staging conventions: Must follow _base naming, schema yml patterns
+  - dbt staging conventions: Must follow \_base naming, schema yml patterns
   - DuckDB JSON functions: Critical for extracting nested PokeAPI data (types array, stats array, damage_relations object)
   - UNNEST: Required to flatten Pokemon's types/stats/abilities arrays into junction tables
 
@@ -1346,6 +1387,7 @@ Max Concurrent: 8 (Wave 4)
   **What to do**:
   - Build on the DuckDBProvider from Task 4 to create a complete query layer:
   - Create `pokemon-dashboard-app/src/lib/duckdb/hooks.ts`:
+
     ```typescript
     // Custom hook for querying DuckDB
     export function useDuckDBQuery<T>(sql: string, params?: unknown[]) {
@@ -1353,19 +1395,24 @@ Max Concurrent: 8 (Wave 4)
       // Uses DuckDBContext connection
       // Executes query and parses Arrow result to typed array
     }
-    
+
     // Hook for loading a table entirely
     export function useDuckDBTable<T>(tableName: string) {
       // Returns { data: T[] | null, loading: boolean, error: Error | null }
       // Queries: SELECT * FROM {tableName}
     }
-    
+
     // Hook for paginated queries
-    export function useDuckDBPaginated<T>(sql: string, page: number, pageSize: number) {
+    export function useDuckDBPaginated<T>(
+      sql: string,
+      page: number,
+      pageSize: number,
+    ) {
       // Returns { data: T[] | null, totalCount: number, loading: boolean }
       // Appends LIMIT/OFFSET to query
     }
     ```
+
   - Create `pokemon-dashboard-app/src/lib/duckdb/arrow-parser.ts`:
     - Convert Apache Arrow result from DuckDB WASM to typed JavaScript arrays
     - Handle nested types (JSON columns), null values, BigInt → Number conversion
@@ -1508,7 +1555,7 @@ Max Concurrent: 8 (Wave 4)
   - `https://duckdb.org/docs/sql/statements/pivot` — DuckDB PIVOT for stats wide-format conversion
 
   **WHY Each Reference Matters**:
-  - dbt mart conventions: Must use dim_ prefix for dimension tables
+  - dbt mart conventions: Must use dim\_ prefix for dimension tables
   - DuckDB PIVOT: For converting long-format stats to wide (hp, attack, defense columns)
 
   **Acceptance Criteria**:
@@ -1550,7 +1597,7 @@ Max Concurrent: 8 (Wave 4)
     - Use the `type_effectiveness.csv` SEED data combined with API data for accuracy
     - `marts/analytics/fct_type_matchup_matrix.sql` — Complete 18×18 matrix:
       - attacking_type (18 values)
-      - defending_type (18 values)  
+      - defending_type (18 values)
       - effectiveness (0, 0.25, 0.5, 1, 2, 4)
     - `marts/analytics/dim_type_summary.sql` — Type summary: offensive_strengths, defensive_weaknesses
   - Write dbt test: matchup matrix should have exactly 18×18 = 324 rows
@@ -1812,7 +1859,7 @@ Max Concurrent: 8 (Wave 4)
 
   **Must NOT do**:
   - Don't include staging or intermediate tables — only marts + raw sprite data
-  - Don't export dlt metadata tables (_dlt_pipeline_state, etc.)
+  - Don't export dlt metadata tables (\_dlt_pipeline_state, etc.)
   - Don't skip the ANALYZE step — query performance matters in browser
 
   **Recommended Agent Profile**:
@@ -1868,11 +1915,14 @@ Max Concurrent: 8 (Wave 4)
   - Create `pokemon-dashboard-app/src/lib/sprites.ts`:
     - Sprite URL builder using PokeAPI CDN:
       ```typescript
-      export function getSpriteUrl(pokemonId: number, variant: 'default' | 'official' | 'shiny' = 'default'): string {
-        if (variant === 'official') {
+      export function getSpriteUrl(
+        pokemonId: number,
+        variant: "default" | "official" | "shiny" = "default",
+      ): string {
+        if (variant === "official") {
           return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemonId}.png`;
         }
-        if (variant === 'shiny') {
+        if (variant === "shiny") {
           return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${pokemonId}.png`;
         }
         return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
@@ -1881,10 +1931,10 @@ Max Concurrent: 8 (Wave 4)
     - Silhouette generator for quiz mode (CSS filter or canvas):
       ```typescript
       export function getSilhouetteStyle(): React.CSSProperties {
-        return { filter: 'brightness(0)', transition: 'filter 0.5s' };
+        return { filter: "brightness(0)", transition: "filter 0.5s" };
       }
       export function getRevealedStyle(): React.CSSProperties {
-        return { filter: 'brightness(1)' };
+        return { filter: "brightness(1)" };
       }
       ```
   - Configure `next.config.js` for remote image patterns:
@@ -3004,20 +3054,20 @@ Max Concurrent: 8 (Wave 4)
 ## Final Verification Wave
 
 - [ ] F1. **Plan Compliance Audit** — `oracle`
-  Read the plan end-to-end. For each "Must Have": verify implementation exists (read file, curl endpoint, run command). For each "Must NOT Have": search codebase for forbidden patterns — reject with file:line if found. Check evidence files exist in .sisyphus/evidence/. Compare deliverables against plan.
-  Output: `Must Have [N/N] | Must NOT Have [N/N] | Tasks [N/N] | VERDICT: APPROVE/REJECT`
+      Read the plan end-to-end. For each "Must Have": verify implementation exists (read file, curl endpoint, run command). For each "Must NOT Have": search codebase for forbidden patterns — reject with file:line if found. Check evidence files exist in .sisyphus/evidence/. Compare deliverables against plan.
+      Output: `Must Have [N/N] | Must NOT Have [N/N] | Tasks [N/N] | VERDICT: APPROVE/REJECT`
 
 - [ ] F2. **Code Quality Review** — `unspecified-high`
-  Run linters + type checks + tests. Review all changed files for: `as any`/`@ts-ignore`, empty catches, console.log in prod, commented-out code, unused imports. Check AI slop: excessive comments, over-abstraction, generic names.
-  Output: `Build [PASS/FAIL] | Lint [PASS/FAIL] | Tests [N pass/N fail] | Files [N clean/N issues] | VERDICT`
+      Run linters + type checks + tests. Review all changed files for: `as any`/`@ts-ignore`, empty catches, console.log in prod, commented-out code, unused imports. Check AI slop: excessive comments, over-abstraction, generic names.
+      Output: `Build [PASS/FAIL] | Lint [PASS/FAIL] | Tests [N pass/N fail] | Files [N clean/N issues] | VERDICT`
 
 - [ ] F3. **Real Manual QA** — `unspecified-high` (+ `playwright` skill)
-  Start from clean state. Execute EVERY QA scenario from EVERY task. Test cross-feature integration. Test edge cases. Save to `.sisyphus/evidence/final-qa/`.
-  Output: `Scenarios [N/N pass] | Integration [N/N] | Edge Cases [N tested] | VERDICT`
+      Start from clean state. Execute EVERY QA scenario from EVERY task. Test cross-feature integration. Test edge cases. Save to `.sisyphus/evidence/final-qa/`.
+      Output: `Scenarios [N/N pass] | Integration [N/N] | Edge Cases [N tested] | VERDICT`
 
 - [ ] F4. **Scope Fidelity Check** — `deep`
-  For each task: read "What to do", read actual diff. Verify 1:1. Check "Must NOT do" compliance. Detect cross-task contamination.
-  Output: `Tasks [N/N compliant] | Contamination [CLEAN/N issues] | VERDICT`
+      For each task: read "What to do", read actual diff. Verify 1:1. Check "Must NOT do" compliance. Detect cross-task contamination.
+      Output: `Tasks [N/N compliant] | Contamination [CLEAN/N issues] | VERDICT`
 
 ---
 
@@ -3040,6 +3090,7 @@ Max Concurrent: 8 (Wave 4)
 ## Success Criteria
 
 ### Verification Commands
+
 ```bash
 just pipeline          # Expected: dlt loads 6 tables to data/raw.duckdb, 20 rows each
 just transform         # Expected: dbt builds staging + curated models in data/curated.duckdb
@@ -3051,6 +3102,7 @@ just deploy            # Expected: Vercel deployment succeeds, URL returned
 ```
 
 ### Final Checklist
+
 - [ ] All 6 PokeAPI endpoints loaded via dlt transformers with parallel execution
 - [ ] dbt curated models produce type matchup matrix, evolution trees, enriched Pokemon
 - [ ] DuckDB .db file < 100MB (Vercel limit)

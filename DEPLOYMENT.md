@@ -36,11 +36,13 @@ Select your team/project or create a new one.
 Before deploying, ensure:
 
 1. **pokemon.db exists in public/**
+
    ```bash
    ls -la pokemon-dashboard-app/public/pokemon.db
    ```
 
 2. **Build passes locally**
+
    ```bash
    just build
    # or
@@ -123,6 +125,7 @@ Or set them in the [Vercel Dashboard](https://vercel.com/dashboard).
 ### Build Failures
 
 **Error: "Cannot find module"**
+
 ```bash
 # Clean and reinstall
 cd pokemon-dashboard-app
@@ -131,6 +134,7 @@ bun install
 ```
 
 **Error: "Build failed"**
+
 ```bash
 # Check build locally first
 cd pokemon-dashboard-app
@@ -141,10 +145,12 @@ bun run build
 ### DuckDB WASM Issues
 
 **Error: "Failed to load DuckDB"**
+
 - Ensure `serverExternalPackages: ["@duckdb/duckdb-wasm"]` is in next.config.ts
 - Check webpack config has `asyncWebAssembly: true`
 
 **Error: "Cannot open database"**
+
 - Verify pokemon.db is in public/ folder
 - Check pokemon.db is not in .vercelignore
 - Test: `ls -la pokemon-dashboard-app/public/pokemon.db`
@@ -152,10 +158,12 @@ bun run build
 ### Static Export Issues
 
 **Error: "Image optimization not supported"**
+
 - Already configured with `images: { unoptimized: true }`
 - This is expected for static export
 
 **Error: "API routes not supported"**
+
 - This app doesn't use API routes (all data from DuckDB WASM)
 - If you add API routes, you need serverless deployment (not static export)
 

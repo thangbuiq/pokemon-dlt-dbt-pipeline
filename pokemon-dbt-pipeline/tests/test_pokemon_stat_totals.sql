@@ -1,7 +1,7 @@
 -- Test: Total stats > 0 for all Pokemon
 -- Returns rows where total_stats is 0 or NULL
 
-SELECT 
+SELECT
     id,
     name,
     total_stats

@@ -8,7 +8,7 @@ WITH all_types AS (
 ),
 
 all_combinations AS (
-    SELECT 
+    SELECT
         a.type_name as attacking_type,
         d.type_name as defending_type
     FROM all_types a
@@ -16,18 +16,18 @@ all_combinations AS (
 ),
 
 effectiveness_data AS (
-    SELECT 
+    SELECT
         attacking_type,
         defending_type,
         effectiveness
     FROM {{ ref('type_effectiveness') }}
 )
 
-SELECT 
+SELECT
     c.attacking_type,
     c.defending_type,
     COALESCE(e.effectiveness, 1.0) as effectiveness
 FROM all_combinations c
-LEFT JOIN effectiveness_data e 
-    ON c.attacking_type = e.attacking_type 
+LEFT JOIN effectiveness_data e
+    ON c.attacking_type = e.attacking_type
     AND c.defending_type = e.defending_type

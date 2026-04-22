@@ -1,19 +1,19 @@
-import { type PokemonType, typeColorMap } from '@/lib/design-tokens';
+import { type PokemonType, typeColorMap } from '@/lib/design-tokens'
 
-type ButtonVariant = 'primary' | 'secondary' | 'ghost';
+type ButtonVariant = 'primary' | 'secondary' | 'ghost'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant;
-  pokemonType?: PokemonType;
-  children: React.ReactNode;
-  className?: string;
+  variant?: ButtonVariant
+  pokemonType?: PokemonType
+  children: React.ReactNode
+  className?: string
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary: 'bg-surface-light text-white border-surface-light',
   secondary: 'bg-transparent text-white border-white/20',
   ghost: 'bg-transparent text-white/70 border-transparent',
-};
+}
 
 export function Button({
   variant = 'primary',
@@ -23,14 +23,14 @@ export function Button({
   disabled,
   ...props
 }: ButtonProps) {
-  const glowColor = pokemonType ? typeColorMap[pokemonType] : undefined;
+  const glowColor = pokemonType ? typeColorMap[pokemonType] : undefined
 
   const glowStyle = glowColor
     ? ({
         '--btn-glow': glowColor,
         borderColor: glowColor,
       } as React.CSSProperties)
-    : undefined;
+    : undefined
 
   return (
     <button
@@ -53,5 +53,5 @@ export function Button({
     >
       {children}
     </button>
-  );
+  )
 }

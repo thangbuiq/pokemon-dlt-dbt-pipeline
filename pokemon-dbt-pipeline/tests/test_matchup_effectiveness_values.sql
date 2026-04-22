@@ -1,7 +1,7 @@
 -- Test: Only valid effectiveness values (0, 0.25, 0.5, 1, 2, 4)
 -- Returns rows with invalid effectiveness values
 
-SELECT 
+SELECT
     attacking_type,
     defending_type,
     effectiveness

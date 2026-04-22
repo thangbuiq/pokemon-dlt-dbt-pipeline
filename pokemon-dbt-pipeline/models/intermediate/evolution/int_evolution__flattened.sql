@@ -1,7 +1,7 @@
 -- Simplified evolution model using flattened columns
 -- Evolution chains are flattened by dlt, we join parent with child tables
 
-SELECT 
+SELECT
     ec.id as chain_id,
     ec.chain__species__name as species_name,
     1 as stage,
@@ -11,7 +11,7 @@ FROM {{ source('raw_data', 'evolution_chains') }} ec
 
 UNION ALL
 
-SELECT 
+SELECT
     ec.id as chain_id,
     ev.species__name as species_name,
     2 as stage,

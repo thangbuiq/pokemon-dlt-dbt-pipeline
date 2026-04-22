@@ -14,7 +14,7 @@ stat_pivot AS (
   FROM {{ ref('stg_pokemon__stats') }}
   GROUP BY pokemon_id
 )
-SELECT 
+SELECT
   p.id,
   p.name,
   p.height,

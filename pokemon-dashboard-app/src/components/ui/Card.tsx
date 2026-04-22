@@ -1,16 +1,22 @@
-import { type PokemonType } from '@/lib/design-tokens';
+import { type PokemonType } from '@/lib/design-tokens'
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
-  pokemonType?: PokemonType;
-  className?: string;
-  hover?: boolean;
+  children: React.ReactNode
+  pokemonType?: PokemonType
+  className?: string
+  hover?: boolean
 }
 
-export function Card({ children, pokemonType, className = '', hover = false, ...props }: CardProps) {
+export function Card({
+  children,
+  pokemonType,
+  className = '',
+  hover = false,
+  ...props
+}: CardProps) {
   const glowStyle = pokemonType
-    ? { '--glow-color': `var(--type-${pokemonType})` } as React.CSSProperties
-    : undefined;
+    ? ({ '--glow-color': `var(--type-${pokemonType})` } as React.CSSProperties)
+    : undefined
 
   return (
     <div
@@ -27,5 +33,5 @@ export function Card({ children, pokemonType, className = '', hover = false, ...
     >
       {children}
     </div>
-  );
+  )
 }

@@ -3,23 +3,25 @@ from dlt.sources.helpers import requests
 
 POKEMON_API_URL = "https://pokeapi.co/api/v2"
 
+
 @dlt.source(max_table_nesting=2)
 def pokemon_source(api_url: str = POKEMON_API_URL):
     @dlt.resource(write_disposition="replace", selected=False)
     def pokemon_list():
         """First page of Pokemon - NOT loaded, used as input to transformers"""
         yield requests.get(f"{api_url}/pokemon").json()["results"]
-    
+
     @dlt.transformer
     def pokemon_details(pokemons):
         """Fetch Pokemon details in parallel using @dlt.defer"""
+
         @dlt.defer
         def _get_pokemon(p):
             return requests.get(p["url"]).json()
-        
+
         for p in pokemons:
             yield _get_pokemon(p)
-    
+
     @dlt.transformer(parallelized=True)
     def pokemon_species(pokemon_details):
         """Fetch species details for each Pokemon"""

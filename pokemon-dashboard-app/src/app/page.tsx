@@ -1,133 +1,149 @@
-'use client';
+'use client'
 
-import { useState, useMemo, useCallback, useEffect } from 'react';
-import Image from 'next/image';
-import { useDuckDBQuery } from '@/lib/duckdb/hooks';
-import { GET_ALL_POKEMON } from '@/lib/duckdb/queries';
-import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { type PokemonType, typeColorMap } from '@/lib/design-tokens';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { useState, useMemo, useCallback, useEffect } from 'react'
+import Image from 'next/image'
+import { useDuckDBQuery } from '@/lib/duckdb/hooks'
+import { GET_ALL_POKEMON } from '@/lib/duckdb/queries'
+import { Card } from '@/components/ui/Card'
+import { Badge } from '@/components/ui/Badge'
+import { type PokemonType, typeColorMap } from '@/lib/design-tokens'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const ALL_TYPES: PokemonType[] = [
-  'normal', 'fire', 'water', 'grass', 'electric', 'ice',
-  'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug',
-  'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy',
-];
+  'normal',
+  'fire',
+  'water',
+  'grass',
+  'electric',
+  'ice',
+  'fighting',
+  'poison',
+  'ground',
+  'flying',
+  'psychic',
+  'bug',
+  'rock',
+  'ghost',
+  'dragon',
+  'dark',
+  'steel',
+  'fairy',
+]
 
-type SortKey = 'id' | 'name' | 'total_stats';
+type SortKey = 'id' | 'name' | 'total_stats'
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: 'id', label: '#' },
   { key: 'name', label: 'Name' },
   { key: 'total_stats', label: 'Stats' },
-];
+]
 
-const STAT_META: { key: 'hp' | 'attack' | 'defense' | 'special_attack' | 'special_defense' | 'speed'; label: string }[] = [
+const STAT_META: {
+  key: 'hp' | 'attack' | 'defense' | 'special_attack' | 'special_defense' | 'speed'
+  label: string
+}[] = [
   { key: 'hp', label: 'HP' },
   { key: 'attack', label: 'ATK' },
   { key: 'defense', label: 'DEF' },
   { key: 'special_attack', label: 'SP.ATK' },
   { key: 'special_defense', label: 'SP.DEF' },
   { key: 'speed', label: 'SPD' },
-];
+]
 
-const STAT_MAX = 255;
+const STAT_MAX = 255
 
 const OFFICIAL_ARTWORK = (id: number) =>
-  `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+  `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
 interface PokemonRow {
-  id: number;
-  name: string;
-  height: number;
-  weight: number;
-  sprite_url: string;
-  color: string;
-  type_names: string;
-  hp: number;
-  attack: number;
-  defense: number;
-  special_attack: number;
-  special_defense: number;
-  speed: number;
-  total_stats: number;
-  types: string;
+  id: number
+  name: string
+  height: number
+  weight: number
+  sprite_url: string
+  color: string
+  type_names: string
+  hp: number
+  attack: number
+  defense: number
+  special_attack: number
+  special_defense: number
+  speed: number
+  total_stats: number
+  types: string
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function parseTypes(p: PokemonRow): PokemonType[] {
-  const raw = p.types || p.type_names || '';
+  const raw = p.types || p.type_names || ''
   return raw
     .split(',')
     .map((t) => t.trim().toLowerCase())
-    .filter((t): t is PokemonType => t in typeColorMap);
+    .filter((t): t is PokemonType => t in typeColorMap)
 }
 
 function primaryTypeOf(p: PokemonRow): PokemonType {
-  return parseTypes(p)[0] ?? 'normal';
+  return parseTypes(p)[0] ?? 'normal'
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function Home() {
-  const [search, setSearch] = useState('');
-  const [activeTypes, setActiveTypes] = useState<Set<PokemonType>>(new Set());
-  const [sortBy, setSortBy] = useState<SortKey>('id');
-  const [selected, setSelected] = useState<PokemonRow | null>(null);
-  const [detailReady, setDetailReady] = useState(false);
+  const [search, setSearch] = useState('')
+  const [activeTypes, setActiveTypes] = useState<Set<PokemonType>>(new Set())
+  const [sortBy, setSortBy] = useState<SortKey>('id')
+  const [selected, setSelected] = useState<PokemonRow | null>(null)
+  const [detailReady, setDetailReady] = useState(false)
 
-  const { data, loading, error } = useDuckDBQuery<PokemonRow>(GET_ALL_POKEMON);
+  const { data, loading, error } = useDuckDBQuery<PokemonRow>(GET_ALL_POKEMON)
 
   // Animate detail stat bars after mount
   useEffect(() => {
     if (selected) {
-      setDetailReady(false);
-      const raf = requestAnimationFrame(() => setDetailReady(true));
-      return () => cancelAnimationFrame(raf);
+      setDetailReady(false)
+      const raf = requestAnimationFrame(() => setDetailReady(true))
+      return () => cancelAnimationFrame(raf)
     }
-    setDetailReady(false);
-  }, [selected]);
+    setDetailReady(false)
+  }, [selected])
 
   const toggleType = useCallback((type: PokemonType) => {
     setActiveTypes((prev) => {
-      const next = new Set(prev);
-      if (next.has(type)) next.delete(type);
-      else next.add(type);
-      return next;
-    });
-  }, []);
+      const next = new Set(prev)
+      if (next.has(type)) next.delete(type)
+      else next.add(type)
+      return next
+    })
+  }, [])
 
   const filtered = useMemo(() => {
-    if (!data) return [];
+    if (!data) return []
 
-    let result = data;
+    let result = data
 
     // Search filter
     if (search) {
-      const q = search.toLowerCase();
-      result = result.filter((p) => p.name.toLowerCase().includes(q));
+      const q = search.toLowerCase()
+      result = result.filter((p) => p.name.toLowerCase().includes(q))
     }
 
     // Type filter
     if (activeTypes.size > 0) {
-      result = result.filter((p) =>
-        parseTypes(p).some((t) => activeTypes.has(t))
-      );
+      result = result.filter((p) => parseTypes(p).some((t) => activeTypes.has(t)))
     }
 
     // Sort
     return [...result].sort((a, b) => {
-      if (sortBy === 'name') return a.name.localeCompare(b.name);
-      if (sortBy === 'total_stats') return b.total_stats - a.total_stats;
-      return a.id - b.id;
-    });
-  }, [data, search, activeTypes, sortBy]);
+      if (sortBy === 'name') return a.name.localeCompare(b.name)
+      if (sortBy === 'total_stats') return b.total_stats - a.total_stats
+      return a.id - b.id
+    })
+  }, [data, search, activeTypes, sortBy])
 
   // ─── Loading / Error ────────────────────────────────────────────────────
 
@@ -139,21 +155,31 @@ export default function Home() {
           LOADING POKEMON...
         </p>
       </div>
-    );
+    )
   }
 
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-32 gap-3">
         <div className="w-12 h-12 rounded-full bg-red-500/20 border border-red-500/50 flex items-center justify-center">
-          <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          <svg
+            className="w-6 h-6 text-red-400"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
           </svg>
         </div>
         <p className="text-red-400 text-sm">Failed to load Pokemon data</p>
         <p className="text-white/40 text-xs">{error.message}</p>
       </div>
-    );
+    )
   }
 
   // ─── Render ──────────────────────────────────────────────────────────────
@@ -168,14 +194,12 @@ export default function Home() {
             Pokedex
           </span>
         </h1>
-        <p className="text-white/40 text-sm">
-          Browse and search the complete Pokemon database
-        </p>
+        <p className="text-white/40 text-sm">Browse and search the complete Pokemon database</p>
       </div>
 
       {/* ── Search & Sort ──────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
-<div className="relative flex-1">
+        <div className="relative flex-1">
           <svg
             className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none"
             fill="none"
@@ -183,7 +207,11 @@ export default function Home() {
             strokeWidth={2}
             viewBox="0 0 24 24"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
           </svg>
           <input
             type="text"
@@ -198,7 +226,13 @@ export default function Home() {
               className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors"
               aria-label="Clear search"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -226,8 +260,8 @@ export default function Home() {
       {/* ── Type Filter Pills ──────────────────────────────────────────── */}
       <div className="flex flex-wrap gap-2 mb-6">
         {ALL_TYPES.map((type) => {
-          const isActive = activeTypes.has(type);
-          const color = typeColorMap[type];
+          const isActive = activeTypes.has(type)
+          const color = typeColorMap[type]
           return (
             <button
               key={type}
@@ -245,29 +279,22 @@ export default function Home() {
             >
               {type}
             </button>
-          );
+          )
         })}
       </div>
 
       {/* ── Results Count ──────────────────────────────────────────────── */}
-      <p className="text-white/30 text-xs mb-4">
-        {filtered.length} Pokemon found
-      </p>
+      <p className="text-white/30 text-xs mb-4">{filtered.length} Pokemon found</p>
 
       {/* ── Pokemon Grid ──────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {filtered.map((pokemon) => {
-          const types = parseTypes(pokemon);
-          const primary = primaryTypeOf(pokemon);
-          const primaryColor = typeColorMap[primary];
+          const types = parseTypes(pokemon)
+          const primary = primaryTypeOf(pokemon)
+          const primaryColor = typeColorMap[primary]
 
           return (
-            <Card
-              key={pokemon.id}
-              pokemonType={primary}
-              hover
-              className="cursor-pointer group"
-            >
+            <Card key={pokemon.id} pokemonType={primary} hover className="cursor-pointer group">
               <button
                 onClick={() => setSelected(pokemon)}
                 className="w-full text-left bg-transparent border-0 p-0 m-0"
@@ -311,7 +338,7 @@ export default function Home() {
                 </div>
               </button>
             </Card>
-          );
+          )
         })}
       </div>
 
@@ -340,7 +367,13 @@ export default function Home() {
               className="absolute top-4 right-4 text-white/40 hover:text-white/80 transition-colors z-10"
               aria-label="Close detail view"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -363,9 +396,7 @@ export default function Home() {
                 />
               </div>
 
-              <h2 className="text-2xl font-bold text-white capitalize mb-1">
-                {selected.name}
-              </h2>
+              <h2 className="text-2xl font-bold text-white capitalize mb-1">{selected.name}</h2>
               <p className="text-white/40 text-sm font-[family-name:var(--font-pixel)] tracking-wider">
                 #{String(selected.id).padStart(3, '0')}
               </p>
@@ -394,9 +425,9 @@ export default function Home() {
               </h3>
 
               {STAT_META.map(({ key, label }) => {
-                const value = selected[key] as number;
-                const pct = Math.min((value / STAT_MAX) * 100, 100);
-                const color = typeColorMap[primaryTypeOf(selected)];
+                const value = selected[key] as number
+                const pct = Math.min((value / STAT_MAX) * 100, 100)
+                const color = typeColorMap[primaryTypeOf(selected)]
 
                 return (
                   <div key={key} className="flex items-center gap-3">
@@ -418,7 +449,7 @@ export default function Home() {
                       {value}
                     </span>
                   </div>
-                );
+                )
               })}
 
               <div className="flex items-center gap-3 pt-3 border-t border-white/10">
@@ -438,5 +469,5 @@ export default function Home() {
         </div>
       )}
     </div>
-  );
+  )
 }

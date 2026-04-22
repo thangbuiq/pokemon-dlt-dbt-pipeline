@@ -35,9 +35,9 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['normal', 'fighting', 'flying', 'poison', 'ground', 
-                       'rock', 'bug', 'ghost', 'steel', 'fire', 'water', 
-                       'grass', 'electric', 'psychic', 'ice', 'dragon', 
+              values: ['normal', 'fighting', 'flying', 'poison', 'ground',
+                       'rock', 'bug', 'ghost', 'steel', 'fire', 'water',
+                       'grass', 'electric', 'psychic', 'ice', 'dragon',
                        'dark', 'fairy']
       - name: slot
         description: Type slot (1 for primary, 2 for secondary)
@@ -57,7 +57,7 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['hp', 'attack', 'defense', 'special-attack', 
+              values: ['hp', 'attack', 'defense', 'special-attack',
                        'special-defense', 'speed']
       - name: base_stat
         description: Base stat value
@@ -94,9 +94,9 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['normal', 'fighting', 'flying', 'poison', 'ground', 
-                       'rock', 'bug', 'ghost', 'steel', 'fire', 'water', 
-                       'grass', 'electric', 'psychic', 'ice', 'dragon', 
+              values: ['normal', 'fighting', 'flying', 'poison', 'ground',
+                       'rock', 'bug', 'ghost', 'steel', 'fire', 'water',
+                       'grass', 'electric', 'psychic', 'ice', 'dragon',
                        'dark', 'fairy', 'stellar', 'unknown']
 
   - name: stg_species__base
