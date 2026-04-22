@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Press+Start+2P&display=swap');
+@import "tailwindcss";
+
+:root {
+  --background: #0a0a1a;
+  --foreground: #ffffff;
+  --surface: #1a1a2e;
+  --surface-light: #2a2a4a;
+
+  --type-fire: #ff6b35;
+  --type-water: #3b82f6;
+  --type-grass: #22c55e;
+  --type-electric: #facc15;
+  --type-psychic: #ec4899;
+  --type-ice: #67e8f9;
+  --type-dragon: #8b5cf6;
+  --type-dark: #6b7280;
+  --type-fairy: #f472b6;
+  --type-fighting: #ef4444;
+  --type-ghost: #a855f7;
+  --type-steel: #94a3b8;
+  --type-flying: #93c5fd;
+  --type-poison: #a855f7;
+  --type-ground: #d97706;
+  --type-rock: #a16207;
+  --type-bug: #84cc16;
+  --type-normal: #d1d5db;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-light: var(--surface-light);
+
+  --color-type-fire: var(--type-fire);
+  --color-type-water: var(--type-water);
+  --color-type-grass: var(--type-grass);
+  --color-type-electric: var(--type-electric);
+  --color-type-psychic: var(--type-psychic);
+  --color-type-ice: var(--type-ice);
+  --color-type-dragon: var(--type-dragon);
+  --color-type-dark: var(--type-dark);
+  --color-type-fairy: var(--type-fairy);
+  --color-type-fighting: var(--type-fighting);
+  --color-type-ghost: var(--type-ghost);
+  --color-type-steel: var(--type-steel);
+  --color-type-flying: var(--type-flying);
+  --color-type-poison: var(--type-poison);
+  --color-type-ground: var(--type-ground);
+  --color-type-rock: var(--type-rock);
+  --color-type-bug: var(--type-bug);
+  --color-type-normal: var(--type-normal);
+
+  --font-sans: 'Inter', sans-serif;
+  --font-pixel: 'Press Start 2P', monospace;
+
+  --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
+  --animate-slide-in: slide-in 0.3s ease-out;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px currentColor; }
+  50% { box-shadow: 0 0 20px currentColor, 0 0 40px currentColor; }
+}
+
+@keyframes slide-in {
+  0% { transform: translateY(10px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-hover:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--surface-light);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a5a;
+}
+
+/* Pokeball spinner animation */
+@keyframes spin-pokeball {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse-pokeball {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}

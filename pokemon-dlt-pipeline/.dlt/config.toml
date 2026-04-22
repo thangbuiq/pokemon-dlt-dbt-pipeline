@@ -1,0 +1,5 @@
+[pipeline]
+workers = 5
+
+[normalize]
+workers = 3

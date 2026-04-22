@@ -1,0 +1,8 @@
+[project]
+name = "pokemon-pipeline"
+version = "0.1.0"
+dependencies = ["dlt[duckdb]", "requests"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

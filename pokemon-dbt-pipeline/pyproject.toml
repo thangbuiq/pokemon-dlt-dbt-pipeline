@@ -1,0 +1,4 @@
+[project]
+name = "pokemon-transforms"
+version = "0.1.0"
+dependencies = ["dbt-duckdb"]

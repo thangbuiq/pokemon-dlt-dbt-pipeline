@@ -1,0 +1,8 @@
+pokemon_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: '../data/raw.duckdb'
+      schema: raw_data
+      threads: 4
