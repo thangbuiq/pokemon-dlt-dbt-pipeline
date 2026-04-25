@@ -1,8 +1,7 @@
 'use client'
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { useJSONQuery } from '@/lib/data/json-hooks'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { getSpriteUrl } from '@/lib/sprites'
 
@@ -27,6 +26,35 @@ const STAGE_WIDTH = 260
 const NODE_WIDTH = 200
 const NODE_HEIGHT = 110
 const TOP_PADDING = 40
+
+function useJSONQuery<T>(jsonFile: string) {
+  const [data, setData] = useState<T[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const response = await fetch(`/data/${jsonFile}`)
+      if (!response.ok) {
+        throw new Error(`Failed to load ${jsonFile}: ${response.status}`)
+      }
+      const json = await response.json()
+      setData(json as T[])
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error(String(err)))
+    } finally {
+      setLoading(false)
+    }
+  }, [jsonFile])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
+  return { data, loading, error, refetch: fetchData }
+}
 
 export default function EvolutionVisualizer() {
   const [selected, setSelected] = useState<string | null>(null)

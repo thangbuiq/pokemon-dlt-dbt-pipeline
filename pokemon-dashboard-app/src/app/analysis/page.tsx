@@ -12,7 +12,6 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts'
-import { useJSONQuery } from '@/lib/data/json-hooks'
 import { Card } from '@/components/ui/Card'
 import { PokemonSprite } from '@/components/ui/PokemonSprite'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
@@ -62,6 +61,35 @@ function buildRadarData(pokemonList: PokemonStats[]): RadarDataPoint[] {
 
 function getTotalStats(p: PokemonStats): number {
   return p.hp + p.attack + p.defense + p.special_attack + p.special_defense + p.speed
+}
+
+function useJSONQuery<T>(jsonFile: string) {
+  const [data, setData] = useState<T[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const response = await fetch(`/data/${jsonFile}`)
+      if (!response.ok) {
+        throw new Error(`Failed to load ${jsonFile}: ${response.status}`)
+      }
+      const json = await response.json()
+      setData(json as T[])
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error(String(err)))
+    } finally {
+      setLoading(false)
+    }
+  }, [jsonFile])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
+  return { data, loading, error, refetch: fetchData }
 }
 
 function CustomTooltip({ active, payload, label }: any) {

@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import { useJSONQuery } from '../../lib/data/json-hooks'
 import { Card } from '@/components/ui/Card'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { type PokemonType, typeColorMap } from '@/lib/design-tokens'
@@ -51,6 +50,35 @@ function parseTypes(typeStr: string): PokemonType[] {
     .split(',')
     .map((t) => t.trim().toLowerCase())
     .filter((t): t is PokemonType => t in typeColorMap)
+}
+
+function useJSONQuery<T>(jsonFile: string) {
+  const [data, setData] = useState<T[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const response = await fetch(`/data/${jsonFile}`)
+      if (!response.ok) {
+        throw new Error(`Failed to load ${jsonFile}: ${response.status}`)
+      }
+      const json = await response.json()
+      setData(json as T[])
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error(String(err)))
+    } finally {
+      setLoading(false)
+    }
+  }, [jsonFile])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
+  return { data, loading, error, refetch: fetchData }
 }
 
 // ─── Confetti Particle ────────────────────────────────────────────────────────

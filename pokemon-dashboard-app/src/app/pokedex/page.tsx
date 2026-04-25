@@ -11,7 +11,6 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts'
-import { useJSONQuery } from '@/lib/data/json-hooks'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { type PokemonType, typeColorMap } from '@/lib/design-tokens'
@@ -247,6 +246,35 @@ function MatchupTooltip({
       <p className="text-[var(--text-primary)] font-semibold">{payload[0]?.value}</p>
     </div>
   )
+}
+
+function useJSONQuery<T>(jsonFile: string) {
+  const [data, setData] = useState<T[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const response = await fetch(`/data/${jsonFile}`)
+      if (!response.ok) {
+        throw new Error(`Failed to load ${jsonFile}: ${response.status}`)
+      }
+      const json = await response.json()
+      setData(json as T[])
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error(String(err)))
+    } finally {
+      setLoading(false)
+    }
+  }, [jsonFile])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
+  return { data, loading, error, refetch: fetchData }
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
