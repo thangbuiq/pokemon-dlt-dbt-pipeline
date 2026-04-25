@@ -1,3 +1,0 @@
-- Plan: Implement Pokemon ETL using DL-T with parallel loading and transformers.
-- Result: Pipeline loads first page of Pokemon (20) and corresponding species (20) into DuckDB raw_data.pokemon and raw_data.pokemon_species.
-- Note: pokemon_list table remains non-selected (selected=False) as input to transformers.

@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import { useDuckDBQuery } from '@/lib/duckdb/hooks'
+import { useJSONQuery } from '@/lib/data/json-hooks'
 import { Card } from '@/components/ui/Card'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { type PokemonType, typeColorMap } from '@/lib/design-tokens'
@@ -79,12 +79,12 @@ function StreakFire({ streak }: { streak: number }) {
   const intensity = Math.min(streak, 10)
   const size = 16 + intensity * 2
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1 whitespace-nowrap">
       <svg
         width={size}
         height={size}
         viewBox="0 0 24 24"
-        className="animate-[pulse-glow_1s_ease-in-out_infinite]"
+        className="shrink-0 animate-[pulse-glow_1s_ease-in-out_infinite]"
         style={{ color: streak >= 5 ? 'var(--type-fire)' : 'var(--type-electric)' }}
       >
         <path
@@ -94,7 +94,7 @@ function StreakFire({ streak }: { streak: number }) {
         />
       </svg>
       <span
-        className="font-[family-name:var(--font-pixel)] text-xs tracking-wider"
+        className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs tracking-wider"
         style={{
           color: streak >= 5 ? 'var(--type-fire)' : 'var(--type-electric)',
           textShadow:
@@ -120,7 +120,7 @@ function StreakFire({ streak }: { streak: number }) {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function QuizPage() {
-  const { data, loading, error } = useDuckDBQuery<PokemonRow>(POKEMON_QUERY)
+  const { data, loading, error } = useJSONQuery<PokemonRow>('pokemon.json')
 
   const [difficulty, setDifficulty] = useState<Difficulty>('easy')
   const [score, setScore] = useState(0)
@@ -250,7 +250,7 @@ export default function QuizPage() {
     return (
       <div className="flex flex-col items-center justify-center py-32 gap-4">
         <LoadingSpinner size={64} />
-        <p className="text-white/60 text-sm font-[family-name:var(--font-pixel)] tracking-wider">
+        <p className="text-[var(--text-secondary)] text-sm font-[family-name:var(--font-pixel)] tracking-wider">
           LOADING QUIZ DATA...
         </p>
       </div>
@@ -276,7 +276,7 @@ export default function QuizPage() {
           </svg>
         </div>
         <p className="text-red-400 text-sm">Failed to load Pokemon data</p>
-        {error && <p className="text-white/40 text-xs">{error.message}</p>}
+        {error && <p className="text-[var(--text-muted)] text-xs">{error.message}</p>}
       </div>
     )
   }
@@ -286,6 +286,7 @@ export default function QuizPage() {
   // ─── Derived values ─────────────────────────────────────────────────────
 
   const pokemonTypes = parseTypes(currentPokemon.type_names)
+  const uniqueTypes = [...new Set(pokemonTypes)]
   const primaryType = pokemonTypes[0] ?? 'normal'
   const primaryColor = typeColorMap[primaryType]
   const accuracy = totalGuesses > 0 ? Math.round((score / totalGuesses) * 100) : 0
@@ -310,102 +311,93 @@ export default function QuizPage() {
       {/* ── Header ──────────────────────────────────────────────────────── */}
       <div className="mb-8 sm:mb-10">
         <div className="flex items-center gap-3 mb-2">
-          <div
-            className="w-10 h-10 rounded-lg flex items-center justify-center"
-            style={{
-              backgroundColor: 'var(--type-ghost)',
-              boxShadow: '0 0 12px var(--type-ghost)40',
-            }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} className="w-5 h-5">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.271 2.28-2.534 2.782-.715.271-1.466.529-1.466 1.178M12 17h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-[family-name:var(--font-pixel)] text-[var(--text-primary)] tracking-wider">
               Who&apos;s That{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--type-ghost)] to-[var(--type-psychic)]">
                 Pokemon
               </span>
               ?
             </h1>
-            <p className="text-white/40 text-sm">Test your Pokemon knowledge</p>
+            <p className="text-[var(--text-muted)] text-sm">Test your Pokemon knowledge</p>
           </div>
         </div>
       </div>
 
       {/* ── Score Bar ─────────────────────────────────────────────────────── */}
-      <div className="glass rounded-xl p-4 mb-6 flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-5">
-          <div className="flex items-center gap-2">
-            <svg
-              className="w-4 h-4 text-[var(--type-electric)]"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-            </svg>
-            <div>
-              <p className="text-white font-bold text-lg leading-none">{score}</p>
-              <p className="text-white/40 text-[10px] font-[family-name:var(--font-pixel)] tracking-wider">
-                SCORE
-              </p>
+      <div className="glass rounded-xl p-4 mb-6">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-4 sm:gap-5 min-w-0">
+            <div className="flex items-center gap-2 shrink-0">
+              <svg
+                className="w-4 h-4 text-[var(--type-electric)]"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <div>
+                <p className="text-[var(--text-primary)] font-bold text-lg leading-none">{score}</p>
+                <p className="text-[var(--text-muted)] text-[10px] font-[family-name:var(--font-pixel)] tracking-wider">
+                  SCORE
+                </p>
+              </div>
+            </div>
+            <div className="w-px h-8 bg-[var(--surface)] shrink-0" />
+            <div className="flex items-center gap-2 shrink-0">
+              <svg
+                className="w-4 h-4 text-[var(--type-fire)]"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <div>
+                <p className="text-[var(--text-primary)] font-bold text-lg leading-none">
+                  {streak}
+                </p>
+                <p className="text-[var(--text-muted)] text-[10px] font-[family-name:var(--font-pixel)] tracking-wider">
+                  STREAK
+                </p>
+              </div>
+            </div>
+            <div className="w-px h-8 bg-[var(--surface)] shrink-0" />
+            <div className="flex items-center gap-2 shrink-0">
+              <svg
+                className="w-4 h-4 text-[var(--text-secondary)]"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
+              </svg>
+              <div>
+                <p className="text-[var(--text-primary)] font-bold text-lg leading-none">
+                  {accuracy}%
+                </p>
+                <p className="text-[var(--text-muted)] text-[10px] font-[family-name:var(--font-pixel)] tracking-wider">
+                  ACCURACY
+                </p>
+              </div>
             </div>
           </div>
-          <div className="w-px h-8 bg-white/10" />
-          <div className="flex items-center gap-2">
-            <svg
-              className="w-4 h-4 text-[var(--type-fire)]"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-            <div>
-              <p className="text-white font-bold text-lg leading-none">{streak}</p>
-              <p className="text-white/40 text-[10px] font-[family-name:var(--font-pixel)] tracking-wider">
-                STREAK
-              </p>
-            </div>
-          </div>
-          <div className="w-px h-8 bg-white/10" />
-          <div className="flex items-center gap-2">
-            <svg
-              className="w-4 h-4 text-white/50"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-              />
-            </svg>
-            <div>
-              <p className="text-white font-bold text-lg leading-none">{accuracy}%</p>
-              <p className="text-white/40 text-[10px] font-[family-name:var(--font-pixel)] tracking-wider">
-                ACCURACY
-              </p>
-            </div>
-          </div>
-        </div>
 
-        <div className="flex items-center gap-2">
-          <StreakFire streak={streak} />
+          <div className="flex items-center shrink-0">
+            <StreakFire streak={streak} />
+          </div>
         </div>
       </div>
 
       {/* ── Difficulty Toggle ─────────────────────────────────────────────── */}
       <div className="flex items-center justify-center gap-2 mb-6">
-        <span className="text-white/40 text-xs font-[family-name:var(--font-pixel)] tracking-wider mr-2">
+        <span className="text-[var(--text-muted)] text-xs font-[family-name:var(--font-pixel)] tracking-wider mr-2">
           DIFFICULTY
         </span>
         <button
@@ -419,7 +411,7 @@ export default function QuizPage() {
             'px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-300 border',
             difficulty === 'easy'
               ? 'bg-[var(--type-ghost)]/20 text-[var(--type-ghost)] border-[var(--type-ghost)]/50 shadow-[0_0_12px_var(--type-ghost)30]'
-              : 'text-white/40 border-white/10 hover:text-white/60 hover:bg-white/5',
+              : 'text-[var(--text-muted)] border-[var(--card-border)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface)]',
           ].join(' ')}
         >
           Easy
@@ -435,7 +427,7 @@ export default function QuizPage() {
             'px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-300 border',
             difficulty === 'hard'
               ? 'bg-[var(--type-fire)]/20 text-[var(--type-fire)] border-[var(--type-fire)]/50 shadow-[0_0_12px_var(--type-fire)30]'
-              : 'text-white/40 border-white/10 hover:text-white/60 hover:bg-white/5',
+              : 'text-[var(--text-muted)] border-[var(--card-border)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface)]',
           ].join(' ')}
         >
           Hard
@@ -485,8 +477,8 @@ export default function QuizPage() {
             >
               {/* Question mark overlay during guessing */}
               {gameState === 'guessing' && (
-                <div className="absolute inset-0 flex items-center justify-center z-10">
-                  <span className="text-5xl font-[family-name:var(--font-pixel)] text-white/20 animate-[pulse-glow_2s_ease-in-out_infinite]">
+                <div className="absolute -top-10 left-1/2 -translate-x-1/2 z-10">
+                  <span className="text-3xl font-[family-name:var(--font-pixel)] text-[var(--text-muted)] animate-pulse">
                     ?
                   </span>
                 </div>
@@ -496,7 +488,6 @@ export default function QuizPage() {
                 alt={gameState === 'revealed' ? currentPokemon.name : 'Who is this Pokemon?'}
                 width={192}
                 height={192}
-                className="drop-shadow-[0_0_24px_rgba(168,85,247,0.3)]"
                 unoptimized
               />
             </div>
@@ -516,23 +507,26 @@ export default function QuizPage() {
                   {formatName(currentPokemon.name)}
                 </h2>
                 <div className="flex items-center justify-center gap-2 mt-2">
-                  <span className="text-white/30 text-xs font-[family-name:var(--font-pixel)] tracking-wider">
+                  <span className="text-[var(--text-muted)] text-xs font-[family-name:var(--font-pixel)] tracking-wider">
                     #{String(currentPokemon.id).padStart(3, '0')}
                   </span>
-                  {pokemonTypes.map((type) => (
-                    <span
-                      key={type}
-                      className="text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider"
-                      style={{
-                        backgroundColor: `${typeColorMap[type]}26`,
-                        color: typeColorMap[type],
-                        boxShadow: `0 0 6px ${typeColorMap[type]}40`,
-                        border: `1px solid ${typeColorMap[type]}50`,
-                      }}
-                    >
-                      {type}
-                    </span>
-                  ))}
+                  {uniqueTypes.map((type) => {
+                    const color = typeColorMap[type]
+                    return (
+                      <span
+                        key={type}
+                        className="text-[10px] px-2 py-0.5 rounded-full font-[family-name:var(--font-pixel)] uppercase tracking-wider transition-all duration-200 hover:scale-110"
+                        style={{
+                          backgroundColor: color,
+                          color: '#ffffff',
+                          border: `1px solid ${color}`,
+                          textShadow: '0 1px 2px rgba(0,0,0,0.5)',
+                        }}
+                      >
+                        {type}
+                      </span>
+                    )
+                  })}
                 </div>
               </div>
             )}
@@ -583,9 +577,9 @@ export default function QuizPage() {
                   <button
                     key={option.id}
                     onClick={() => handleAnswer(option.name)}
-                    className="glass rounded-lg px-4 py-3 text-white font-semibold capitalize text-sm
-                      hover:bg-white/10 hover:border-white/30 hover:shadow-[0_0_12px_rgba(168,85,247,0.2)]
-                      active:scale-95 transition-all duration-200 border border-white/10"
+                    className="glass rounded-lg px-4 py-3 text-[var(--text-primary)] font-semibold capitalize text-sm
+                      hover:bg-[var(--surface)] hover:border-[var(--card-border)] hover:shadow-[0_0_12px_rgba(168,85,247,0.2)]
+                      active:scale-95 transition-all duration-200 border border-[var(--card-border)]"
                   >
                     {formatName(option.name)}
                   </button>
@@ -607,9 +601,9 @@ export default function QuizPage() {
                     autoComplete="off"
                     autoCorrect="off"
                     spellCheck={false}
-                    className="w-full glass rounded-lg px-4 py-3 text-white text-center text-sm placeholder-white/30
+                    className="w-full glass rounded-lg px-4 py-3 text-[var(--text-primary)] text-center text-sm placeholder-[var(--text-muted)]
                       outline-none focus:ring-2 focus:ring-[var(--type-ghost)]/50 focus:border-[var(--type-ghost)]/50
-                      transition-all duration-200 border border-white/10"
+                      transition-all duration-200 border border-[var(--card-border)]"
                   />
                   {textInput.trim() && (
                     <button
@@ -631,20 +625,20 @@ export default function QuizPage() {
                 <>
                   <button
                     onClick={handleSkip}
-                    className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white/50
-                      border border-white/10 hover:text-white/80 hover:border-white/20 hover:bg-white/5
+                    className="px-5 py-2.5 rounded-lg text-sm font-semibold text-[var(--text-secondary)]
+                      border border-[var(--card-border)] hover:text-[var(--text-primary)] hover:border-[var(--card-border)] hover:bg-[var(--surface)]
                       transition-all duration-200 active:scale-95"
                   >
                     Skip
                   </button>
-                  <div className="text-white/20 text-xs">
+                  <div className="text-[var(--text-muted)] text-xs">
                     {currentIndex + 1} / {data.length}
                   </div>
                 </>
               ) : (
                 <button
                   onClick={nextPokemon}
-                  className="px-6 py-2.5 rounded-lg text-sm font-semibold text-white
+                  className="px-6 py-2.5 rounded-lg text-sm font-semibold text-[var(--text-primary)]
                     bg-[var(--type-ghost)]/20 border border-[var(--type-ghost)]/50
                     hover:bg-[var(--type-ghost)]/30 hover:shadow-[0_0_15px_var(--type-ghost)30]
                     transition-all duration-300 active:scale-95"
@@ -666,7 +660,7 @@ export default function QuizPage() {
             >
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
-            <span className="text-white/40 text-xs font-[family-name:var(--font-pixel)] tracking-wider">
+            <span className="text-[var(--text-muted)] text-xs font-[family-name:var(--font-pixel)] tracking-wider">
               BEST STREAK: {bestStreak}
             </span>
           </div>
@@ -684,8 +678,10 @@ export default function QuizPage() {
               <span className="text-[var(--type-ghost)] text-sm font-bold">1</span>
             </div>
             <div>
-              <p className="text-white/70 text-sm font-medium">Identify</p>
-              <p className="text-white/40 text-xs">Look at the silhouette and guess the Pokemon</p>
+              <p className="text-[var(--text-secondary)] text-sm font-medium">Identify</p>
+              <p className="text-[var(--text-muted)] text-xs">
+                Look at the silhouette and guess the Pokemon
+              </p>
             </div>
           </div>
           <div className="flex items-start gap-3">
@@ -693,8 +689,8 @@ export default function QuizPage() {
               <span className="text-[var(--type-ghost)] text-sm font-bold">2</span>
             </div>
             <div>
-              <p className="text-white/70 text-sm font-medium">Answer</p>
-              <p className="text-white/40 text-xs">
+              <p className="text-[var(--text-secondary)] text-sm font-medium">Answer</p>
+              <p className="text-[var(--text-muted)] text-xs">
                 {difficulty === 'easy' ? 'Pick from 4 choices' : 'Type the name exactly'}
               </p>
             </div>
@@ -704,8 +700,10 @@ export default function QuizPage() {
               <span className="text-[var(--type-ghost)] text-sm font-bold">3</span>
             </div>
             <div>
-              <p className="text-white/70 text-sm font-medium">Streak</p>
-              <p className="text-white/40 text-xs">Build consecutive correct answers for glory</p>
+              <p className="text-[var(--text-secondary)] text-sm font-medium">Streak</p>
+              <p className="text-[var(--text-muted)] text-xs">
+                Build consecutive correct answers for glory
+              </p>
             </div>
           </div>
         </div>

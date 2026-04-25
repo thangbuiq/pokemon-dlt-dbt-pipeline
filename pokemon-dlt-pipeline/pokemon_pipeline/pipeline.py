@@ -1,9 +1,5 @@
 import dlt
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).parent))
-from sources.pokemon_api import pokemon_source
+from pokemon_pipeline.sources.pokemon_api import pokemon_source
 
 
 def create_pipeline():

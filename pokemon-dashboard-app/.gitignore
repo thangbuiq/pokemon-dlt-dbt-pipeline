@@ -1,5 +1,3 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 /node_modules
 /.pnp
@@ -46,3 +44,7 @@ next-env.d.ts
 /playwright/.cache/
 /e2e/__snapshots__/*-actual.png
 /e2e/__snapshots__/*-diff.png
+
+# duckdb-wasm artifacts (loaded from CDN, not needed in repo)
+/public/duckdb-browser-eh.worker.js
+/public/duckdb-eh.wasm

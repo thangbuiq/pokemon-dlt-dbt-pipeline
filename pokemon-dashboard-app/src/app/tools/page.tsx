@@ -131,12 +131,15 @@ export default function TeamBuilderPage(): React.ReactElement {
   // 6-slot team with session-only state
   const [team, setTeam] = useState<(Pokemon | null)[]>(Array(6).fill(null))
   const [query, setQuery] = useState('')
+  const [showDropdown, setShowDropdown] = useState(false)
   const [selectedFromList, setSelectedFromList] = useState<number | null>(null)
 
   const filledCount = team.filter((p) => p !== null).length
 
+  const isDuplicate = (p: Pokemon) => team.some((slot) => slot?.id === p.id)
+
   const addPokemonToFirstEmpty = (p: Pokemon) => {
-    if (filledCount >= 6) return
+    if (filledCount >= 6 || isDuplicate(p)) return
     setTeam((prev) => {
       const idx = prev.findIndex((slot) => slot === null)
       if (idx === -1) return prev
@@ -154,11 +157,13 @@ export default function TeamBuilderPage(): React.ReactElement {
     })
   }
 
-  const availablePokemons = ALL_POKEMON.filter((p) => {
+  const availablePokemons: (Pokemon & { isDuplicate: boolean })[] = ALL_POKEMON.filter((p) => {
     if (!query) return true
     const q = query.toLowerCase()
     return p.name.toLowerCase().includes(q) || p.type_names.join(',').toLowerCase().includes(q)
   })
+    .map((p) => ({ ...p, isDuplicate: isDuplicate(p) }))
+    .filter((p) => !p.isDuplicate || !team.some((t) => t !== null))
 
   // Coverage calculations
   // Team types (collect across all non-null slots)
@@ -239,44 +244,58 @@ export default function TeamBuilderPage(): React.ReactElement {
           <input
             placeholder="Search Pokemon by name or type..."
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              setShowDropdown(true)
+            }}
+            onFocus={() => setShowDropdown(true)}
             className={styles.searchInput}
           />
-          <div className={styles.dropdown}>
-            {availablePokemons.length > 0 ? (
-              availablePokemons.map((p) => (
-                <div
-                  key={p.id}
-                  className={styles.dropdownItem}
-                  onClick={() => addPokemonToFirstEmpty(p)}
-                >
-                  <span className={styles.dropdownThumb}>
-                    <img
-                      src={getSpriteURL(p.id)}
-                      alt={p.name}
-                      onError={(e) => {
-                        ;(e.target as HTMLImageElement).src = ''
-                      }}
-                    />
-                  </span>
-                  <span className={styles.dropdownText}>{p.name}</span>
-                  <span className={styles.dropdownTypes}>
-                    {p.type_names.map((t) => (
-                      <span
-                        key={t}
-                        className={styles.smallType}
-                        style={{ background: TYPE_COLORS[t] ?? '#999' }}
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </span>
-                </div>
-              ))
-            ) : (
-              <div className={styles.dropdownItem}>No results</div>
-            )}
-          </div>
+          {showDropdown && query && (
+            <div className={styles.dropdown}>
+              {availablePokemons.length > 0 ? (
+                availablePokemons.slice(0, 8).map((p) => (
+                  <div
+                    key={p.id}
+                    className={`${styles.dropdownItem} ${p.isDuplicate ? 'opacity-40 grayscale' : ''}`}
+                    onClick={() => {
+                      if (!p.isDuplicate) {
+                        addPokemonToFirstEmpty(p)
+                        setQuery('')
+                        setShowDropdown(false)
+                      }
+                    }}
+                    style={p.isDuplicate ? { cursor: 'not-allowed' } : undefined}
+                  >
+                    {p.isDuplicate && <span className="text-[10px] text-red-400">Duplicate</span>}
+                    <span className={styles.dropdownThumb}>
+                      <img
+                        src={getSpriteURL(p.id)}
+                        alt={p.name}
+                        onError={(e) => {
+                          ;(e.target as HTMLImageElement).src = ''
+                        }}
+                      />
+                    </span>
+                    <span className={styles.dropdownText}>{p.name}</span>
+                    <span className={styles.dropdownTypes}>
+                      {p.type_names.map((t) => (
+                        <span
+                          key={t}
+                          className={styles.smallType}
+                          style={{ background: TYPE_COLORS[t] ?? '#999' }}
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <div className={styles.dropdownItem}>No results</div>
+              )}
+            </div>
+          )}
         </div>
         <button className={styles.copyBtn} onClick={copyTeamText}>
           Copy Team Text
@@ -288,17 +307,19 @@ export default function TeamBuilderPage(): React.ReactElement {
           <div key={idx} className={styles.slot} aria-label={`Slot ${idx + 1}`}>
             {p ? (
               <div className={styles.slotContent}>
-                <img className={styles.sprite} src={getSpriteURL(p.id)} alt={p.name} />
-                <div className={styles.slotMeta}>
-                  <div className={styles.slotName}>{p.name}</div>
-                  <div className={styles.slotTypes}>
-                    {p.type_names.map((t) => (
-                      <TypeBadge key={t} type={t} />
-                    ))}
+                <div className={styles.slotTop}>
+                  <img className={styles.sprite} src={getSpriteURL(p.id)} alt={p.name} />
+                  <div className={styles.slotInfo}>
+                    <div className={styles.slotName}>{p.name}</div>
+                    <div className={styles.slotTypes}>
+                      {p.type_names.map((t) => (
+                        <TypeBadge key={`${p.id}-${t}`} type={t} />
+                      ))}
+                    </div>
                   </div>
                 </div>
                 <button className={styles.removeBtn} onClick={() => removePokemonFromSlot(idx)}>
-                  Remove
+                  ×
                 </button>
               </div>
             ) : (

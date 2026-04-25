@@ -8,8 +8,8 @@ POKEMON_API_URL = "https://pokeapi.co/api/v2"
 def pokemon_source(api_url: str = POKEMON_API_URL):
     @dlt.resource(write_disposition="replace", selected=False)
     def pokemon_list():
-        """First page of Pokemon - NOT loaded, used as input to transformers"""
-        yield requests.get(f"{api_url}/pokemon").json()["results"]
+        """All Pokemon - NOT loaded, used as input to transformers"""
+        yield requests.get(f"{api_url}/pokemon?limit=1500").json()["results"]
 
     @dlt.transformer
     def pokemon_details(pokemons):

@@ -15,7 +15,7 @@ repos:
         name: Check YAML syntax
       - id: check-added-large-files
         name: Check for large files
-        args: ['--maxkb=10240']
+        args: ['--maxkb=50240']
       - id: check-merge-conflict
         name: Check merge conflicts
 

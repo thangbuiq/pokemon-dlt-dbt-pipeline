@@ -1,4 +1,5 @@
 import duckdb
+import json
 import os
 from pathlib import Path
 
@@ -67,5 +68,72 @@ def export_pokemon_db():
     return export_db_path
 
 
+def export_json(output_dir: Path | None = None):
+    script_dir = Path(__file__).parent
+    data_dir = script_dir.parent.parent / "data"
+    raw_db_path = data_dir / "raw.duckdb"
+
+    if output_dir is None:
+        output_dir = (
+            script_dir.parent.parent / "pokemon-dashboard-app" / "public" / "data"
+        )
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    print(f"\nExporting JSON to: {output_dir}")
+
+    conn = duckdb.connect(str(raw_db_path), read_only=True)
+
+    tables = [
+        ("dim_pokemon", "pokemon"),
+        ("dim_pokemon_types", "pokemon_types"),
+        ("dim_pokemon_stats", "pokemon_stats"),
+        ("dim_evolution_tree", "evolution_tree"),
+        ("fct_evolution_paths", "evolution_paths"),
+        ("pokemon_abilities", "abilities"),
+        ("pokemon_moves", "moves"),
+    ]
+
+    for db_table, json_name in tables:
+        try:
+            result = conn.execute(f"SELECT * FROM raw_data.{db_table}")
+            columns = [desc[0] for desc in result.description]
+            rows = result.fetchall()
+
+            cols_to_skip = [
+                c
+                for c in columns
+                if c.startswith("_dlt")
+                or c.startswith("generation__")
+                or c.startswith("type__")
+                or c.startswith("target__")
+                or c.startswith("meta__")
+                or c.startswith("contest")
+            ]
+            filtered_cols = [c for c in columns if c not in cols_to_skip]
+            col_indices = [columns.index(c) for c in filtered_cols]
+
+            data = []
+            for row in rows:
+                obj = {}
+                for i, col in enumerate(filtered_cols):
+                    val = row[col_indices[i]]
+                    if isinstance(val, (int, float, str, bool, type(None))):
+                        obj[col] = val
+                    else:
+                        obj[col] = str(val)
+                data.append(obj)
+
+            output_path = output_dir / f"{json_name}.json"
+            with open(output_path, "w") as f:
+                json.dump(data, f, indent=2)
+            print(f"  Exported: {json_name}.json ({len(data)} rows)")
+        except Exception as e:
+            print(f"  Error exporting {db_table}: {e}")
+
+    conn.close()
+    print("\nJSON export complete!")
+
+
 if __name__ == "__main__":
     export_pokemon_db()
+    export_json()

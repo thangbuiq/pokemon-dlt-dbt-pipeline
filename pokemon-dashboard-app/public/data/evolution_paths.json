@@ -1,0 +1,1082 @@
+[
+  {
+    "from_pokemon": "bulbasaur",
+    "to_pokemon": "ivysaur",
+    "evolution_trigger": null,
+    "chain_id": 1
+  },
+  {
+    "from_pokemon": "charmander",
+    "to_pokemon": "charmeleon",
+    "evolution_trigger": null,
+    "chain_id": 2
+  },
+  {
+    "from_pokemon": "squirtle",
+    "to_pokemon": "wartortle",
+    "evolution_trigger": null,
+    "chain_id": 3
+  },
+  {
+    "from_pokemon": "caterpie",
+    "to_pokemon": "metapod",
+    "evolution_trigger": null,
+    "chain_id": 4
+  },
+  {
+    "from_pokemon": "weedle",
+    "to_pokemon": "kakuna",
+    "evolution_trigger": null,
+    "chain_id": 5
+  },
+  {
+    "from_pokemon": "pidgey",
+    "to_pokemon": "pidgeotto",
+    "evolution_trigger": null,
+    "chain_id": 6
+  },
+  {
+    "from_pokemon": "rattata",
+    "to_pokemon": "raticate",
+    "evolution_trigger": null,
+    "chain_id": 7
+  },
+  {
+    "from_pokemon": "spearow",
+    "to_pokemon": "fearow",
+    "evolution_trigger": null,
+    "chain_id": 8
+  },
+  {
+    "from_pokemon": "ekans",
+    "to_pokemon": "arbok",
+    "evolution_trigger": null,
+    "chain_id": 9
+  },
+  {
+    "from_pokemon": "pichu",
+    "to_pokemon": "pikachu",
+    "evolution_trigger": null,
+    "chain_id": 10
+  },
+  {
+    "from_pokemon": "sandshrew",
+    "to_pokemon": "sandslash",
+    "evolution_trigger": null,
+    "chain_id": 11
+  },
+  {
+    "from_pokemon": "nidoran-f",
+    "to_pokemon": "nidorina",
+    "evolution_trigger": null,
+    "chain_id": 12
+  },
+  {
+    "from_pokemon": "nidoran-m",
+    "to_pokemon": "nidorino",
+    "evolution_trigger": null,
+    "chain_id": 13
+  },
+  {
+    "from_pokemon": "cleffa",
+    "to_pokemon": "clefairy",
+    "evolution_trigger": null,
+    "chain_id": 14
+  },
+  {
+    "from_pokemon": "vulpix",
+    "to_pokemon": "ninetales",
+    "evolution_trigger": null,
+    "chain_id": 15
+  },
+  {
+    "from_pokemon": "igglybuff",
+    "to_pokemon": "jigglypuff",
+    "evolution_trigger": null,
+    "chain_id": 16
+  },
+  {
+    "from_pokemon": "zubat",
+    "to_pokemon": "golbat",
+    "evolution_trigger": null,
+    "chain_id": 17
+  },
+  {
+    "from_pokemon": "oddish",
+    "to_pokemon": "gloom",
+    "evolution_trigger": null,
+    "chain_id": 18
+  },
+  {
+    "from_pokemon": "paras",
+    "to_pokemon": "parasect",
+    "evolution_trigger": null,
+    "chain_id": 19
+  },
+  {
+    "from_pokemon": "venonat",
+    "to_pokemon": "venomoth",
+    "evolution_trigger": null,
+    "chain_id": 20
+  },
+  {
+    "from_pokemon": "bulbasaur",
+    "to_pokemon": "ivysaur",
+    "evolution_trigger": null,
+    "chain_id": 1
+  },
+  {
+    "from_pokemon": "charmander",
+    "to_pokemon": "charmeleon",
+    "evolution_trigger": null,
+    "chain_id": 2
+  },
+  {
+    "from_pokemon": "squirtle",
+    "to_pokemon": "wartortle",
+    "evolution_trigger": null,
+    "chain_id": 3
+  },
+  {
+    "from_pokemon": "caterpie",
+    "to_pokemon": "metapod",
+    "evolution_trigger": null,
+    "chain_id": 4
+  },
+  {
+    "from_pokemon": "weedle",
+    "to_pokemon": "kakuna",
+    "evolution_trigger": null,
+    "chain_id": 5
+  },
+  {
+    "from_pokemon": "pidgey",
+    "to_pokemon": "pidgeotto",
+    "evolution_trigger": null,
+    "chain_id": 6
+  },
+  {
+    "from_pokemon": "rattata",
+    "to_pokemon": "raticate",
+    "evolution_trigger": null,
+    "chain_id": 7
+  },
+  {
+    "from_pokemon": "spearow",
+    "to_pokemon": "fearow",
+    "evolution_trigger": null,
+    "chain_id": 8
+  },
+  {
+    "from_pokemon": "ekans",
+    "to_pokemon": "arbok",
+    "evolution_trigger": null,
+    "chain_id": 9
+  },
+  {
+    "from_pokemon": "pichu",
+    "to_pokemon": "pikachu",
+    "evolution_trigger": null,
+    "chain_id": 10
+  },
+  {
+    "from_pokemon": "sandshrew",
+    "to_pokemon": "sandslash",
+    "evolution_trigger": null,
+    "chain_id": 11
+  },
+  {
+    "from_pokemon": "nidoran-f",
+    "to_pokemon": "nidorina",
+    "evolution_trigger": null,
+    "chain_id": 12
+  },
+  {
+    "from_pokemon": "nidoran-m",
+    "to_pokemon": "nidorino",
+    "evolution_trigger": null,
+    "chain_id": 13
+  },
+  {
+    "from_pokemon": "cleffa",
+    "to_pokemon": "clefairy",
+    "evolution_trigger": null,
+    "chain_id": 14
+  },
+  {
+    "from_pokemon": "vulpix",
+    "to_pokemon": "ninetales",
+    "evolution_trigger": null,
+    "chain_id": 15
+  },
+  {
+    "from_pokemon": "igglybuff",
+    "to_pokemon": "jigglypuff",
+    "evolution_trigger": null,
+    "chain_id": 16
+  },
+  {
+    "from_pokemon": "zubat",
+    "to_pokemon": "golbat",
+    "evolution_trigger": null,
+    "chain_id": 17
+  },
+  {
+    "from_pokemon": "oddish",
+    "to_pokemon": "gloom",
+    "evolution_trigger": null,
+    "chain_id": 18
+  },
+  {
+    "from_pokemon": "paras",
+    "to_pokemon": "parasect",
+    "evolution_trigger": null,
+    "chain_id": 19
+  },
+  {
+    "from_pokemon": "venonat",
+    "to_pokemon": "venomoth",
+    "evolution_trigger": null,
+    "chain_id": 20
+  },
+  {
+    "from_pokemon": "bulbasaur",
+    "to_pokemon": "ivysaur",
+    "evolution_trigger": null,
+    "chain_id": 1
+  },
+  {
+    "from_pokemon": "charmander",
+    "to_pokemon": "charmeleon",
+    "evolution_trigger": null,
+    "chain_id": 2
+  },
+  {
+    "from_pokemon": "squirtle",
+    "to_pokemon": "wartortle",
+    "evolution_trigger": null,
+    "chain_id": 3
+  },
+  {
+    "from_pokemon": "caterpie",
+    "to_pokemon": "metapod",
+    "evolution_trigger": null,
+    "chain_id": 4
+  },
+  {
+    "from_pokemon": "weedle",
+    "to_pokemon": "kakuna",
+    "evolution_trigger": null,
+    "chain_id": 5
+  },
+  {
+    "from_pokemon": "pidgey",
+    "to_pokemon": "pidgeotto",
+    "evolution_trigger": null,
+    "chain_id": 6
+  },
+  {
+    "from_pokemon": "rattata",
+    "to_pokemon": "raticate",
+    "evolution_trigger": null,
+    "chain_id": 7
+  },
+  {
+    "from_pokemon": "spearow",
+    "to_pokemon": "fearow",
+    "evolution_trigger": null,
+    "chain_id": 8
+  },
+  {
+    "from_pokemon": "ekans",
+    "to_pokemon": "arbok",
+    "evolution_trigger": null,
+    "chain_id": 9
+  },
+  {
+    "from_pokemon": "pichu",
+    "to_pokemon": "pikachu",
+    "evolution_trigger": null,
+    "chain_id": 10
+  },
+  {
+    "from_pokemon": "sandshrew",
+    "to_pokemon": "sandslash",
+    "evolution_trigger": null,
+    "chain_id": 11
+  },
+  {
+    "from_pokemon": "nidoran-f",
+    "to_pokemon": "nidorina",
+    "evolution_trigger": null,
+    "chain_id": 12
+  },
+  {
+    "from_pokemon": "nidoran-m",
+    "to_pokemon": "nidorino",
+    "evolution_trigger": null,
+    "chain_id": 13
+  },
+  {
+    "from_pokemon": "cleffa",
+    "to_pokemon": "clefairy",
+    "evolution_trigger": null,
+    "chain_id": 14
+  },
+  {
+    "from_pokemon": "vulpix",
+    "to_pokemon": "ninetales",
+    "evolution_trigger": null,
+    "chain_id": 15
+  },
+  {
+    "from_pokemon": "igglybuff",
+    "to_pokemon": "jigglypuff",
+    "evolution_trigger": null,
+    "chain_id": 16
+  },
+  {
+    "from_pokemon": "zubat",
+    "to_pokemon": "golbat",
+    "evolution_trigger": null,
+    "chain_id": 17
+  },
+  {
+    "from_pokemon": "oddish",
+    "to_pokemon": "gloom",
+    "evolution_trigger": null,
+    "chain_id": 18
+  },
+  {
+    "from_pokemon": "paras",
+    "to_pokemon": "parasect",
+    "evolution_trigger": null,
+    "chain_id": 19
+  },
+  {
+    "from_pokemon": "venonat",
+    "to_pokemon": "venomoth",
+    "evolution_trigger": null,
+    "chain_id": 20
+  },
+  {
+    "from_pokemon": "bulbasaur",
+    "to_pokemon": "ivysaur",
+    "evolution_trigger": null,
+    "chain_id": 1
+  },
+  {
+    "from_pokemon": "charmander",
+    "to_pokemon": "charmeleon",
+    "evolution_trigger": null,
+    "chain_id": 2
+  },
+  {
+    "from_pokemon": "squirtle",
+    "to_pokemon": "wartortle",
+    "evolution_trigger": null,
+    "chain_id": 3
+  },
+  {
+    "from_pokemon": "caterpie",
+    "to_pokemon": "metapod",
+    "evolution_trigger": null,
+    "chain_id": 4
+  },
+  {
+    "from_pokemon": "weedle",
+    "to_pokemon": "kakuna",
+    "evolution_trigger": null,
+    "chain_id": 5
+  },
+  {
+    "from_pokemon": "pidgey",
+    "to_pokemon": "pidgeotto",
+    "evolution_trigger": null,
+    "chain_id": 6
+  },
+  {
+    "from_pokemon": "rattata",
+    "to_pokemon": "raticate",
+    "evolution_trigger": null,
+    "chain_id": 7
+  },
+  {
+    "from_pokemon": "spearow",
+    "to_pokemon": "fearow",
+    "evolution_trigger": null,
+    "chain_id": 8
+  },
+  {
+    "from_pokemon": "ekans",
+    "to_pokemon": "arbok",
+    "evolution_trigger": null,
+    "chain_id": 9
+  },
+  {
+    "from_pokemon": "pichu",
+    "to_pokemon": "pikachu",
+    "evolution_trigger": null,
+    "chain_id": 10
+  },
+  {
+    "from_pokemon": "sandshrew",
+    "to_pokemon": "sandslash",
+    "evolution_trigger": null,
+    "chain_id": 11
+  },
+  {
+    "from_pokemon": "nidoran-f",
+    "to_pokemon": "nidorina",
+    "evolution_trigger": null,
+    "chain_id": 12
+  },
+  {
+    "from_pokemon": "nidoran-m",
+    "to_pokemon": "nidorino",
+    "evolution_trigger": null,
+    "chain_id": 13
+  },
+  {
+    "from_pokemon": "cleffa",
+    "to_pokemon": "clefairy",
+    "evolution_trigger": null,
+    "chain_id": 14
+  },
+  {
+    "from_pokemon": "vulpix",
+    "to_pokemon": "ninetales",
+    "evolution_trigger": null,
+    "chain_id": 15
+  },
+  {
+    "from_pokemon": "igglybuff",
+    "to_pokemon": "jigglypuff",
+    "evolution_trigger": null,
+    "chain_id": 16
+  },
+  {
+    "from_pokemon": "zubat",
+    "to_pokemon": "golbat",
+    "evolution_trigger": null,
+    "chain_id": 17
+  },
+  {
+    "from_pokemon": "oddish",
+    "to_pokemon": "gloom",
+    "evolution_trigger": null,
+    "chain_id": 18
+  },
+  {
+    "from_pokemon": "paras",
+    "to_pokemon": "parasect",
+    "evolution_trigger": null,
+    "chain_id": 19
+  },
+  {
+    "from_pokemon": "venonat",
+    "to_pokemon": "venomoth",
+    "evolution_trigger": null,
+    "chain_id": 20
+  },
+  {
+    "from_pokemon": "bulbasaur",
+    "to_pokemon": "ivysaur",
+    "evolution_trigger": null,
+    "chain_id": 1
+  },
+  {
+    "from_pokemon": "charmander",
+    "to_pokemon": "charmeleon",
+    "evolution_trigger": null,
+    "chain_id": 2
+  },
+  {
+    "from_pokemon": "squirtle",
+    "to_pokemon": "wartortle",
+    "evolution_trigger": null,
+    "chain_id": 3
+  },
+  {
+    "from_pokemon": "caterpie",
+    "to_pokemon": "metapod",
+    "evolution_trigger": null,
+    "chain_id": 4
+  },
+  {
+    "from_pokemon": "weedle",
+    "to_pokemon": "kakuna",
+    "evolution_trigger": null,
+    "chain_id": 5
+  },
+  {
+    "from_pokemon": "pidgey",
+    "to_pokemon": "pidgeotto",
+    "evolution_trigger": null,
+    "chain_id": 6
+  },
+  {
+    "from_pokemon": "rattata",
+    "to_pokemon": "raticate",
+    "evolution_trigger": null,
+    "chain_id": 7
+  },
+  {
+    "from_pokemon": "spearow",
+    "to_pokemon": "fearow",
+    "evolution_trigger": null,
+    "chain_id": 8
+  },
+  {
+    "from_pokemon": "ekans",
+    "to_pokemon": "arbok",
+    "evolution_trigger": null,
+    "chain_id": 9
+  },
+  {
+    "from_pokemon": "pichu",
+    "to_pokemon": "pikachu",
+    "evolution_trigger": null,
+    "chain_id": 10
+  },
+  {
+    "from_pokemon": "sandshrew",
+    "to_pokemon": "sandslash",
+    "evolution_trigger": null,
+    "chain_id": 11
+  },
+  {
+    "from_pokemon": "nidoran-f",
+    "to_pokemon": "nidorina",
+    "evolution_trigger": null,
+    "chain_id": 12
+  },
+  {
+    "from_pokemon": "nidoran-m",
+    "to_pokemon": "nidorino",
+    "evolution_trigger": null,
+    "chain_id": 13
+  },
+  {
+    "from_pokemon": "cleffa",
+    "to_pokemon": "clefairy",
+    "evolution_trigger": null,
+    "chain_id": 14
+  },
+  {
+    "from_pokemon": "vulpix",
+    "to_pokemon": "ninetales",
+    "evolution_trigger": null,
+    "chain_id": 15
+  },
+  {
+    "from_pokemon": "igglybuff",
+    "to_pokemon": "jigglypuff",
+    "evolution_trigger": null,
+    "chain_id": 16
+  },
+  {
+    "from_pokemon": "zubat",
+    "to_pokemon": "golbat",
+    "evolution_trigger": null,
+    "chain_id": 17
+  },
+  {
+    "from_pokemon": "oddish",
+    "to_pokemon": "gloom",
+    "evolution_trigger": null,
+    "chain_id": 18
+  },
+  {
+    "from_pokemon": "paras",
+    "to_pokemon": "parasect",
+    "evolution_trigger": null,
+    "chain_id": 19
+  },
+  {
+    "from_pokemon": "venonat",
+    "to_pokemon": "venomoth",
+    "evolution_trigger": null,
+    "chain_id": 20
+  },
+  {
+    "from_pokemon": "bulbasaur",
+    "to_pokemon": "ivysaur",
+    "evolution_trigger": null,
+    "chain_id": 1
+  },
+  {
+    "from_pokemon": "charmander",
+    "to_pokemon": "charmeleon",
+    "evolution_trigger": null,
+    "chain_id": 2
+  },
+  {
+    "from_pokemon": "squirtle",
+    "to_pokemon": "wartortle",
+    "evolution_trigger": null,
+    "chain_id": 3
+  },
+  {
+    "from_pokemon": "caterpie",
+    "to_pokemon": "metapod",
+    "evolution_trigger": null,
+    "chain_id": 4
+  },
+  {
+    "from_pokemon": "weedle",
+    "to_pokemon": "kakuna",
+    "evolution_trigger": null,
+    "chain_id": 5
+  },
+  {
+    "from_pokemon": "pidgey",
+    "to_pokemon": "pidgeotto",
+    "evolution_trigger": null,
+    "chain_id": 6
+  },
+  {
+    "from_pokemon": "rattata",
+    "to_pokemon": "raticate",
+    "evolution_trigger": null,
+    "chain_id": 7
+  },
+  {
+    "from_pokemon": "spearow",
+    "to_pokemon": "fearow",
+    "evolution_trigger": null,
+    "chain_id": 8
+  },
+  {
+    "from_pokemon": "ekans",
+    "to_pokemon": "arbok",
+    "evolution_trigger": null,
+    "chain_id": 9
+  },
+  {
+    "from_pokemon": "pichu",
+    "to_pokemon": "pikachu",
+    "evolution_trigger": null,
+    "chain_id": 10
+  },
+  {
+    "from_pokemon": "sandshrew",
+    "to_pokemon": "sandslash",
+    "evolution_trigger": null,
+    "chain_id": 11
+  },
+  {
+    "from_pokemon": "nidoran-f",
+    "to_pokemon": "nidorina",
+    "evolution_trigger": null,
+    "chain_id": 12
+  },
+  {
+    "from_pokemon": "nidoran-m",
+    "to_pokemon": "nidorino",
+    "evolution_trigger": null,
+    "chain_id": 13
+  },
+  {
+    "from_pokemon": "cleffa",
+    "to_pokemon": "clefairy",
+    "evolution_trigger": null,
+    "chain_id": 14
+  },
+  {
+    "from_pokemon": "vulpix",
+    "to_pokemon": "ninetales",
+    "evolution_trigger": null,
+    "chain_id": 15
+  },
+  {
+    "from_pokemon": "igglybuff",
+    "to_pokemon": "jigglypuff",
+    "evolution_trigger": null,
+    "chain_id": 16
+  },
+  {
+    "from_pokemon": "zubat",
+    "to_pokemon": "golbat",
+    "evolution_trigger": null,
+    "chain_id": 17
+  },
+  {
+    "from_pokemon": "oddish",
+    "to_pokemon": "gloom",
+    "evolution_trigger": null,
+    "chain_id": 18
+  },
+  {
+    "from_pokemon": "paras",
+    "to_pokemon": "parasect",
+    "evolution_trigger": null,
+    "chain_id": 19
+  },
+  {
+    "from_pokemon": "venonat",
+    "to_pokemon": "venomoth",
+    "evolution_trigger": null,
+    "chain_id": 20
+  },
+  {
+    "from_pokemon": "bulbasaur",
+    "to_pokemon": "ivysaur",
+    "evolution_trigger": null,
+    "chain_id": 1
+  },
+  {
+    "from_pokemon": "charmander",
+    "to_pokemon": "charmeleon",
+    "evolution_trigger": null,
+    "chain_id": 2
+  },
+  {
+    "from_pokemon": "squirtle",
+    "to_pokemon": "wartortle",
+    "evolution_trigger": null,
+    "chain_id": 3
+  },
+  {
+    "from_pokemon": "caterpie",
+    "to_pokemon": "metapod",
+    "evolution_trigger": null,
+    "chain_id": 4
+  },
+  {
+    "from_pokemon": "weedle",
+    "to_pokemon": "kakuna",
+    "evolution_trigger": null,
+    "chain_id": 5
+  },
+  {
+    "from_pokemon": "pidgey",
+    "to_pokemon": "pidgeotto",
+    "evolution_trigger": null,
+    "chain_id": 6
+  },
+  {
+    "from_pokemon": "rattata",
+    "to_pokemon": "raticate",
+    "evolution_trigger": null,
+    "chain_id": 7
+  },
+  {
+    "from_pokemon": "spearow",
+    "to_pokemon": "fearow",
+    "evolution_trigger": null,
+    "chain_id": 8
+  },
+  {
+    "from_pokemon": "ekans",
+    "to_pokemon": "arbok",
+    "evolution_trigger": null,
+    "chain_id": 9
+  },
+  {
+    "from_pokemon": "pichu",
+    "to_pokemon": "pikachu",
+    "evolution_trigger": null,
+    "chain_id": 10
+  },
+  {
+    "from_pokemon": "sandshrew",
+    "to_pokemon": "sandslash",
+    "evolution_trigger": null,
+    "chain_id": 11
+  },
+  {
+    "from_pokemon": "nidoran-f",
+    "to_pokemon": "nidorina",
+    "evolution_trigger": null,
+    "chain_id": 12
+  },
+  {
+    "from_pokemon": "nidoran-m",
+    "to_pokemon": "nidorino",
+    "evolution_trigger": null,
+    "chain_id": 13
+  },
+  {
+    "from_pokemon": "cleffa",
+    "to_pokemon": "clefairy",
+    "evolution_trigger": null,
+    "chain_id": 14
+  },
+  {
+    "from_pokemon": "vulpix",
+    "to_pokemon": "ninetales",
+    "evolution_trigger": null,
+    "chain_id": 15
+  },
+  {
+    "from_pokemon": "igglybuff",
+    "to_pokemon": "jigglypuff",
+    "evolution_trigger": null,
+    "chain_id": 16
+  },
+  {
+    "from_pokemon": "zubat",
+    "to_pokemon": "golbat",
+    "evolution_trigger": null,
+    "chain_id": 17
+  },
+  {
+    "from_pokemon": "oddish",
+    "to_pokemon": "gloom",
+    "evolution_trigger": null,
+    "chain_id": 18
+  },
+  {
+    "from_pokemon": "paras",
+    "to_pokemon": "parasect",
+    "evolution_trigger": null,
+    "chain_id": 19
+  },
+  {
+    "from_pokemon": "venonat",
+    "to_pokemon": "venomoth",
+    "evolution_trigger": null,
+    "chain_id": 20
+  },
+  {
+    "from_pokemon": "bulbasaur",
+    "to_pokemon": "ivysaur",
+    "evolution_trigger": null,
+    "chain_id": 1
+  },
+  {
+    "from_pokemon": "charmander",
+    "to_pokemon": "charmeleon",
+    "evolution_trigger": null,
+    "chain_id": 2
+  },
+  {
+    "from_pokemon": "squirtle",
+    "to_pokemon": "wartortle",
+    "evolution_trigger": null,
+    "chain_id": 3
+  },
+  {
+    "from_pokemon": "caterpie",
+    "to_pokemon": "metapod",
+    "evolution_trigger": null,
+    "chain_id": 4
+  },
+  {
+    "from_pokemon": "weedle",
+    "to_pokemon": "kakuna",
+    "evolution_trigger": null,
+    "chain_id": 5
+  },
+  {
+    "from_pokemon": "pidgey",
+    "to_pokemon": "pidgeotto",
+    "evolution_trigger": null,
+    "chain_id": 6
+  },
+  {
+    "from_pokemon": "rattata",
+    "to_pokemon": "raticate",
+    "evolution_trigger": null,
+    "chain_id": 7
+  },
+  {
+    "from_pokemon": "spearow",
+    "to_pokemon": "fearow",
+    "evolution_trigger": null,
+    "chain_id": 8
+  },
+  {
+    "from_pokemon": "ekans",
+    "to_pokemon": "arbok",
+    "evolution_trigger": null,
+    "chain_id": 9
+  },
+  {
+    "from_pokemon": "pichu",
+    "to_pokemon": "pikachu",
+    "evolution_trigger": null,
+    "chain_id": 10
+  },
+  {
+    "from_pokemon": "sandshrew",
+    "to_pokemon": "sandslash",
+    "evolution_trigger": null,
+    "chain_id": 11
+  },
+  {
+    "from_pokemon": "nidoran-f",
+    "to_pokemon": "nidorina",
+    "evolution_trigger": null,
+    "chain_id": 12
+  },
+  {
+    "from_pokemon": "nidoran-m",
+    "to_pokemon": "nidorino",
+    "evolution_trigger": null,
+    "chain_id": 13
+  },
+  {
+    "from_pokemon": "cleffa",
+    "to_pokemon": "clefairy",
+    "evolution_trigger": null,
+    "chain_id": 14
+  },
+  {
+    "from_pokemon": "vulpix",
+    "to_pokemon": "ninetales",
+    "evolution_trigger": null,
+    "chain_id": 15
+  },
+  {
+    "from_pokemon": "igglybuff",
+    "to_pokemon": "jigglypuff",
+    "evolution_trigger": null,
+    "chain_id": 16
+  },
+  {
+    "from_pokemon": "zubat",
+    "to_pokemon": "golbat",
+    "evolution_trigger": null,
+    "chain_id": 17
+  },
+  {
+    "from_pokemon": "oddish",
+    "to_pokemon": "gloom",
+    "evolution_trigger": null,
+    "chain_id": 18
+  },
+  {
+    "from_pokemon": "paras",
+    "to_pokemon": "parasect",
+    "evolution_trigger": null,
+    "chain_id": 19
+  },
+  {
+    "from_pokemon": "venonat",
+    "to_pokemon": "venomoth",
+    "evolution_trigger": null,
+    "chain_id": 20
+  },
+  {
+    "from_pokemon": "bulbasaur",
+    "to_pokemon": "ivysaur",
+    "evolution_trigger": null,
+    "chain_id": 1
+  },
+  {
+    "from_pokemon": "charmander",
+    "to_pokemon": "charmeleon",
+    "evolution_trigger": null,
+    "chain_id": 2
+  },
+  {
+    "from_pokemon": "squirtle",
+    "to_pokemon": "wartortle",
+    "evolution_trigger": null,
+    "chain_id": 3
+  },
+  {
+    "from_pokemon": "caterpie",
+    "to_pokemon": "metapod",
+    "evolution_trigger": null,
+    "chain_id": 4
+  },
+  {
+    "from_pokemon": "weedle",
+    "to_pokemon": "kakuna",
+    "evolution_trigger": null,
+    "chain_id": 5
+  },
+  {
+    "from_pokemon": "pidgey",
+    "to_pokemon": "pidgeotto",
+    "evolution_trigger": null,
+    "chain_id": 6
+  },
+  {
+    "from_pokemon": "rattata",
+    "to_pokemon": "raticate",
+    "evolution_trigger": null,
+    "chain_id": 7
+  },
+  {
+    "from_pokemon": "spearow",
+    "to_pokemon": "fearow",
+    "evolution_trigger": null,
+    "chain_id": 8
+  },
+  {
+    "from_pokemon": "ekans",
+    "to_pokemon": "arbok",
+    "evolution_trigger": null,
+    "chain_id": 9
+  },
+  {
+    "from_pokemon": "pichu",
+    "to_pokemon": "pikachu",
+    "evolution_trigger": null,
+    "chain_id": 10
+  },
+  {
+    "from_pokemon": "sandshrew",
+    "to_pokemon": "sandslash",
+    "evolution_trigger": null,
+    "chain_id": 11
+  },
+  {
+    "from_pokemon": "nidoran-f",
+    "to_pokemon": "nidorina",
+    "evolution_trigger": null,
+    "chain_id": 12
+  },
+  {
+    "from_pokemon": "nidoran-m",
+    "to_pokemon": "nidorino",
+    "evolution_trigger": null,
+    "chain_id": 13
+  },
+  {
+    "from_pokemon": "cleffa",
+    "to_pokemon": "clefairy",
+    "evolution_trigger": null,
+    "chain_id": 14
+  },
+  {
+    "from_pokemon": "vulpix",
+    "to_pokemon": "ninetales",
+    "evolution_trigger": null,
+    "chain_id": 15
+  },
+  {
+    "from_pokemon": "igglybuff",
+    "to_pokemon": "jigglypuff",
+    "evolution_trigger": null,
+    "chain_id": 16
+  },
+  {
+    "from_pokemon": "zubat",
+    "to_pokemon": "golbat",
+    "evolution_trigger": null,
+    "chain_id": 17
+  },
+  {
+    "from_pokemon": "oddish",
+    "to_pokemon": "gloom",
+    "evolution_trigger": null,
+    "chain_id": 18
+  },
+  {
+    "from_pokemon": "paras",
+    "to_pokemon": "parasect",
+    "evolution_trigger": null,
+    "chain_id": 19
+  },
+  {
+    "from_pokemon": "venonat",
+    "to_pokemon": "venomoth",
+    "evolution_trigger": null,
+    "chain_id": 20
+  }
+]

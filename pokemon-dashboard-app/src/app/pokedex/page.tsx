@@ -1,0 +1,906 @@
+'use client'
+
+import { useState, useMemo, useCallback, useEffect } from 'react'
+import Image from 'next/image'
+import {
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  Radar,
+  ResponsiveContainer,
+  Tooltip,
+} from 'recharts'
+import { useJSONQuery } from '@/lib/data/json-hooks'
+import { Card } from '@/components/ui/Card'
+import { Badge } from '@/components/ui/Badge'
+import { type PokemonType, typeColorMap } from '@/lib/design-tokens'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
+
+// ─── Constants ───────────────────────────────────────────────────────────────
+
+const ALL_TYPES: PokemonType[] = [
+  'normal',
+  'fire',
+  'water',
+  'grass',
+  'electric',
+  'ice',
+  'fighting',
+  'poison',
+  'ground',
+  'flying',
+  'psychic',
+  'bug',
+  'rock',
+  'ghost',
+  'dragon',
+  'dark',
+  'steel',
+  'fairy',
+]
+
+type SortKey = 'id' | 'name' | 'total_stats'
+
+const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+  { key: 'id', label: '#' },
+  { key: 'name', label: 'Name' },
+  { key: 'total_stats', label: 'Stats' },
+]
+
+const STAT_META: {
+  key: 'hp' | 'attack' | 'defense' | 'special_attack' | 'special_defense' | 'speed'
+  label: string
+}[] = [
+  { key: 'hp', label: 'HP' },
+  { key: 'attack', label: 'ATK' },
+  { key: 'defense', label: 'DEF' },
+  { key: 'special_attack', label: 'SP.ATK' },
+  { key: 'special_defense', label: 'SP.DEF' },
+  { key: 'speed', label: 'SPD' },
+]
+
+const STAT_MAX = 255
+
+const OFFICIAL_ARTWORK = (id: number) =>
+  `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
+
+const TYPE_EFFECTIVENESS: Partial<Record<PokemonType, Partial<Record<PokemonType, number>>>> = {
+  normal: { rock: 0.5, ghost: 0, steel: 0.5 },
+  fire: {
+    fire: 0.5,
+    water: 0.5,
+    grass: 2,
+    ice: 2,
+    bug: 2,
+    rock: 0.5,
+    dragon: 0.5,
+    steel: 2,
+  },
+  water: { fire: 2, water: 0.5, grass: 0.5, ground: 2, rock: 2, dragon: 0.5 },
+  electric: { water: 2, electric: 0.5, grass: 0.5, ground: 0, flying: 2, dragon: 0.5 },
+  grass: {
+    fire: 0.5,
+    water: 2,
+    grass: 0.5,
+    poison: 0.5,
+    ground: 2,
+    flying: 0.5,
+    bug: 0.5,
+    rock: 2,
+    dragon: 0.5,
+    steel: 0.5,
+  },
+  ice: {
+    fire: 0.5,
+    water: 0.5,
+    grass: 2,
+    ground: 2,
+    flying: 2,
+    dragon: 2,
+    steel: 0.5,
+  },
+  fighting: {
+    normal: 2,
+    ice: 2,
+    poison: 0.5,
+    flying: 0.5,
+    psychic: 0.5,
+    bug: 0.5,
+    rock: 2,
+    ghost: 0,
+    dark: 2,
+    steel: 2,
+    fairy: 0.5,
+  },
+  poison: {
+    grass: 2,
+    poison: 0.5,
+    ground: 0.5,
+    rock: 0.5,
+    ghost: 0.5,
+    steel: 0,
+    fairy: 2,
+  },
+  ground: {
+    fire: 2,
+    electric: 2,
+    grass: 0.5,
+    poison: 2,
+    flying: 0,
+    bug: 0.5,
+    rock: 2,
+    steel: 2,
+  },
+  flying: { electric: 0.5, grass: 2, fighting: 2, bug: 2, rock: 0.5, steel: 0.5 },
+  psychic: { fighting: 2, poison: 2, psychic: 0.5, dark: 0, steel: 0.5 },
+  bug: {
+    fire: 0.5,
+    grass: 2,
+    fighting: 0.5,
+    poison: 0.5,
+    flying: 0.5,
+    psychic: 2,
+    ghost: 0.5,
+    dark: 2,
+    steel: 0.5,
+    fairy: 0.5,
+  },
+  rock: { fire: 2, ice: 2, fighting: 0.5, ground: 0.5, flying: 2, bug: 2, steel: 0.5 },
+  ghost: { normal: 0, psychic: 2, ghost: 2, dark: 0.5 },
+  dragon: { dragon: 2, steel: 0.5, fairy: 0 },
+  dark: { fighting: 0.5, psychic: 2, ghost: 2, dark: 0.5, fairy: 0.5 },
+  steel: {
+    fire: 0.5,
+    water: 0.5,
+    electric: 0.5,
+    ice: 2,
+    rock: 2,
+    steel: 0.5,
+    fairy: 2,
+  },
+  fairy: { fire: 0.5, fighting: 2, poison: 0.5, dragon: 2, dark: 2, steel: 0.5 },
+}
+
+// ─── Types ──────────────────────────────────────────────────────────────────
+
+interface PokemonRow {
+  id: number
+  name: string
+  height: number
+  weight: number
+  sprite_url: string
+  color: string
+  type_names: string
+  hp: number
+  attack: number
+  defense: number
+  special_attack: number
+  special_defense: number
+  speed: number
+  total_stats: number
+  types: string
+}
+
+interface EvolutionTreeRow {
+  chain_id: number
+  stage: number
+  evolves_from: string | null
+  species_name?: string
+  name?: string
+}
+
+interface EvolutionPathRow {
+  from_pokemon: string
+  to_pokemon: string
+  evolution_trigger: string | null
+  chain_id: number
+}
+
+interface EvolutionChainNode {
+  name: string
+  stage: number
+  evolvesFrom: string | null
+  trigger: string | null
+  pokemon: PokemonRow | null
+}
+
+interface RadarStatPoint {
+  stat: string
+  value: number
+  fullMark: number
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function parseTypes(p: PokemonRow): PokemonType[] {
+  const raw = p.types || p.type_names || ''
+  return [
+    ...new Set(
+      raw
+        .split(',')
+        .map((t) => t.trim().toLowerCase())
+        .filter((t): t is PokemonType => t in typeColorMap)
+    ),
+  ]
+}
+
+function primaryTypeOf(p: PokemonRow): PokemonType {
+  return parseTypes(p)[0] ?? 'normal'
+}
+
+function getTypeEffectiveness(attacker: PokemonType, defender: PokemonType): number {
+  return TYPE_EFFECTIVENESS[attacker]?.[defender] ?? 1
+}
+
+function MatchupTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean
+  payload?: Array<{ value: number }>
+}) {
+  if (!active || !payload?.length) return null
+  return (
+    <div className="glass rounded-lg px-3 py-2 text-xs border border-[var(--card-border)]">
+      <p className="text-[var(--text-secondary)]">Base stat value</p>
+      <p className="text-[var(--text-primary)] font-semibold">{payload[0]?.value}</p>
+    </div>
+  )
+}
+
+// ─── Component ───────────────────────────────────────────────────────────────
+
+export default function Home() {
+  const [search, setSearch] = useState('')
+  const [activeTypes, setActiveTypes] = useState<Set<PokemonType>>(new Set())
+  const [sortBy, setSortBy] = useState<SortKey>('id')
+  const [selected, setSelected] = useState<PokemonRow | null>(null)
+  const [detailReady, setDetailReady] = useState(false)
+
+  const { data, loading, error } = useJSONQuery<PokemonRow>('pokemon.json')
+  const { data: evolutionTree } = useJSONQuery<EvolutionTreeRow>('evolution_tree.json')
+  const { data: evolutionPaths } = useJSONQuery<EvolutionPathRow>('evolution_paths.json')
+
+  const pokemonByName = useMemo(() => {
+    const map = new Map<string, PokemonRow>()
+    for (const pokemon of data ?? []) {
+      if (!map.has(pokemon.name)) {
+        map.set(pokemon.name, pokemon)
+      }
+    }
+    return map
+  }, [data])
+
+  const evolutionChain = useMemo<EvolutionChainNode[]>(() => {
+    if (!selected || !evolutionTree || evolutionTree.length === 0) return []
+
+    const selectedName = selected.name.toLowerCase()
+    const normalizeName = (row: EvolutionTreeRow) =>
+      (row.species_name ?? row.name ?? '').toLowerCase()
+    const selectedNode = evolutionTree.find((row) => normalizeName(row) === selectedName)
+
+    if (!selectedNode) return []
+
+    const chainRows = evolutionTree.filter((row) => row.chain_id === selectedNode.chain_id)
+    const triggerByTarget = new Map<string, string | null>()
+
+    for (const edge of evolutionPaths ?? []) {
+      if (edge.chain_id === selectedNode.chain_id) {
+        triggerByTarget.set(edge.to_pokemon.toLowerCase(), edge.evolution_trigger)
+      }
+    }
+
+    const deduped = new Map<string, EvolutionChainNode>()
+
+    for (const row of chainRows) {
+      const name = normalizeName(row)
+      if (!name) continue
+
+      const current = deduped.get(name)
+      const candidate: EvolutionChainNode = {
+        name,
+        stage: row.stage,
+        evolvesFrom: row.evolves_from,
+        trigger: triggerByTarget.get(name) ?? null,
+        pokemon: pokemonByName.get(name) ?? null,
+      }
+
+      if (!current) {
+        deduped.set(name, candidate)
+        continue
+      }
+
+      deduped.set(name, {
+        ...current,
+        stage: Math.min(current.stage, candidate.stage),
+        evolvesFrom: current.evolvesFrom ?? candidate.evolvesFrom,
+        trigger: current.trigger ?? candidate.trigger,
+        pokemon: current.pokemon ?? candidate.pokemon,
+      })
+    }
+
+    return [...deduped.values()].sort((a, b) => {
+      if (a.stage !== b.stage) return a.stage - b.stage
+      const aId = a.pokemon?.id ?? Number.MAX_SAFE_INTEGER
+      const bId = b.pokemon?.id ?? Number.MAX_SAFE_INTEGER
+      if (aId !== bId) return aId - bId
+      return a.name.localeCompare(b.name)
+    })
+  }, [selected, evolutionTree, evolutionPaths, pokemonByName])
+
+  const radarData = useMemo<RadarStatPoint[]>(() => {
+    if (!selected) return []
+    return STAT_META.map(({ key, label }) => ({
+      stat: label,
+      value: selected[key],
+      fullMark: STAT_MAX,
+    }))
+  }, [selected])
+
+  const matchupBuckets = useMemo(() => {
+    if (!selected)
+      return { x2: [] as PokemonType[], x15: [] as PokemonType[], x0: [] as PokemonType[] }
+
+    const attackerTypes = parseTypes(selected)
+    const values = ALL_TYPES.map((defenderType) => {
+      const total = attackerTypes.reduce((sum, attackerType) => {
+        return sum + getTypeEffectiveness(attackerType, defenderType)
+      }, 0)
+
+      const multiplier =
+        attackerTypes.length > 0 ? Number((total / attackerTypes.length).toFixed(2)) : 1
+      return { defenderType, multiplier }
+    })
+
+    return {
+      x2: values.filter((item) => item.multiplier === 2).map((item) => item.defenderType),
+      x15: values.filter((item) => item.multiplier === 1.5).map((item) => item.defenderType),
+      x0: values.filter((item) => item.multiplier === 0).map((item) => item.defenderType),
+    }
+  }, [selected])
+
+  // Animate detail stat bars after mount
+  useEffect(() => {
+    if (selected) {
+      setDetailReady(false)
+      const raf = requestAnimationFrame(() => setDetailReady(true))
+      return () => cancelAnimationFrame(raf)
+    }
+    setDetailReady(false)
+  }, [selected])
+
+  const toggleType = useCallback((type: PokemonType) => {
+    setActiveTypes((prev) => {
+      const next = new Set(prev)
+      if (next.has(type)) next.delete(type)
+      else next.add(type)
+      return next
+    })
+  }, [])
+
+  const filtered = useMemo(() => {
+    if (!data) return []
+
+    // Deduplicate by ID (Next.js dev mode may cause double rendering)
+    const seen = new Set<number>()
+    let result = data.filter((p) => {
+      if (seen.has(p.id)) return false
+      seen.add(p.id)
+      return true
+    })
+
+    // Search filter
+    if (search) {
+      const q = search.toLowerCase()
+      result = result.filter((p) => p.name.toLowerCase().includes(q))
+    }
+
+    // Type filter
+    if (activeTypes.size > 0) {
+      result = result.filter((p) => parseTypes(p).some((t) => activeTypes.has(t)))
+    }
+
+    // Sort
+    return [...result].sort((a, b) => {
+      if (sortBy === 'name') return a.name.localeCompare(b.name)
+      if (sortBy === 'total_stats') return b.total_stats - a.total_stats
+      return a.id - b.id
+    })
+  }, [data, search, activeTypes, sortBy])
+
+  // ─── Loading / Error ────────────────────────────────────────────────────
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-32 gap-4">
+        <LoadingSpinner size={64} />
+        <p className="text-[var(--text-secondary)] text-sm font-[family-name:var(--font-pixel)] tracking-wider">
+          LOADING POKEMON...
+        </p>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-32 gap-3">
+        <div className="w-12 h-12 rounded-full bg-red-500/20 border border-red-500/50 flex items-center justify-center">
+          <svg
+            className="w-6 h-6 text-red-400"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
+          </svg>
+        </div>
+        <p className="text-red-400 text-sm">Failed to load Pokemon data</p>
+        <p className="text-[var(--text-muted)] text-xs">{error.message}</p>
+      </div>
+    )
+  }
+
+  // ─── Render ──────────────────────────────────────────────────────────────
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      {/* ── Header ──────────────────────────────────────────────────────── */}
+      <div className="text-center mb-8">
+        <div className="flex items-center justify-center gap-3 mb-2">
+          <Image
+            src="/pokeball.png"
+            alt="Pokeball"
+            width={40}
+            height={40}
+            className="w-8 sm:w-10"
+          />
+          <h1 className="text-xl sm:text-2xl font-[family-name:var(--font-pixel)] text-[var(--text-primary)] tracking-wider">
+            Pokédex
+          </h1>
+        </div>
+        <p className="text-[var(--text-muted)] text-sm">
+          Browse and search the complete Pokemon database
+        </p>
+      </div>
+
+      {/* ── Search & Sort ──────────────────────────────────────────────── */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <div className="relative flex-1">
+          <svg
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] pointer-events-none"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search Pokemon..."
+            className="w-full pl-10 pr-10 py-2.5 rounded-lg glass text-[var(--text-primary)] text-sm placeholder-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-white/20 focus:border-[var(--card-border)] transition-all"
+          />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
+              aria-label="Clear search"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
+        </div>
+
+        <div className="flex gap-1.5">
+          {SORT_OPTIONS.map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => setSortBy(key)}
+              className={[
+                'px-3 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-300 border',
+                sortBy === key
+                  ? 'glass text-[var(--text-primary)] border-[var(--card-border)] shadow-[0_0_10px_var(--card-border)]'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)] border-transparent hover:bg-[var(--surface)]',
+              ].join(' ')}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Type Filter Pills ──────────────────────────────────────────── */}
+      <div className="flex flex-wrap gap-2 mb-6">
+        {ALL_TYPES.map((type) => {
+          const isActive = activeTypes.has(type)
+          const color = typeColorMap[type]
+          return (
+            <button
+              key={type}
+              onClick={() => toggleType(type)}
+              className={[
+                'px-3 py-1.5 rounded-full text-xs font-[family-name:var(--font-pixel)] uppercase tracking-wider transition-all duration-300 border-2',
+                isActive ? 'scale-105 animate-pulse-glow' : 'hover:scale-105 hover:brightness-125',
+              ].join(' ')}
+              style={{
+                backgroundColor: color,
+                color: '#fff',
+                borderColor: color,
+                boxShadow: isActive
+                  ? `0 0 20px ${color}90, 0 0 40px ${color}50, inset 0 0 12px rgba(255,255,255,0.2)`
+                  : `0 0 8px ${color}40`,
+                textShadow: '0 1px 2px rgba(0,0,0,0.5)',
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.boxShadow = `0 0 16px ${color}60, 0 0 32px ${color}30`
+                  e.currentTarget.style.borderColor = `${color}`
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.boxShadow = `0 0 8px ${color}40`
+                  e.currentTarget.style.borderColor = color
+                }
+              }}
+            >
+              {type}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* ── Results Count ──────────────────────────────────────────────── */}
+      <p className="text-[var(--text-muted)] text-xs mb-4">{filtered.length} Pokemon found</p>
+
+      {/* ── Pokemon Grid ──────────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {filtered.map((pokemon) => {
+          const types = parseTypes(pokemon)
+          const primary = primaryTypeOf(pokemon)
+          const primaryColor = typeColorMap[primary]
+
+          return (
+            <Card key={pokemon.id} pokemonType={primary} hover className="cursor-pointer group">
+              <button
+                onClick={() => setSelected(pokemon)}
+                className="w-full text-left bg-transparent border-0 p-0 m-0"
+              >
+                <div className="relative w-full aspect-square mb-3 flex items-center justify-center overflow-hidden rounded-lg">
+                  <div
+                    className="absolute inset-0 opacity-20 group-hover:opacity-35 transition-opacity duration-500"
+                    style={{
+                      background: `radial-gradient(circle at center, ${primaryColor}50 0%, transparent 70%)`,
+                    }}
+                  />
+                  <Image
+                    src={OFFICIAL_ARTWORK(pokemon.id)}
+                    alt={pokemon.name}
+                    width={120}
+                    height={120}
+                    className="relative z-10 group-hover:scale-110 transition-transform duration-500"
+                    unoptimized
+                  />
+                </div>
+
+                <h3 className="text-[var(--text-primary)] font-semibold text-sm capitalize mb-0.5 group-hover:text-[var(--text-secondary)] transition-colors duration-300">
+                  {pokemon.name}
+                </h3>
+
+                <p className="text-[var(--text-muted)] text-[10px] mb-2 font-[family-name:var(--font-pixel)] tracking-wider">
+                  #{String(pokemon.id).padStart(3, '0')}
+                </p>
+
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  {types.map((type) => (
+                    <Badge key={`${pokemon.id}-${type}`} type={type} />
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-between pt-2 border-t border-[var(--card-border)]">
+                  <span className="text-[var(--text-muted)] text-xs">Total</span>
+                  <span className="text-sm font-bold" style={{ color: primaryColor }}>
+                    {pokemon.total_stats}
+                  </span>
+                </div>
+              </button>
+            </Card>
+          )
+        })}
+      </div>
+
+      {/* ── Empty State ────────────────────────────────────────────────── */}
+      {filtered.length === 0 && !loading && (
+        <div className="text-center py-20">
+          <p className="text-[var(--text-muted)] text-lg mb-2">No Pokemon found</p>
+          <p className="text-[var(--text-muted)] text-sm">Try adjusting your search or filters</p>
+        </div>
+      )}
+
+      {/* ── Detail Modal ───────────────────────────────────────────────── */}
+      {selected && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          onClick={() => setSelected(null)}
+        >
+          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
+
+          <div
+            className="relative glass rounded-2xl p-6 sm:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-[slide-in_0.3s_ease-out]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelected(null)}
+              className="absolute top-4 right-4 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors z-10"
+              aria-label="Close detail view"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            <div className="flex flex-col items-center mb-6">
+              <div className="relative mb-4">
+                <div
+                  className="absolute inset-0 rounded-full opacity-30 scale-150"
+                  style={{
+                    background: `radial-gradient(circle at center, ${typeColorMap[primaryTypeOf(selected)]}60 0%, transparent 70%)`,
+                  }}
+                />
+                <Image
+                  src={OFFICIAL_ARTWORK(selected.id)}
+                  alt={selected.name}
+                  width={180}
+                  height={180}
+                  className="relative z-10"
+                  unoptimized
+                />
+              </div>
+
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] capitalize mb-1">
+                {selected.name}
+              </h2>
+              <p className="text-[var(--text-muted)] text-sm font-[family-name:var(--font-pixel)] tracking-wider">
+                #{String(selected.id).padStart(3, '0')}
+              </p>
+
+              <div className="flex gap-2 mt-3">
+                {parseTypes(selected).map((type) => (
+                  <Badge key={`${selected.id}-${type}`} type={type} />
+                ))}
+              </div>
+
+              <div className="flex gap-8 mt-4 text-sm">
+                <div className="text-center">
+                  <p className="text-[var(--text-muted)] text-xs mb-0.5">Height</p>
+                  <p className="text-[var(--text-primary)] font-semibold">
+                    {(selected.height / 10).toFixed(1)} m
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-[var(--text-muted)] text-xs mb-0.5">Weight</p>
+                  <p className="text-[var(--text-primary)] font-semibold">
+                    {(selected.weight / 10).toFixed(1)} kg
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                <div>
+                  <h3 className="text-[var(--text-secondary)] text-xs font-semibold uppercase tracking-wider mb-3">
+                    Radar
+                  </h3>
+
+                  <div className="w-full min-w-0 h-[280px] min-h-[280px]">
+                    <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={280}>
+                      <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="68%">
+                        <PolarGrid stroke="var(--card-border)" strokeDasharray="3 3" />
+                        <PolarAngleAxis
+                          dataKey="stat"
+                          tick={{ fill: 'var(--text-secondary)', fontSize: 11, fontWeight: 600 }}
+                        />
+                        <PolarRadiusAxis
+                          angle={90}
+                          domain={[0, STAT_MAX]}
+                          tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
+                          tickCount={6}
+                          axisLine={false}
+                        />
+                        <Radar
+                          name={selected.name}
+                          dataKey="value"
+                          stroke={typeColorMap[primaryTypeOf(selected)]}
+                          fill={typeColorMap[primaryTypeOf(selected)]}
+                          fillOpacity={0.2}
+                          strokeWidth={2}
+                          dot={{ r: 3, fill: typeColorMap[primaryTypeOf(selected)] }}
+                          activeDot={{
+                            r: 5,
+                            fill: typeColorMap[primaryTypeOf(selected)],
+                            stroke: '#fff',
+                            strokeWidth: 1,
+                          }}
+                        />
+                        <Tooltip content={<MatchupTooltip />} />
+                      </RadarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-[var(--text-secondary)] text-xs font-semibold uppercase tracking-wider mb-3">
+                    Base Stats
+                  </h3>
+
+                  <div className="space-y-3">
+                    {STAT_META.map(({ key, label }) => {
+                      const value = selected[key] as number
+                      const pct = Math.min((value / STAT_MAX) * 100, 100)
+                      const color = typeColorMap[primaryTypeOf(selected)]
+
+                      return (
+                        <div key={key} className="flex items-center gap-3">
+                          <span className="text-[var(--text-secondary)] text-xs w-14 text-right font-semibold shrink-0">
+                            {label}
+                          </span>
+                          <div className="flex-1 h-2 rounded-full bg-[var(--surface)] overflow-hidden">
+                            <div
+                              className="h-full rounded-full"
+                              style={{
+                                width: detailReady ? `${pct}%` : '0%',
+                                background: `linear-gradient(90deg, ${color}80, ${color})`,
+                                boxShadow: detailReady ? `0 0 8px ${color}40` : 'none',
+                                transition: 'width 0.7s ease-out, box-shadow 0.7s ease-out',
+                              }}
+                            />
+                          </div>
+                          <span className="text-[var(--text-secondary)] text-xs w-8 text-right font-mono shrink-0">
+                            {value}
+                          </span>
+                        </div>
+                      )
+                    })}
+
+                    <div className="flex items-center gap-3 pt-3 border-t border-[var(--card-border)]">
+                      <span className="text-[var(--text-secondary)] text-xs w-14 text-right font-bold shrink-0">
+                        TOTAL
+                      </span>
+                      <div className="flex-1" />
+                      <span
+                        className="text-sm font-bold shrink-0"
+                        style={{ color: typeColorMap[primaryTypeOf(selected)] }}
+                      >
+                        {selected.total_stats}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <h3 className="text-[var(--text-primary)] text-xs font-[family-name:var(--font-pixel)] uppercase tracking-wider mb-2">
+                  Type Matchup
+                </h3>
+                <p className="text-[11px] text-[var(--text-secondary)] font-[family-name:var(--font-pixel)] tracking-wide mb-3">
+                  OFFENSE PROFILE (USING THIS POKEMON&apos;S TYPES)
+                </p>
+
+                <div className="space-y-2.5">
+                  {[
+                    { label: '2x', key: 'x2' as const },
+                    { label: '1.5x', key: 'x15' as const },
+                    { label: '0x', key: 'x0' as const },
+                  ].map(({ label, key }) => {
+                    const types = matchupBuckets[key]
+                    return (
+                      <div
+                        key={label}
+                        className="flex flex-wrap items-center gap-2 rounded-lg border border-[var(--card-border)] bg-[var(--surface)]/40 px-2.5 py-2"
+                      >
+                        <span className="text-[11px] text-[var(--text-primary)] font-[family-name:var(--font-pixel)] tracking-wider min-w-[38px]">
+                          {label}
+                        </span>
+                        <span className="text-[var(--text-secondary)] text-sm">→</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {types.length > 0 ? (
+                            types.map((type) => <Badge key={`${label}-${type}`} type={type} />)
+                          ) : (
+                            <span className="text-[11px] text-[var(--text-muted)] font-[family-name:var(--font-pixel)] tracking-wider">
+                              NONE
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {evolutionChain.length > 0 && (
+                <div className="mb-2 pt-3 border-t border-[var(--card-border)]">
+                  <h3 className="text-[var(--text-secondary)] text-xs font-semibold uppercase tracking-wider mb-3">
+                    Evolution Chain
+                  </h3>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    {evolutionChain.map((node, index) => {
+                      const isCurrent = node.name === selected.name
+                      return (
+                        <div key={`${node.name}-${node.stage}`} className="flex items-center gap-2">
+                          <button
+                            onClick={() => {
+                              if (node.pokemon) setSelected(node.pokemon)
+                            }}
+                            className={[
+                              'px-2 py-2 rounded-lg border transition-all duration-300 text-left min-w-[92px]',
+                              node.pokemon
+                                ? 'hover:border-[var(--text-secondary)] hover:bg-[var(--surface)]'
+                                : 'opacity-70 cursor-default',
+                            ].join(' ')}
+                            style={{
+                              borderColor: isCurrent
+                                ? typeColorMap[primaryTypeOf(selected)]
+                                : 'var(--card-border)',
+                              boxShadow: isCurrent
+                                ? `0 0 10px ${typeColorMap[primaryTypeOf(selected)]}40`
+                                : 'none',
+                            }}
+                            disabled={!node.pokemon}
+                          >
+                            <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1">
+                              Stage {node.stage}
+                            </div>
+                            <div className="text-xs text-[var(--text-primary)] capitalize font-semibold">
+                              {node.name}
+                            </div>
+                            {node.trigger && (
+                              <div className="text-[10px] text-[var(--text-muted)] mt-1 capitalize">
+                                via {node.trigger}
+                              </div>
+                            )}
+                          </button>
+
+                          {index < evolutionChain.length - 1 && (
+                            <span className="text-[var(--text-muted)] text-xs">→</span>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}

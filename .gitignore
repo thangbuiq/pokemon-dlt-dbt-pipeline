@@ -1,6 +1,7 @@
 # user defined
 .DS_Store
-data/
+/data/
+.playwright-mcp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -20,6 +21,7 @@ eggs/
 .eggs/
 lib/
 lib64/
+!pokemon-dashboard-app/src/lib/
 parts/
 sdist/
 var/

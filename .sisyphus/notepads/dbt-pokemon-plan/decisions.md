@@ -1,3 +1,0 @@
-- Assumed raw_data schema aligns with provided source tables pokemon_details, pokemon_species, pokemon_types.
-- Assessed UNNEST usage in staging queries; may require adjust for target database (DuckDB/BigQuery/Postgres).
-- Planning to run: cd pokemon-dbt-pipeline && uv run dbt run --select staging; then query DuckDB for row counts.

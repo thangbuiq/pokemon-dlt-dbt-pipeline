@@ -1,14 +1,14 @@
-# AGENTS.md — Pokemon Dashboard Project
+# AGENTS.md - Pokemon Dashboard Project
 
 ## Project Overview
 
-Cyberpunk PokeDex — a full-stack data app: dlt → DuckDB → dbt → Next.js + DuckDB WASM.
+Cyberpunk PokeDex - a full-stack data app: dlt → DuckDB → dbt → Next.js + DuckDB WASM.
 
 ## Architecture
 
 ```
 pokemon-dlt-dbt-pipeline/
-├── pokemon-dlt-pipeline/    # dlt Python package — fetches from PokeAPI
+├── pokemon-dlt-pipeline/    # dlt Python package - fetches from PokeAPI
 │   └── pokemon_pipeline/
 │       ├── pipeline.py       # Main pipeline entry point
 │       ├── sources/pokemon_api.py  # @dlt.source + @dlt.resource + @dlt.transformer
@@ -40,7 +40,7 @@ pokemon-dlt-dbt-pipeline/
 
 ### dlt Pipeline
 
-- Uses `@dlt.source(max_table_nesting=2)` — child tables created with `__` separator
+- Uses `@dlt.source(max_table_nesting=2)` - child tables created with `__` separator
 - Parent-child join pattern: `ON parent._dlt_id = child._dlt_parent_id`
 - Column names are flattened: `type__name` not `type->>'name'`
 - `selected=False` on intermediate resources (pokemon_list)
@@ -52,13 +52,13 @@ pokemon-dlt-dbt-pipeline/
 - **Staging**: Join child tables via `_dlt_id = _dlt_parent_id`, NOT UNNEST
 - **Intermediate**: Enriched Pokemon, evolution flattened (UNION for stages), type matchups
 - **Marts**: dim_pokemon, dim_pokemon_types, dim_pokemon_stats, dim_evolution_tree, fct_evolution_paths, fct_type_matchup_matrix
-- Sources defined in `models/sources.yml` — must include child tables
+- Sources defined in `models/sources.yml` - must include child tables
 - Run: `just transform`
 - Test: `cd pokemon-dbt-pipeline && dbt test`
 
 ### Dashboard (Next.js)
 
-- **ALL pages use `"use client"`** — DuckDB WASM requires client-side
+- **ALL pages use `"use client"`** - DuckDB WASM requires client-side
 - Route structure: App Router with `/app/[page]/page.tsx`
 - Design: Retro Game Boy style (light theme, pixel fonts)
 - Data access: `useDuckDBQuery<T>(sql)` hook → returns `{ data: T[], loading, error }`
@@ -72,6 +72,7 @@ pokemon-dlt-dbt-pipeline/
 ### Data Flow
 
 ```bash
+just install    # Install Python dependencies using uv
 just pipeline   # dlt → raw.duckdb (6+ PokeAPI endpoints)
 just transform  # dbt → raw.duckdb (staging → intermediate → marts)
 just export     # raw.duckdb → pokemon.db (13 curated tables)
@@ -100,9 +101,9 @@ just data       # pipeline + transform + export in sequence
 
 ## Commit Conventions
 
-- `feat(scope): description` — new feature
-- `fix(scope): description` — bug fix
-- `refactor(scope): description` — code restructuring
-- `test(scope): description` — adding tests
-- `chore(scope): description` — maintenance
+- `feat(scope): description` - new feature
+- `fix(scope): description` - bug fix
+- `refactor(scope): description` - code restructuring
+- `test(scope): description` - adding tests
+- `chore(scope): description` - maintenance
 - Scopes: `pipeline`, `transform`, `dashboard`, `data`, `deploy`

@@ -13,6 +13,13 @@ const eslintConfig = defineConfig([
     'build/**',
     'next-env.d.ts',
   ]),
+  {
+    rules: {
+      // Disable Tailwind canonical class suggestions for arbitrary values
+      // text-[var(--text-primary)] is valid syntax
+      'tailwindcss/no-custom-classes': 'off',
+    },
+  },
 ])
 
 export default eslintConfig

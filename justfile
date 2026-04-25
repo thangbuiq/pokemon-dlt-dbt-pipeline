@@ -1,11 +1,17 @@
+install:
+  uv sync --all-groups --all-extras --all-packages
+
 pipeline:
   cd pokemon-dlt-pipeline && uv run python pokemon_pipeline/pipeline.py
 
 transform:
-  cd pokemon-dbt-pipeline && uv run dbt run
+	cd pokemon-dbt-pipeline && uv run dbt seed && uv run dbt run
 
 export:
 	cd pokemon-dlt-pipeline && uv run python -m pokemon_pipeline.export
+	cp data/pokemon.db pokemon-dashboard-app/public/pokemon.db
+	mkdir -p pokemon-dashboard-app/public/data
+	cd pokemon-dlt-pipeline && uv run python -c "from pokemon_pipeline.export import export_json; export_json()"
 
 dashboard:
   cd pokemon-dashboard-app && bun dev

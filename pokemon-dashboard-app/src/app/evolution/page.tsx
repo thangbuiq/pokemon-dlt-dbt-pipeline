@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { useDuckDBQuery } from '@/lib/duckdb/hooks'
+import { useJSONQuery } from '@/lib/data/json-hooks'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { getSpriteUrl } from '@/lib/sprites'
 
@@ -14,11 +14,10 @@ type EvoNode = {
 }
 
 type EvoEdge = {
-  from_species: string
-  to_species: string
-  trigger: string
-  min_level: number | null
-  item: string | null
+  from_pokemon: string
+  to_pokemon: string
+  evolution_trigger: string | null
+  chain_id: number
 }
 
 type SpeciesRow = { species_name: string }
@@ -37,11 +36,14 @@ export default function EvolutionVisualizer() {
   const [spriteCache, setSpriteCache] = useState<Record<string, string>>({})
   const [error, setError] = useState<string | null>(null)
 
-  const { data: speciesRows, loading: loadingSpecies } = useDuckDBQuery<SpeciesRow>(
-    'SELECT DISTINCT species_name FROM dim_evolution_tree ORDER BY species_name'
-  )
+  const { data: allNodes, loading: loadingNodes } = useJSONQuery<EvoNode>('evolution_tree.json')
+  const { data: allEdges, loading: loadingEdges } = useJSONQuery<EvoEdge>('evolution_paths.json')
 
-  const speciesList = useMemo(() => speciesRows?.map((r) => r.species_name) ?? [], [speciesRows])
+  const speciesList = useMemo(() => {
+    if (!allNodes) return []
+    const unique = [...new Set(allNodes.map((n) => n.name))]
+    return unique.sort()
+  }, [allNodes])
 
   useEffect(() => {
     if (speciesList.length > 0 && !selected) {
@@ -49,48 +51,21 @@ export default function EvolutionVisualizer() {
     }
   }, [speciesList, selected])
 
-  const { data: chainIdRows } = useDuckDBQuery<ChainIdRow>(
-    selected
-      ? `SELECT chain_id FROM dim_evolution_tree WHERE species_name = '${selected}' LIMIT 1`
-      : 'SELECT CAST(0 AS BIGINT) as chain_id WHERE 1=0',
-    [selected]
-  )
+  const chainId = useMemo(() => {
+    if (!selected || !allNodes) return null
+    const node = allNodes.find((n) => n.name === selected)
+    return node?.chain_id ?? null
+  }, [selected, allNodes])
 
-  const chainId = chainIdRows?.[0]?.chain_id ?? null
+  const nodes = useMemo(() => {
+    if (!chainId || !allNodes) return []
+    return allNodes.filter((n) => n.chain_id === chainId)
+  }, [chainId, allNodes])
 
-  const { data: nodes } = useDuckDBQuery<EvoNode>(
-    chainId
-      ? `SELECT species_name as name, stage, evolves_from, chain_id FROM dim_evolution_tree WHERE chain_id = ${chainId} ORDER BY stage`
-      : 'SELECT species_name as name, stage, evolves_from, chain_id FROM dim_evolution_tree WHERE 1=0',
-    [chainId]
-  )
-
-  const { data: edges } = useDuckDBQuery<EvoEdge>(
-    chainId
-      ? `SELECT from_species, to_species, trigger, min_level, item FROM fct_evolution_paths WHERE chain_id = ${chainId}`
-      : 'SELECT from_species, to_species, trigger, min_level, item FROM fct_evolution_paths WHERE 1=0',
-    [chainId]
-  )
-
-  useEffect(() => {
-    if (!nodes || nodes.length === 0) return
-    const stageGroups: Record<number, EvoNode[]> = {}
-    nodes.forEach((n) => {
-      stageGroups[n.stage] = stageGroups[n.stage] ?? []
-      stageGroups[n.stage].push(n)
-    })
-    const maxStage = Math.max(...nodes.map((n) => n.stage), 1)
-    const newPositions: Record<string, { x: number; y: number; stage: number }> = {}
-    for (let s = 1; s <= maxStage; s++) {
-      const group = stageGroups[s] ?? []
-      group.forEach((n, idx) => {
-        const x = (s - 1) * STAGE_WIDTH + (STAGE_WIDTH - NODE_WIDTH) / 2
-        const y = TOP_PADDING + idx * NODE_HEIGHT
-        newPositions[n.name] = { x, y, stage: s }
-      })
-    }
-    setPositions(newPositions)
-  }, [nodes])
+  const edges = useMemo(() => {
+    if (!chainId || !allEdges) return []
+    return allEdges.filter((e) => e.chain_id === chainId)
+  }, [chainId, allEdges])
 
   useEffect(() => {
     if (!nodes || nodes.length === 0) return
@@ -145,8 +120,8 @@ export default function EvolutionVisualizer() {
     if (!edges || !nodes) return []
     const lines: Array<{ x1: number; y1: number; x2: number; y2: number; label?: string }> = []
     for (const e of edges) {
-      const from = nodes.find((n) => n.name === e.from_species)
-      const to = nodes.find((n) => n.name === e.to_species)
+      const from = nodes.find((n) => n.name === e.from_pokemon)
+      const to = nodes.find((n) => n.name === e.to_pokemon)
       if (!from || !to) continue
       const pFrom = positions[from.name]
       const pTo = positions[to.name]
@@ -156,7 +131,7 @@ export default function EvolutionVisualizer() {
         y1: pFrom.y + NODE_HEIGHT / 2,
         x2: pTo.x + NODE_WIDTH / 2,
         y2: pTo.y + NODE_HEIGHT / 2,
-        label: e.trigger,
+        label: e.evolution_trigger || undefined,
       })
     }
     return lines
@@ -166,7 +141,7 @@ export default function EvolutionVisualizer() {
     return <div className="text-red-400 p-8">{error}</div>
   }
 
-  if (loadingSpecies) {
+  if (loadingNodes || loadingEdges) {
     return (
       <div className="flex justify-center py-16">
         <LoadingSpinner size={64} />
@@ -176,18 +151,18 @@ export default function EvolutionVisualizer() {
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <h1 className="text-2xl font-[family-name:var(--font-pixel)] tracking-wider mb-6">
+      <h1 className="text-xl sm:text-2xl font-[family-name:var(--font-pixel)] tracking-wider mb-6">
         Evolution Visualizer
       </h1>
       <div className="mb-6 flex items-center gap-4">
-        <label htmlFor="pokemon-select" className="text-sm text-white/60">
+        <label htmlFor="pokemon-select" className="text-sm text-[var(--text-secondary)]">
           Select Pokemon chain:
         </label>
         <select
           id="pokemon-select"
           value={selected ?? ''}
           onChange={(e) => setSelected(e.target.value)}
-          className="glass border border-white/20 text-white px-3 py-2 rounded-lg text-sm"
+          className="glass border border-[var(--card-border)] text-[var(--text-primary)] px-3 py-2 rounded-lg text-sm"
         >
           {speciesList.map((s) => (
             <option key={s} value={s} className="bg-slate-900">
@@ -202,7 +177,7 @@ export default function EvolutionVisualizer() {
           style={{
             height: containerHeight || 400,
             minWidth: containerWidth || 400,
-            border: '1px solid rgba(255,255,255,0.1)',
+            border: '1px solid var(--card-border)',
             borderRadius: 12,
             padding: 16,
             position: 'relative',
@@ -218,7 +193,7 @@ export default function EvolutionVisualizer() {
                 width: NODE_WIDTH,
                 textAlign: 'center',
                 fontSize: 11,
-                color: 'rgba(255,255,255,0.5)',
+                color: 'var(--text-secondary)',
                 fontWeight: 600,
                 letterSpacing: 1,
               }}
@@ -236,7 +211,7 @@ export default function EvolutionVisualizer() {
                 <polyline
                   points={`${ln.x1},${ln.y1} ${ln.x2},${ln.y2}`}
                   fill="none"
-                  stroke="rgba(255,255,255,0.4)"
+                  stroke="var(--card-border)"
                   strokeWidth={2}
                 />
                 {ln.label && ln.label !== 'none' && (
@@ -244,7 +219,7 @@ export default function EvolutionVisualizer() {
                     x={(ln.x1 + ln.x2) / 2}
                     y={(ln.y1 + ln.y2) / 2 - 6}
                     textAnchor="middle"
-                    fill="rgba(255,255,255,0.6)"
+                    fill="var(--text-secondary)"
                     fontSize={9}
                   >
                     {ln.label}
@@ -270,7 +245,7 @@ export default function EvolutionVisualizer() {
                 }}
               >
                 <div
-                  className="glass hover:bg-white/5 transition-colors"
+                  className="glass hover:bg-[var(--surface)] transition-colors"
                   style={{
                     borderRadius: 12,
                     padding: 10,
@@ -293,7 +268,7 @@ export default function EvolutionVisualizer() {
                         width: 64,
                         height: 64,
                         borderRadius: 8,
-                        background: 'rgba(255,255,255,0.1)',
+                        background: 'var(--card-border)',
                       }}
                     />
                   )}

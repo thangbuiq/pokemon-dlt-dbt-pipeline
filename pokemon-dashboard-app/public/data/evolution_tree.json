@@ -1,0 +1,2522 @@
+[
+  {
+    "chain_id": 1,
+    "species_name": "bulbasaur",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 1,
+    "species_name": "bulbasaur",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 1,
+    "species_name": "bulbasaur",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 1,
+    "species_name": "bulbasaur",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 1,
+    "species_name": "bulbasaur",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 1,
+    "species_name": "bulbasaur",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 1,
+    "species_name": "bulbasaur",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 1,
+    "species_name": "bulbasaur",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 1,
+    "species_name": "bulbasaur",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 1,
+    "species_name": "ivysaur",
+    "stage": 2,
+    "evolves_from": "bulbasaur",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 1,
+    "species_name": "ivysaur",
+    "stage": 2,
+    "evolves_from": "bulbasaur",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 1,
+    "species_name": "ivysaur",
+    "stage": 2,
+    "evolves_from": "bulbasaur",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 1,
+    "species_name": "ivysaur",
+    "stage": 2,
+    "evolves_from": "bulbasaur",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 1,
+    "species_name": "ivysaur",
+    "stage": 2,
+    "evolves_from": "bulbasaur",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 1,
+    "species_name": "ivysaur",
+    "stage": 2,
+    "evolves_from": "bulbasaur",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 1,
+    "species_name": "ivysaur",
+    "stage": 2,
+    "evolves_from": "bulbasaur",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 1,
+    "species_name": "ivysaur",
+    "stage": 2,
+    "evolves_from": "bulbasaur",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 1,
+    "species_name": "ivysaur",
+    "stage": 2,
+    "evolves_from": "bulbasaur",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 2,
+    "species_name": "charmander",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 2,
+    "species_name": "charmander",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 2,
+    "species_name": "charmander",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 2,
+    "species_name": "charmander",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 2,
+    "species_name": "charmander",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 2,
+    "species_name": "charmander",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 2,
+    "species_name": "charmander",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 2,
+    "species_name": "charmander",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 2,
+    "species_name": "charmander",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 2,
+    "species_name": "charmeleon",
+    "stage": 2,
+    "evolves_from": "charmander",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 2,
+    "species_name": "charmeleon",
+    "stage": 2,
+    "evolves_from": "charmander",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 2,
+    "species_name": "charmeleon",
+    "stage": 2,
+    "evolves_from": "charmander",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 2,
+    "species_name": "charmeleon",
+    "stage": 2,
+    "evolves_from": "charmander",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 2,
+    "species_name": "charmeleon",
+    "stage": 2,
+    "evolves_from": "charmander",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 2,
+    "species_name": "charmeleon",
+    "stage": 2,
+    "evolves_from": "charmander",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 2,
+    "species_name": "charmeleon",
+    "stage": 2,
+    "evolves_from": "charmander",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 2,
+    "species_name": "charmeleon",
+    "stage": 2,
+    "evolves_from": "charmander",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 2,
+    "species_name": "charmeleon",
+    "stage": 2,
+    "evolves_from": "charmander",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 3,
+    "species_name": "squirtle",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 3,
+    "species_name": "squirtle",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 3,
+    "species_name": "squirtle",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 3,
+    "species_name": "squirtle",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 3,
+    "species_name": "squirtle",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 3,
+    "species_name": "squirtle",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 3,
+    "species_name": "squirtle",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 3,
+    "species_name": "squirtle",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 3,
+    "species_name": "squirtle",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 3,
+    "species_name": "wartortle",
+    "stage": 2,
+    "evolves_from": "squirtle",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 3,
+    "species_name": "wartortle",
+    "stage": 2,
+    "evolves_from": "squirtle",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 3,
+    "species_name": "wartortle",
+    "stage": 2,
+    "evolves_from": "squirtle",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 3,
+    "species_name": "wartortle",
+    "stage": 2,
+    "evolves_from": "squirtle",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 3,
+    "species_name": "wartortle",
+    "stage": 2,
+    "evolves_from": "squirtle",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 3,
+    "species_name": "wartortle",
+    "stage": 2,
+    "evolves_from": "squirtle",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 3,
+    "species_name": "wartortle",
+    "stage": 2,
+    "evolves_from": "squirtle",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 3,
+    "species_name": "wartortle",
+    "stage": 2,
+    "evolves_from": "squirtle",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 3,
+    "species_name": "wartortle",
+    "stage": 2,
+    "evolves_from": "squirtle",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 4,
+    "species_name": "caterpie",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 4,
+    "species_name": "caterpie",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 4,
+    "species_name": "caterpie",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 4,
+    "species_name": "caterpie",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 4,
+    "species_name": "caterpie",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 4,
+    "species_name": "caterpie",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 4,
+    "species_name": "caterpie",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 4,
+    "species_name": "caterpie",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 4,
+    "species_name": "caterpie",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 4,
+    "species_name": "metapod",
+    "stage": 2,
+    "evolves_from": "caterpie",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 4,
+    "species_name": "metapod",
+    "stage": 2,
+    "evolves_from": "caterpie",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 4,
+    "species_name": "metapod",
+    "stage": 2,
+    "evolves_from": "caterpie",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 4,
+    "species_name": "metapod",
+    "stage": 2,
+    "evolves_from": "caterpie",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 4,
+    "species_name": "metapod",
+    "stage": 2,
+    "evolves_from": "caterpie",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 4,
+    "species_name": "metapod",
+    "stage": 2,
+    "evolves_from": "caterpie",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 4,
+    "species_name": "metapod",
+    "stage": 2,
+    "evolves_from": "caterpie",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 4,
+    "species_name": "metapod",
+    "stage": 2,
+    "evolves_from": "caterpie",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 4,
+    "species_name": "metapod",
+    "stage": 2,
+    "evolves_from": "caterpie",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 5,
+    "species_name": "weedle",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 5,
+    "species_name": "weedle",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 5,
+    "species_name": "weedle",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 5,
+    "species_name": "weedle",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 5,
+    "species_name": "weedle",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 5,
+    "species_name": "weedle",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 5,
+    "species_name": "weedle",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 5,
+    "species_name": "weedle",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 5,
+    "species_name": "weedle",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 5,
+    "species_name": "kakuna",
+    "stage": 2,
+    "evolves_from": "weedle",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 5,
+    "species_name": "kakuna",
+    "stage": 2,
+    "evolves_from": "weedle",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 5,
+    "species_name": "kakuna",
+    "stage": 2,
+    "evolves_from": "weedle",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 5,
+    "species_name": "kakuna",
+    "stage": 2,
+    "evolves_from": "weedle",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 5,
+    "species_name": "kakuna",
+    "stage": 2,
+    "evolves_from": "weedle",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 5,
+    "species_name": "kakuna",
+    "stage": 2,
+    "evolves_from": "weedle",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 5,
+    "species_name": "kakuna",
+    "stage": 2,
+    "evolves_from": "weedle",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 5,
+    "species_name": "kakuna",
+    "stage": 2,
+    "evolves_from": "weedle",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 5,
+    "species_name": "kakuna",
+    "stage": 2,
+    "evolves_from": "weedle",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 6,
+    "species_name": "pidgey",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 6,
+    "species_name": "pidgey",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 6,
+    "species_name": "pidgey",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 6,
+    "species_name": "pidgey",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 6,
+    "species_name": "pidgey",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 6,
+    "species_name": "pidgey",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 6,
+    "species_name": "pidgey",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 6,
+    "species_name": "pidgey",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 6,
+    "species_name": "pidgey",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 6,
+    "species_name": "pidgeotto",
+    "stage": 2,
+    "evolves_from": "pidgey",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 6,
+    "species_name": "pidgeotto",
+    "stage": 2,
+    "evolves_from": "pidgey",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 6,
+    "species_name": "pidgeotto",
+    "stage": 2,
+    "evolves_from": "pidgey",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 6,
+    "species_name": "pidgeotto",
+    "stage": 2,
+    "evolves_from": "pidgey",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 6,
+    "species_name": "pidgeotto",
+    "stage": 2,
+    "evolves_from": "pidgey",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 6,
+    "species_name": "pidgeotto",
+    "stage": 2,
+    "evolves_from": "pidgey",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 6,
+    "species_name": "pidgeotto",
+    "stage": 2,
+    "evolves_from": "pidgey",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 6,
+    "species_name": "pidgeotto",
+    "stage": 2,
+    "evolves_from": "pidgey",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 6,
+    "species_name": "pidgeotto",
+    "stage": 2,
+    "evolves_from": "pidgey",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 7,
+    "species_name": "rattata",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 7,
+    "species_name": "rattata",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 7,
+    "species_name": "rattata",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 7,
+    "species_name": "rattata",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 7,
+    "species_name": "rattata",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 7,
+    "species_name": "rattata",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 7,
+    "species_name": "rattata",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 7,
+    "species_name": "rattata",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 7,
+    "species_name": "rattata",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 7,
+    "species_name": "raticate",
+    "stage": 2,
+    "evolves_from": "rattata",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 7,
+    "species_name": "raticate",
+    "stage": 2,
+    "evolves_from": "rattata",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 7,
+    "species_name": "raticate",
+    "stage": 2,
+    "evolves_from": "rattata",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 7,
+    "species_name": "raticate",
+    "stage": 2,
+    "evolves_from": "rattata",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 7,
+    "species_name": "raticate",
+    "stage": 2,
+    "evolves_from": "rattata",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 7,
+    "species_name": "raticate",
+    "stage": 2,
+    "evolves_from": "rattata",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 7,
+    "species_name": "raticate",
+    "stage": 2,
+    "evolves_from": "rattata",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 7,
+    "species_name": "raticate",
+    "stage": 2,
+    "evolves_from": "rattata",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 7,
+    "species_name": "raticate",
+    "stage": 2,
+    "evolves_from": "rattata",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 8,
+    "species_name": "spearow",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 8,
+    "species_name": "spearow",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 8,
+    "species_name": "spearow",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 8,
+    "species_name": "spearow",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 8,
+    "species_name": "spearow",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 8,
+    "species_name": "spearow",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 8,
+    "species_name": "spearow",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 8,
+    "species_name": "spearow",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 8,
+    "species_name": "spearow",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 8,
+    "species_name": "fearow",
+    "stage": 2,
+    "evolves_from": "spearow",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 8,
+    "species_name": "fearow",
+    "stage": 2,
+    "evolves_from": "spearow",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 8,
+    "species_name": "fearow",
+    "stage": 2,
+    "evolves_from": "spearow",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 8,
+    "species_name": "fearow",
+    "stage": 2,
+    "evolves_from": "spearow",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 8,
+    "species_name": "fearow",
+    "stage": 2,
+    "evolves_from": "spearow",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 8,
+    "species_name": "fearow",
+    "stage": 2,
+    "evolves_from": "spearow",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 8,
+    "species_name": "fearow",
+    "stage": 2,
+    "evolves_from": "spearow",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 8,
+    "species_name": "fearow",
+    "stage": 2,
+    "evolves_from": "spearow",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 8,
+    "species_name": "fearow",
+    "stage": 2,
+    "evolves_from": "spearow",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 9,
+    "species_name": "ekans",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 9,
+    "species_name": "ekans",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 9,
+    "species_name": "ekans",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 9,
+    "species_name": "ekans",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 9,
+    "species_name": "ekans",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 9,
+    "species_name": "ekans",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 9,
+    "species_name": "ekans",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 9,
+    "species_name": "ekans",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 9,
+    "species_name": "ekans",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 9,
+    "species_name": "arbok",
+    "stage": 2,
+    "evolves_from": "ekans",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 9,
+    "species_name": "arbok",
+    "stage": 2,
+    "evolves_from": "ekans",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 9,
+    "species_name": "arbok",
+    "stage": 2,
+    "evolves_from": "ekans",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 9,
+    "species_name": "arbok",
+    "stage": 2,
+    "evolves_from": "ekans",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 9,
+    "species_name": "arbok",
+    "stage": 2,
+    "evolves_from": "ekans",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 9,
+    "species_name": "arbok",
+    "stage": 2,
+    "evolves_from": "ekans",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 9,
+    "species_name": "arbok",
+    "stage": 2,
+    "evolves_from": "ekans",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 9,
+    "species_name": "arbok",
+    "stage": 2,
+    "evolves_from": "ekans",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 9,
+    "species_name": "arbok",
+    "stage": 2,
+    "evolves_from": "ekans",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 10,
+    "species_name": "pichu",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 10,
+    "species_name": "pichu",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 10,
+    "species_name": "pichu",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 10,
+    "species_name": "pichu",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 10,
+    "species_name": "pichu",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 10,
+    "species_name": "pichu",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 10,
+    "species_name": "pichu",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 10,
+    "species_name": "pichu",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 10,
+    "species_name": "pichu",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 10,
+    "species_name": "pikachu",
+    "stage": 2,
+    "evolves_from": "pichu",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 10,
+    "species_name": "pikachu",
+    "stage": 2,
+    "evolves_from": "pichu",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 10,
+    "species_name": "pikachu",
+    "stage": 2,
+    "evolves_from": "pichu",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 10,
+    "species_name": "pikachu",
+    "stage": 2,
+    "evolves_from": "pichu",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 10,
+    "species_name": "pikachu",
+    "stage": 2,
+    "evolves_from": "pichu",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 10,
+    "species_name": "pikachu",
+    "stage": 2,
+    "evolves_from": "pichu",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 10,
+    "species_name": "pikachu",
+    "stage": 2,
+    "evolves_from": "pichu",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 10,
+    "species_name": "pikachu",
+    "stage": 2,
+    "evolves_from": "pichu",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 10,
+    "species_name": "pikachu",
+    "stage": 2,
+    "evolves_from": "pichu",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 11,
+    "species_name": "sandshrew",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 11,
+    "species_name": "sandshrew",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 11,
+    "species_name": "sandshrew",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 11,
+    "species_name": "sandshrew",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 11,
+    "species_name": "sandshrew",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 11,
+    "species_name": "sandshrew",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 11,
+    "species_name": "sandshrew",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 11,
+    "species_name": "sandshrew",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 11,
+    "species_name": "sandshrew",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 11,
+    "species_name": "sandslash",
+    "stage": 2,
+    "evolves_from": "sandshrew",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 11,
+    "species_name": "sandslash",
+    "stage": 2,
+    "evolves_from": "sandshrew",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 11,
+    "species_name": "sandslash",
+    "stage": 2,
+    "evolves_from": "sandshrew",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 11,
+    "species_name": "sandslash",
+    "stage": 2,
+    "evolves_from": "sandshrew",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 11,
+    "species_name": "sandslash",
+    "stage": 2,
+    "evolves_from": "sandshrew",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 11,
+    "species_name": "sandslash",
+    "stage": 2,
+    "evolves_from": "sandshrew",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 11,
+    "species_name": "sandslash",
+    "stage": 2,
+    "evolves_from": "sandshrew",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 11,
+    "species_name": "sandslash",
+    "stage": 2,
+    "evolves_from": "sandshrew",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 11,
+    "species_name": "sandslash",
+    "stage": 2,
+    "evolves_from": "sandshrew",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 12,
+    "species_name": "nidoran-f",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 12,
+    "species_name": "nidoran-f",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 12,
+    "species_name": "nidoran-f",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 12,
+    "species_name": "nidoran-f",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 12,
+    "species_name": "nidoran-f",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 12,
+    "species_name": "nidoran-f",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 12,
+    "species_name": "nidoran-f",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 12,
+    "species_name": "nidoran-f",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 12,
+    "species_name": "nidoran-f",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 12,
+    "species_name": "nidorina",
+    "stage": 2,
+    "evolves_from": "nidoran-f",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 12,
+    "species_name": "nidorina",
+    "stage": 2,
+    "evolves_from": "nidoran-f",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 12,
+    "species_name": "nidorina",
+    "stage": 2,
+    "evolves_from": "nidoran-f",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 12,
+    "species_name": "nidorina",
+    "stage": 2,
+    "evolves_from": "nidoran-f",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 12,
+    "species_name": "nidorina",
+    "stage": 2,
+    "evolves_from": "nidoran-f",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 12,
+    "species_name": "nidorina",
+    "stage": 2,
+    "evolves_from": "nidoran-f",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 12,
+    "species_name": "nidorina",
+    "stage": 2,
+    "evolves_from": "nidoran-f",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 12,
+    "species_name": "nidorina",
+    "stage": 2,
+    "evolves_from": "nidoran-f",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 12,
+    "species_name": "nidorina",
+    "stage": 2,
+    "evolves_from": "nidoran-f",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 13,
+    "species_name": "nidoran-m",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 13,
+    "species_name": "nidoran-m",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 13,
+    "species_name": "nidoran-m",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 13,
+    "species_name": "nidoran-m",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 13,
+    "species_name": "nidoran-m",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 13,
+    "species_name": "nidoran-m",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 13,
+    "species_name": "nidoran-m",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 13,
+    "species_name": "nidoran-m",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 13,
+    "species_name": "nidoran-m",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 13,
+    "species_name": "nidorino",
+    "stage": 2,
+    "evolves_from": "nidoran-m",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 13,
+    "species_name": "nidorino",
+    "stage": 2,
+    "evolves_from": "nidoran-m",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 13,
+    "species_name": "nidorino",
+    "stage": 2,
+    "evolves_from": "nidoran-m",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 13,
+    "species_name": "nidorino",
+    "stage": 2,
+    "evolves_from": "nidoran-m",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 13,
+    "species_name": "nidorino",
+    "stage": 2,
+    "evolves_from": "nidoran-m",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 13,
+    "species_name": "nidorino",
+    "stage": 2,
+    "evolves_from": "nidoran-m",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 13,
+    "species_name": "nidorino",
+    "stage": 2,
+    "evolves_from": "nidoran-m",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 13,
+    "species_name": "nidorino",
+    "stage": 2,
+    "evolves_from": "nidoran-m",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 13,
+    "species_name": "nidorino",
+    "stage": 2,
+    "evolves_from": "nidoran-m",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 14,
+    "species_name": "cleffa",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 14,
+    "species_name": "cleffa",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 14,
+    "species_name": "cleffa",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 14,
+    "species_name": "cleffa",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 14,
+    "species_name": "cleffa",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 14,
+    "species_name": "cleffa",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 14,
+    "species_name": "cleffa",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 14,
+    "species_name": "cleffa",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 14,
+    "species_name": "cleffa",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 14,
+    "species_name": "clefairy",
+    "stage": 2,
+    "evolves_from": "cleffa",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 14,
+    "species_name": "clefairy",
+    "stage": 2,
+    "evolves_from": "cleffa",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 14,
+    "species_name": "clefairy",
+    "stage": 2,
+    "evolves_from": "cleffa",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 14,
+    "species_name": "clefairy",
+    "stage": 2,
+    "evolves_from": "cleffa",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 14,
+    "species_name": "clefairy",
+    "stage": 2,
+    "evolves_from": "cleffa",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 14,
+    "species_name": "clefairy",
+    "stage": 2,
+    "evolves_from": "cleffa",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 14,
+    "species_name": "clefairy",
+    "stage": 2,
+    "evolves_from": "cleffa",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 14,
+    "species_name": "clefairy",
+    "stage": 2,
+    "evolves_from": "cleffa",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 14,
+    "species_name": "clefairy",
+    "stage": 2,
+    "evolves_from": "cleffa",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 15,
+    "species_name": "vulpix",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 15,
+    "species_name": "vulpix",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 15,
+    "species_name": "vulpix",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 15,
+    "species_name": "vulpix",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 15,
+    "species_name": "vulpix",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 15,
+    "species_name": "vulpix",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 15,
+    "species_name": "vulpix",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 15,
+    "species_name": "vulpix",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 15,
+    "species_name": "vulpix",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 15,
+    "species_name": "ninetales",
+    "stage": 2,
+    "evolves_from": "vulpix",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 15,
+    "species_name": "ninetales",
+    "stage": 2,
+    "evolves_from": "vulpix",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 15,
+    "species_name": "ninetales",
+    "stage": 2,
+    "evolves_from": "vulpix",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 15,
+    "species_name": "ninetales",
+    "stage": 2,
+    "evolves_from": "vulpix",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 15,
+    "species_name": "ninetales",
+    "stage": 2,
+    "evolves_from": "vulpix",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 15,
+    "species_name": "ninetales",
+    "stage": 2,
+    "evolves_from": "vulpix",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 15,
+    "species_name": "ninetales",
+    "stage": 2,
+    "evolves_from": "vulpix",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 15,
+    "species_name": "ninetales",
+    "stage": 2,
+    "evolves_from": "vulpix",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 15,
+    "species_name": "ninetales",
+    "stage": 2,
+    "evolves_from": "vulpix",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 16,
+    "species_name": "igglybuff",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 16,
+    "species_name": "igglybuff",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 16,
+    "species_name": "igglybuff",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 16,
+    "species_name": "igglybuff",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 16,
+    "species_name": "igglybuff",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 16,
+    "species_name": "igglybuff",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 16,
+    "species_name": "igglybuff",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 16,
+    "species_name": "igglybuff",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 16,
+    "species_name": "igglybuff",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 16,
+    "species_name": "jigglypuff",
+    "stage": 2,
+    "evolves_from": "igglybuff",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 16,
+    "species_name": "jigglypuff",
+    "stage": 2,
+    "evolves_from": "igglybuff",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 16,
+    "species_name": "jigglypuff",
+    "stage": 2,
+    "evolves_from": "igglybuff",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 16,
+    "species_name": "jigglypuff",
+    "stage": 2,
+    "evolves_from": "igglybuff",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 16,
+    "species_name": "jigglypuff",
+    "stage": 2,
+    "evolves_from": "igglybuff",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 16,
+    "species_name": "jigglypuff",
+    "stage": 2,
+    "evolves_from": "igglybuff",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 16,
+    "species_name": "jigglypuff",
+    "stage": 2,
+    "evolves_from": "igglybuff",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 16,
+    "species_name": "jigglypuff",
+    "stage": 2,
+    "evolves_from": "igglybuff",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 16,
+    "species_name": "jigglypuff",
+    "stage": 2,
+    "evolves_from": "igglybuff",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 17,
+    "species_name": "zubat",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 17,
+    "species_name": "zubat",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 17,
+    "species_name": "zubat",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 17,
+    "species_name": "zubat",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 17,
+    "species_name": "zubat",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 17,
+    "species_name": "zubat",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 17,
+    "species_name": "zubat",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 17,
+    "species_name": "zubat",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 17,
+    "species_name": "zubat",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 17,
+    "species_name": "golbat",
+    "stage": 2,
+    "evolves_from": "zubat",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 17,
+    "species_name": "golbat",
+    "stage": 2,
+    "evolves_from": "zubat",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 17,
+    "species_name": "golbat",
+    "stage": 2,
+    "evolves_from": "zubat",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 17,
+    "species_name": "golbat",
+    "stage": 2,
+    "evolves_from": "zubat",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 17,
+    "species_name": "golbat",
+    "stage": 2,
+    "evolves_from": "zubat",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 17,
+    "species_name": "golbat",
+    "stage": 2,
+    "evolves_from": "zubat",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 17,
+    "species_name": "golbat",
+    "stage": 2,
+    "evolves_from": "zubat",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 17,
+    "species_name": "golbat",
+    "stage": 2,
+    "evolves_from": "zubat",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 17,
+    "species_name": "golbat",
+    "stage": 2,
+    "evolves_from": "zubat",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 18,
+    "species_name": "oddish",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 18,
+    "species_name": "oddish",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 18,
+    "species_name": "oddish",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 18,
+    "species_name": "oddish",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 18,
+    "species_name": "oddish",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 18,
+    "species_name": "oddish",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 18,
+    "species_name": "oddish",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 18,
+    "species_name": "oddish",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 18,
+    "species_name": "oddish",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 18,
+    "species_name": "gloom",
+    "stage": 2,
+    "evolves_from": "oddish",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 18,
+    "species_name": "gloom",
+    "stage": 2,
+    "evolves_from": "oddish",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 18,
+    "species_name": "gloom",
+    "stage": 2,
+    "evolves_from": "oddish",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 18,
+    "species_name": "gloom",
+    "stage": 2,
+    "evolves_from": "oddish",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 18,
+    "species_name": "gloom",
+    "stage": 2,
+    "evolves_from": "oddish",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 18,
+    "species_name": "gloom",
+    "stage": 2,
+    "evolves_from": "oddish",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 18,
+    "species_name": "gloom",
+    "stage": 2,
+    "evolves_from": "oddish",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 18,
+    "species_name": "gloom",
+    "stage": 2,
+    "evolves_from": "oddish",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 18,
+    "species_name": "gloom",
+    "stage": 2,
+    "evolves_from": "oddish",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 19,
+    "species_name": "paras",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 19,
+    "species_name": "paras",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 19,
+    "species_name": "paras",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 19,
+    "species_name": "paras",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 19,
+    "species_name": "paras",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 19,
+    "species_name": "paras",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 19,
+    "species_name": "paras",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 19,
+    "species_name": "paras",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 19,
+    "species_name": "paras",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 19,
+    "species_name": "parasect",
+    "stage": 2,
+    "evolves_from": "paras",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 19,
+    "species_name": "parasect",
+    "stage": 2,
+    "evolves_from": "paras",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 19,
+    "species_name": "parasect",
+    "stage": 2,
+    "evolves_from": "paras",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 19,
+    "species_name": "parasect",
+    "stage": 2,
+    "evolves_from": "paras",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 19,
+    "species_name": "parasect",
+    "stage": 2,
+    "evolves_from": "paras",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 19,
+    "species_name": "parasect",
+    "stage": 2,
+    "evolves_from": "paras",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 19,
+    "species_name": "parasect",
+    "stage": 2,
+    "evolves_from": "paras",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 19,
+    "species_name": "parasect",
+    "stage": 2,
+    "evolves_from": "paras",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 19,
+    "species_name": "parasect",
+    "stage": 2,
+    "evolves_from": "paras",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 20,
+    "species_name": "venonat",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 20,
+    "species_name": "venonat",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 20,
+    "species_name": "venonat",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 20,
+    "species_name": "venonat",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 20,
+    "species_name": "venonat",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 20,
+    "species_name": "venonat",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 20,
+    "species_name": "venonat",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 20,
+    "species_name": "venonat",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 20,
+    "species_name": "venonat",
+    "stage": 1,
+    "evolves_from": null,
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 20,
+    "species_name": "venomoth",
+    "stage": 2,
+    "evolves_from": "venonat",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 20,
+    "species_name": "venomoth",
+    "stage": 2,
+    "evolves_from": "venonat",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 20,
+    "species_name": "venomoth",
+    "stage": 2,
+    "evolves_from": "venonat",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 20,
+    "species_name": "venomoth",
+    "stage": 2,
+    "evolves_from": "venonat",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 20,
+    "species_name": "venomoth",
+    "stage": 2,
+    "evolves_from": "venonat",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 20,
+    "species_name": "venomoth",
+    "stage": 2,
+    "evolves_from": "venonat",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 20,
+    "species_name": "venomoth",
+    "stage": 2,
+    "evolves_from": "venonat",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 20,
+    "species_name": "venomoth",
+    "stage": 2,
+    "evolves_from": "venonat",
+    "evolution_trigger": null
+  },
+  {
+    "chain_id": 20,
+    "species_name": "venomoth",
+    "stage": 2,
+    "evolves_from": "venonat",
+    "evolution_trigger": null
+  }
+]
