@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import { useJSONQuery } from '@/lib/data/json-hooks'
+import { useJSONQuery } from '../../lib/data/json-hooks'
 import { Card } from '@/components/ui/Card'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { type PokemonType, typeColorMap } from '@/lib/design-tokens'
@@ -488,6 +488,8 @@ export default function QuizPage() {
                 alt={gameState === 'revealed' ? currentPokemon.name : 'Who is this Pokemon?'}
                 width={192}
                 height={192}
+                loading="eager"
+                priority
                 unoptimized
               />
             </div>
