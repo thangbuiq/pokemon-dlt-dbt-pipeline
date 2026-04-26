@@ -232,6 +232,24 @@ function getTypeEffectiveness(attacker: PokemonType, defender: PokemonType): num
   return TYPE_EFFECTIVENESS[attacker]?.[defender] ?? 1
 }
 
+function getOffenseProfileMultiplier(attackerTypes: PokemonType[], defender: PokemonType): number {
+  if (attackerTypes.length === 0) return 1
+
+  const [primaryType, ...secondaryTypes] = attackerTypes
+  const primaryMultiplier = getTypeEffectiveness(primaryType, defender)
+
+  if (primaryMultiplier !== 1) {
+    return primaryMultiplier
+  }
+
+  const boostedFromSecondary = secondaryTypes.reduce((best, attackerType) => {
+    const candidate = getTypeEffectiveness(attackerType, defender)
+    return candidate > 1 ? Math.max(best, candidate) : best
+  }, 1)
+
+  return boostedFromSecondary
+}
+
 function MatchupTooltip({
   active,
   payload,
@@ -368,22 +386,18 @@ export default function Home() {
 
   const matchupBuckets = useMemo(() => {
     if (!selected)
-      return { x2: [] as PokemonType[], x15: [] as PokemonType[], x0: [] as PokemonType[] }
+      return { x2: [] as PokemonType[], x05: [] as PokemonType[], x0: [] as PokemonType[] }
 
     const attackerTypes = parseTypes(selected)
     const values = ALL_TYPES.map((defenderType) => {
-      const total = attackerTypes.reduce((sum, attackerType) => {
-        return sum + getTypeEffectiveness(attackerType, defenderType)
-      }, 0)
+      const multiplier = getOffenseProfileMultiplier(attackerTypes, defenderType)
 
-      const multiplier =
-        attackerTypes.length > 0 ? Number((total / attackerTypes.length).toFixed(2)) : 1
       return { defenderType, multiplier }
     })
 
     return {
       x2: values.filter((item) => item.multiplier === 2).map((item) => item.defenderType),
-      x15: values.filter((item) => item.multiplier === 1.5).map((item) => item.defenderType),
+      x05: values.filter((item) => item.multiplier === 0.5).map((item) => item.defenderType),
       x0: values.filter((item) => item.multiplier === 0).map((item) => item.defenderType),
     }
   }, [selected])
@@ -844,20 +858,20 @@ export default function Home() {
                 <div className="space-y-2.5">
                   {[
                     { label: '2x', key: 'x2' as const },
-                    { label: '1.5x', key: 'x15' as const },
+                    { label: '1/2x', key: 'x05' as const },
                     { label: '0x', key: 'x0' as const },
                   ].map(({ label, key }) => {
                     const types = matchupBuckets[key]
                     return (
                       <div
                         key={label}
-                        className="flex flex-wrap items-center gap-2 rounded-lg border border-[var(--card-border)] bg-[var(--surface)]/40 px-2.5 py-2"
+                        className="flex items-start gap-2 rounded-lg border border-[var(--card-border)] bg-[var(--surface)]/40 px-2.5 py-2"
                       >
                         <span className="text-[11px] text-[var(--text-primary)] font-[family-name:var(--font-pixel)] tracking-wider min-w-[38px]">
                           {label}
                         </span>
-                        <span className="text-[var(--text-secondary)] text-sm">→</span>
-                        <div className="flex flex-wrap gap-1.5">
+                        <span className="text-[var(--text-secondary)] text-sm leading-6">→</span>
+                        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
                           {types.length > 0 ? (
                             types.map((type) => <Badge key={`${label}-${type}`} type={type} />)
                           ) : (

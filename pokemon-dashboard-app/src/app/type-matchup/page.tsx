@@ -128,21 +128,28 @@ function getEffectiveness(attackerType: PokemonType, defenderType: PokemonType):
 }
 
 function multiplierLabel(multiplier: number): string {
-  if (multiplier === 0) return '0x'
-  if (multiplier === 0.5) return '½x'
-  if (multiplier === 1) return ''
-  if (multiplier === 2) return '2x'
-  return `${multiplier}x`
+  if (multiplier === 0) return '0'
+  if (multiplier === 0.5) return '1/2'
+  if (multiplier === 1) return '1'
+  if (multiplier === 2) return '2'
+  return `${multiplier}`
 }
 
 function cellStyles(multiplier: number): { backgroundColor: string; color: string } {
   if (multiplier === 0) return { backgroundColor: '#201122', color: '#FFFFFF' }
   if (multiplier === 0.5) return { backgroundColor: '#8B1A1A', color: '#FFFFFF' }
-  if (multiplier === 1) return { backgroundColor: 'var(--surface)', color: '#FFFFFF' }
+  if (multiplier === 1) return { backgroundColor: 'var(--surface)', color: '#000000' }
   return { backgroundColor: '#166534', color: '#FFFFFF' }
 }
 
 export default function TypeMatchupPage() {
+  const guideItems = [
+    { multiplier: 2, description: 'Super effective. Strong damage.' },
+    { multiplier: 1, description: 'Normal damage. No modifier.' },
+    { multiplier: 0.5, description: 'Not very effective. Reduced damage.' },
+    { multiplier: 0, description: 'Immune. No damage lands.' },
+  ] as const
+
   const matrix = useMemo(
     () =>
       TYPES.map((attacker) =>
@@ -172,22 +179,19 @@ export default function TypeMatchupPage() {
           Notes
         </h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 text-sm">
-          <div className="rounded-lg border border-[var(--card-border)] bg-[var(--surface)] p-3">
-            <div className="text-[var(--text-primary)] font-semibold mb-1">2x</div>
-            <div className="text-[var(--text-muted)]">Super effective. Strong damage.</div>
-          </div>
-          <div className="rounded-lg border border-[var(--card-border)] bg-[var(--surface)] p-3">
-            <div className="text-[var(--text-primary)] font-semibold mb-1">1x</div>
-            <div className="text-[var(--text-muted)]">Normal damage. No modifier.</div>
-          </div>
-          <div className="rounded-lg border border-[var(--card-border)] bg-[var(--surface)] p-3">
-            <div className="text-[var(--text-primary)] font-semibold mb-1">½x</div>
-            <div className="text-[var(--text-muted)]">Not very effective. Reduced damage.</div>
-          </div>
-          <div className="rounded-lg border border-[var(--card-border)] bg-[var(--surface)] p-3">
-            <div className="text-[var(--text-primary)] font-semibold mb-1">0x</div>
-            <div className="text-[var(--text-muted)]">Immune. No damage lands.</div>
-          </div>
+          {guideItems.map((item) => {
+            const styles = cellStyles(item.multiplier)
+            return (
+              <div
+                key={item.multiplier}
+                className="rounded-lg border border-[var(--card-border)] p-3 font-[family-name:var(--font-pixel)] tracking-wider"
+                style={{ backgroundColor: styles.backgroundColor, color: styles.color }}
+              >
+                <div className="font-semibold mb-1">{multiplierLabel(item.multiplier)}</div>
+                <div>{item.description}</div>
+              </div>
+            )
+          })}
         </div>
       </Card>
 
@@ -222,7 +226,7 @@ export default function TypeMatchupPage() {
                         key={`${cell.attacker}-${cell.defender}`}
                         className="border border-[var(--card-border)] px-2 py-2 text-center font-semibold text-white"
                         style={styles}
-                        title={`${cell.attacker} vs ${cell.defender}: ${cell.multiplier}x`}
+                        title={`${cell.attacker} vs ${cell.defender}: ${multiplierLabel(cell.multiplier)}`}
                       >
                         {multiplierLabel(cell.multiplier)}
                       </td>

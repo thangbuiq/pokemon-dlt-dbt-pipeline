@@ -13,8 +13,10 @@ dist/
 .git/
 .gitignore
 
-# Data files (except pokemon.db which is in public/)
-data/
+# Data files (exclude monorepo-level dashboard /data folder only)
+/data/
+!public/data/
+!public/data/*.json
 *.duckdb
 *.duckdb.wal
 

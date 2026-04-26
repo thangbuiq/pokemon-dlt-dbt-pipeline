@@ -112,7 +112,7 @@ function StreakFire({ streak }: { streak: number }) {
         width={size}
         height={size}
         viewBox="0 0 24 24"
-        className="shrink-0 animate-[pulse-glow_1s_ease-in-out_infinite]"
+        className="shrink-0"
         style={{ color: streak >= 5 ? 'var(--type-fire)' : 'var(--type-electric)' }}
       >
         <path
