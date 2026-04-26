@@ -23,5 +23,8 @@ jobs:
       - name: Install project dependencies
         run: just install
 
+      - name: Install prek
+        run: uv tool install prek
+
       - name: Run prek checks on all files
         run: uv run prek run check --all-files
