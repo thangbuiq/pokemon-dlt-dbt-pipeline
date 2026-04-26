@@ -3,15 +3,25 @@
 <div align="center">
   <img src="pokemon-dashboard-app/public/pokeball.png" alt="Pokédex Pipeline" width="120" />
 
-# Pokédex Pipeline
+# NextGen Pokédex - pokedexgen
 
-**A modern data pipeline combining dlt + DuckDB + dbt + Next.js + materialized JSON files for Pokémon data visualization**
+**A modern approach to the Pokédex, gotta catch 'em all with data-driven insights!**
 
-[📖 Documentation](#quickstart) · [🐛 Report Issue](https://github.com/thangbuiq/pokemon-dlt-dbt-pipeline/issues)
+[![Pipeline Status](https://img.shields.io/badge/pipeline-passing-brightgreen)](#)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+![GitHub Stars](https://img.shields.io/github/stars/thangbuiq/pokemon-dlt-dbt-pipeline?style=social)
 
 </div>
 
 ---
+
+## Why This Slaps ⚡
+
+Yeah, yeah, there are a ton of Pokédex apps. But how many actually go hard with a modern data stack and clean, reliable data? Exactly.
+
+This isn’t just a Pokédex, it’s your all-in-one battle HQ: deep stats, slick team builder, and a type matchup matrix that actually helps you win. No more endless scrolling or tab-hopping.
+
+![catch-em-if-you-can](.github/assets/banner.png)
 
 ## Motivation why I built this
 
@@ -28,39 +38,7 @@ Sometimes the best reason to build something is that you genuinely want it to ex
 
 ## Architecture
 
-```mermaid
-flowchart LR
-    subgraph Ingestion["📥 Ingestion (dlt)"]
-        API[PokeAPI] --> DLTC[dlt Pipeline]
-    end
-
-    subgraph Storage["💾 Storage (DuckDB)"]
-        DLTC --> RAW[raw.duckdb]
-    end
-
-    subgraph Transform["⚙️ Transform (dbt)"]
-        RAW --> DBT[dbt Models]
-        DBT --> STG[Staging]
-        DBT --> INT[Intermediate]
-        DBT --> MART[Marts]
-    end
-
-    subgraph Export["📤 Export"]
-        DBT --> EXP[Curated marts]
-        EXP --> JSON[public/data/*.json]
-    end
-
-    subgraph Frontend["🎨 Frontend (Next.js + Static JSON)"]
-        JSON --> Next[Next.js App]
-        Next --> UI[Interactive UI]
-    end
-
-    style Ingestion fill:#4caf50,color:#fff
-    style Storage fill:#ff9800,color:#fff
-    style Transform fill:#2196f3,color:#fff
-    style Export fill:#9c27b0,color:#fff
-    style Frontend fill:#f44336,color:#fff
-```
+![architecture](.github/assets/architecture.png)
 
 ## monorepo Structure
 
@@ -69,22 +47,22 @@ pokemon-dlt-dbt-pipeline/
 ├── pokemon-dlt-pipeline/     # Data ingestion with dlt
 │   └── pokemon_pipeline/
 │       ├── pipeline.py       # Main entry point
-│       ├── sources/         # @dlt.source + @dlt.resource
-│       └── export.py       # Export curated tables
-├── pokemon-dbt-pipeline/  # Transformations with dbt
+│       ├── sources/          # @dlt.source + @dlt.resource
+│       └── export.py         # Export curated tables
+├── pokemon-dbt-pipeline/     # Transformations with dbt
 │   ├── models/
-│   │   ├── staging/        # stg_* (join child tables)
-│   │   ├── intermediate/  # int_* (enriched, flattened)
-│   │   └── marts/         # dim_* + fct_* (analytics)
-│   └── seeds/             # type_effectiveness.csv
-├── pokemon-dashboard-app/ # Next.js 16 + static JSON data
+│   │   ├── staging/          # stg_* (join child tables)
+│   │   ├── intermediate/     # int_* (enriched, flattened)
+│   │   └── marts/            # dim_* + fct_* (analytics)
+│   └── seeds/                # type_effectiveness.csv
+├── pokemon-dashboard-app/    # Next.js 16 + static JSON data
 │   ├── src/
-│   │   ├── app/            # 9 routes
-│   │   ├── components/     # UI components
-│   │   └── lib/            # JSON hooks, design tokens
+│   │   ├── app/              # Next.js pages and layouts
+│   │   ├── components/       # UI components
+│   │   └── lib/              # JSON hooks, design tokens
 │   └── public/
-│       └── data/           # Materialized JSON files for frontend
-└── data/                   # DuckDB storage
+│       └── data/             # Materialized JSON files for frontend
+└── data/                     # DuckDB storage
 ```
 
 ## Features
@@ -121,24 +99,20 @@ pokemon-dlt-dbt-pipeline/
 ### Installation
 
 ```bash
-# Clone the repository
 git clone https://github.com/thangbuiq/pokemon-dlt-dbt-pipeline
 cd pokemon-dlt-dbt-pipeline
-
-# Install all dependencies (Python + JavaScript)
 just install
 ```
 
 ### Run the Pipeline
 
 ```bash
-# Full pipeline: extract → transform → materialize frontend JSON
-just data
+just data # Run the entire data pipeline (ingest, transform, export)
 
 # Or run individual steps
 just pipeline    # Extract data from PokeAPI
 just transform   # Run dbt transformations
-just export      # Materialize curated JSON files into pokemon-dashboard-app/public/data
+just export      # Materialize mart layer to JSON files
 ```
 
 ### Development
@@ -147,43 +121,13 @@ just export      # Materialize curated JSON files into pokemon-dashboard-app/pub
 # Start the dashboard
 just dashboard   # Opens http://localhost:3000
 
-# Run tests
-just test
-
-# Build for production
+# build the dashboard for production
 just build
-just deploy      # Deploy to Vercel
 ```
 
 ## Contributing
 
-Contributions are welcome! Whether it's a bug fix, new feature, or documentation improvement—help make this project better.
-
-### Development Workflow
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Run tests (`just test`)
-5. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
-
-### Testing
-
-```bash
-# Python tests (dlt pipeline)
-cd pokemon-dlt-pipeline && uv run pytest
-
-# dbt tests
-cd pokemon-dbt-pipeline && uv run dbt test
-
-# Frontend tests
-cd pokemon-dashboard-app && bun test
-
-# E2E tests
-cd pokemon-dashboard-app && bunx playwright test
-```
+Contributions are welcome! Whether it's a bug fix, new feature, or documentation improvement-help make this project better.
 
 ## License
 

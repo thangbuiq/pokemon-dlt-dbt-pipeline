@@ -757,7 +757,7 @@ export default function Home() {
             <div className="space-y-3">
               <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
                 <div>
-                  <h3 className="text-[var(--text-secondary)] text-xs font-semibold uppercase tracking-wider mb-3">
+                  <h3 className="text-[var(--text-secondary)] text-xs font-semibold uppercase tracking-wider">
                     Radar
                   </h3>
 
@@ -798,7 +798,7 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <h3 className="text-[var(--text-secondary)] text-xs font-semibold uppercase tracking-wider mb-3">
+                  <h3 className="text-[var(--text-secondary)] text-xs font-semibold uppercase tracking-wider mb-8 ">
                     Base Stats
                   </h3>
 
