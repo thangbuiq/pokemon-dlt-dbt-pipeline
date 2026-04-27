@@ -9,7 +9,6 @@ transform:
 
 export:
   cd pokemon-dlt-pipeline && uv run python -m pokemon_pipeline.export
-  cp data/pokemon.db pokemon-dashboard-app/public/pokemon.db
   mkdir -p pokemon-dashboard-app/public/data
   cd pokemon-dlt-pipeline && uv run python -c "from pokemon_pipeline.export import export_json; export_json()"
 

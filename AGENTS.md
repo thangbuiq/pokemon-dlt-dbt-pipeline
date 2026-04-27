@@ -29,7 +29,6 @@ pokemon-dlt-dbt-pipeline/
 │   │       ├── design-tokens.ts  # 18 Pokemon type colors
 │   │       ├── duckdb/          # hooks.ts (useDuckDBQuery), queries.ts, index.ts
 │   │       └── types/           # pokemon.ts (TypeScript types)
-│   └── public/pokemon.db   # Exported DuckDB file served statically
 ├── pokemon-dagster-app/     # Dagster orchestration (small, experimental)
 │   └── src/pokemon_dagster_app/defs/
 ├── data/
