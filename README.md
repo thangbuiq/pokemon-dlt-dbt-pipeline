@@ -25,6 +25,26 @@ This isn’t just a Pokédex, it’s your all-in-one battle HQ: deep stats, slic
   <img src=".github/assets/banner.png" alt="Pokédexgen banner" width="50%" />
 </div>
 
+## features that slaps
+
+- **Pokedex Search**: Find any Pokemon in a flash with detailed stats, radar chart, evolution chain, and more
+
+  ![pokedex-search](.github/assets/pokedex-search.png)
+  ![pokedex-search1](.github/assets/pokedex-search-1.png)
+  ![pokedex-search2](.github/assets/pokedex-search-2.png)
+
+- **Team Builder And Coverage Analysis**: Build your dream team and analyze type coverage
+
+  ![team-builder](.github/assets/team-builder.png)
+
+- **Type Effectiveness Matrix**: Calculate battle advantages with an interactive type matchup chart
+
+  ![type-matrix](.github/assets/type-matrix.png)
+
+- **Who's That Pokemon?**: and can't forget the classic silhouette guessing game that never gets old
+
+  ![whos-that-pokemon](.github/assets/whos-that-pokemon.png)
+
 ## Motivation why I built this
 
 My work basically goes around building data-related things. But the data that we work with at work is... well, it's not exactly the most exciting data in the world. It's business data, which was SUPER MEGA boring, so it was hard to get excited about building cool dashboards or writing the transformations that I actually not care about. I wanted to build something tha smile every time I opened it.
@@ -48,38 +68,20 @@ and the dagster orchestration looks like this:
 
 ![dagster](.github/assets/dagster.png)
 
+after the data is ingested and transformed, we materialize the mart layer into static JSON files that the Next.js frontend consumes. thanks [motherduck](https://motherduck.com/) for making it easy to query DuckDB data directly from the UI with [`duckdb cli`](https://duckdb.org/docs/current/core_extensions/ui).
+
+![sample-data](.github/assets/duckdb.png)
+
 ## monorepo Structure
 
 ```
 pokemon-dlt-dbt-pipeline/
 ├── pokemon-dlt-pipeline/     # Data ingestion with dlt
-│   └── pokemon_pipeline/
-│       ├── pipeline.py       # Main entry point
-│       ├── sources/          # @dlt.source + @dlt.resource
-│       └── export.py         # Export curated tables
 ├── pokemon-dbt-pipeline/     # Transformations with dbt
-│   ├── models/
-│   │   ├── staging/          # stg_* (join child tables)
-│   │   ├── intermediate/     # int_* (enriched, flattened)
-│   │   └── marts/            # dim_* + fct_* (analytics)
-│   └── seeds/                # type_effectiveness.csv
 ├── pokemon-dashboard-app/    # Next.js 16 + static JSON data
-│   ├── src/
-│   │   ├── app/              # Next.js pages and layouts
-│   │   ├── components/       # UI components
-│   │   └── lib/              # JSON hooks, design tokens
-│   └── public/
-│       └── data/             # Materialized JSON files for frontend
-└── data/                     # DuckDB storage
+├── pokemon-dagster-app/      # Dagster orchestration
+└── data/                     # DuckDB storage, ignored in git
 ```
-
-## Features
-
-- **Materialized JSON Data**: Frontend reads precomputed JSON snapshots from `public/data`
-- **Type Effectiveness Matrix**: Calculate battle advantages
-- **Evolution Trees**: Visualize Pokemon evolution chains
-- **Team Builder**: Build and analyze your dream team
-- **Retro Game Boy UI**: Nostalgic pixel-perfect design
 
 ## Tech Stack
 
