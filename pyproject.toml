@@ -8,4 +8,4 @@ requires-python = ">=3.12"
 package = false
 
 [tool.uv.workspace]
-members = ["pokemon-dlt-pipeline", "pokemon-dbt-pipeline"]
+members = ["pokemon-dlt-pipeline", "pokemon-dbt-pipeline", "pokemon-dagster-app"]

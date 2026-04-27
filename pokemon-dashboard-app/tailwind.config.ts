@@ -35,7 +35,7 @@ const config: Config = {
       },
       fontFamily: {
         pixel: ['"Press Start 2P"', 'monospace'],
-        sans: ['Inter', 'sans-serif'],
+        mono: ['"Geist Mono"', 'ui-monospace', 'monospace'],
       },
       animation: {
         'pulse-glow': 'pulse-glow 2s ease-in-out infinite',

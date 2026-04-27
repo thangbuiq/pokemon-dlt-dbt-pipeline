@@ -81,6 +81,21 @@ models:
       - name: is_hidden
         description: Whether this is a hidden ability
 
+  - name: stg_pokemon__moves
+    description: Pokemon move assignments
+    columns:
+      - name: pokemon_id
+        description: Foreign key to Pokemon
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_pokemon__base')
+              field: id
+      - name: move_name
+        description: Name of the move
+        tests:
+          - not_null
+
   - name: stg_types__base
     description: Pokemon types reference data
     columns:

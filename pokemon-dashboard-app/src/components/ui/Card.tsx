@@ -22,9 +22,9 @@ export function Card({
     <div
       style={glowStyle}
       className={[
-        'glass rounded-lg p-4',
+        'glass rounded-xl p-4',
         hover && 'glass-hover transition-all duration-300 cursor-pointer',
-        pokemonType && 'hover:shadow-[0_0_15px_var(--glow-color)]',
+        pokemonType && 'hover:shadow-[0_0_20px_var(--glow-color)]',
         className,
       ]
         .filter(Boolean)

@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Cyberpunk PokeDex - a full-stack data app: dlt → DuckDB → dbt → Next.js + DuckDB WASM.
+Cyberpunk PokeDex - a full-stack data app: dlt → DuckDB → dbt → Next.js.
 
 ## Architecture
 
@@ -21,7 +21,7 @@ pokemon-dlt-dbt-pipeline/
 │   ├── seeds/               # type_effectiveness.csv
 │   ├── tests/               # Singular dbt tests
 │   └── profiles.yml
-├── pokemon-dashboard-app/   # Next.js 16 App Router + DuckDB WASM
+├── pokemon-dashboard-app/   # Next.js 16 App Router
 │   ├── src/
 │   │   ├── app/             # 9 routes: /, /pokedex, /type-matchup, /team-builder, etc.
 │   │   ├── components/      # layout/, ui/ (Card, Badge, Button, PokemonSprite, LoadingSpinner)
@@ -30,11 +30,21 @@ pokemon-dlt-dbt-pipeline/
 │   │       ├── duckdb/          # hooks.ts (useDuckDBQuery), queries.ts, index.ts
 │   │       └── types/           # pokemon.ts (TypeScript types)
 │   └── public/pokemon.db   # Exported DuckDB file served statically
+├── pokemon-dagster-app/     # Dagster orchestration (small, experimental)
+│   └── src/pokemon_dagster_app/defs/
 ├── data/
 │   ├── raw.duckdb           # dlt target (also dbt source)
 │   └── pokemon.db           # Exported for dashboard
 └── justfile                 # Task orchestration
 ```
+
+## Subproject AGENTS
+
+Each subproject has its own `AGENTS.md` with detailed conventions and commands:
+
+- [`pokemon-dlt-pipeline/AGENTS.md`](./pokemon-dlt-pipeline/AGENTS.md) - dlt pipeline (PokeAPI → DuckDB)
+- [`pokemon-dbt-pipeline/AGENTS.md`](./pokemon-dbt-pipeline/AGENTS.md) - dbt transforms (staging → marts)
+- [`pokemon-dashboard-app/AGENTS.md`](./pokemon-dashboard-app/AGENTS.md) - Next.js dashboard
 
 ## Key Conventions
 
@@ -58,7 +68,7 @@ pokemon-dlt-dbt-pipeline/
 
 ### Dashboard (Next.js)
 
-- **ALL pages use `"use client"`** - DuckDB WASM requires client-side
+- **ALL pages use `"use client"`**
 - Route structure: App Router with `/app/[page]/page.tsx`
 - Design: Retro Game Boy style (light theme, pixel fonts)
 - Data access: `useDuckDBQuery<T>(sql)` hook → returns `{ data: T[], loading, error }`
@@ -67,7 +77,6 @@ pokemon-dlt-dbt-pipeline/
 - Package manager: **bun** (not npm/pnpm)
 - Run: `just dashboard`
 - Build: `just build`
-- Deploy: `just deploy`
 
 ### Data Flow
 
@@ -79,21 +88,25 @@ just export     # raw.duckdb → pokemon.db (13 curated tables)
 just data       # pipeline + transform + export in sequence
 ```
 
+## Tooling Notes
+
+- **Python workspace**: Root `pyproject.toml` uses `[tool.uv.workspace]` with members `pokemon-dlt-pipeline`, `pokemon-dbt-pipeline`, `pokemon-dagster-app`. Use `uv` (not pip/poetry).
+- **JS package manager**: `bun` (lockfile: `pokemon-dashboard-app/bun.lock`). Do not use npm/pnpm in CI without translating commands.
+- **Prettier** (`pokemon-dashboard-app/.prettierrc`): `semi: false`, `singleQuote: true`, `trailingComma: es5`, `printWidth: 100`.
+- **Missing configs**: No `.eslintrc.*` or `.editorconfig` found. Linting relies on `eslint-config-next` defaults.
+
 ## Common Gotchas
 
 1. **dbt child tables**: dlt creates separate `pokemon_details__types` tables, NOT nested arrays. Always JOIN on `_dlt_id = _dlt_parent_id`, never UNNEST.
-2. **DuckDB WASM**: Loads entire `.db` file client-side. Keep it under 10MB. Current: ~3.8MB.
-3. **Next.js + DuckDB**: Must use `"use client"` and dynamic import with `ssr: false`. No Turbopack in production.
-4. **Static export**: `next.config.ts` has `output: "export"` for Vercel static hosting.
-5. **Python env**: Use `source .venv/bin/activate` before running pipeline/dbt commands.
-6. **dbt working dir**: Always `cd pokemon-dbt-pipeline` before running `dbt` commands.
+2. **Next.js + DuckDB**: Must use `"use client"` and dynamic import with `ssr: false`. No Turbopack in production.
+3. **Static export**: `next.config.ts` has `output: "export"` for Vercel static hosting.
+4. **Python env**: Use `source .venv/bin/activate` before running pipeline/dbt commands.
+5. **dbt working dir**: Always `cd pokemon-dbt-pipeline` before running `dbt` commands.
 
 ## Testing
 
-- Pipeline: `cd pokemon-dlt-pipeline && uv run pytest tests/ -v`
-- dbt: `cd pokemon-dbt-pipeline && dbt test`
-- Dashboard: `cd pokemon-dashboard-app && bun test`
-- E2E: `cd pokemon-dashboard-app && bunx playwright test`
+- dbt: `cd pokemon-dbt-pipeline && uv run dbt test`
+- Dashboard: `cd pokemon-dashboard-app && bun run build`
 
 ## Type Colors (design-tokens.ts)
 

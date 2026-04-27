@@ -1,1 +1,1 @@
-SELECT * FROM {{ ref('int_pokemon__enriched') }}
+select * from {{ ref("int_pokemon__enriched") }}

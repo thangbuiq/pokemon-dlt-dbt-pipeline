@@ -1,4 +1,4 @@
-name: CI
+name: Verify Build
 
 on:
   push:
@@ -12,13 +12,13 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install just
-        uses: extractions/setup-just@v2
+        uses: extractions/setup-just@v4
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
 
       - name: Install project dependencies
         run: just install
@@ -28,3 +28,25 @@ jobs:
 
       - name: Run prek checks on all files
         run: uv run prek run --all-files
+
+  build-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.12
+
+      - name: Install project dependencies
+        run: cd pokemon-dashboard-app && bun install
+
+      - name: Build frontend
+        run: cd pokemon-dashboard-app && bun run build

@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { Card } from '@/components/ui/Card'
+import { HowToGuide } from '@/components/ui/HowToGuide'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { type PokemonType, typeColorMap } from '@/lib/design-tokens'
 import { getSpriteUrl } from '@/lib/sprites'
@@ -335,7 +336,7 @@ export default function QuizPage() {
   // ─── Render ──────────────────────────────────────────────────────────────
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <div>
       {/* ── Header ──────────────────────────────────────────────────────── */}
       <div className="mb-8 sm:mb-10">
         <div className="flex items-center gap-3 mb-2">
@@ -351,6 +352,11 @@ export default function QuizPage() {
           </div>
         </div>
       </div>
+
+      <HowToGuide title="Quiz Guide">
+        A silhouette of a random Pokemon appears. Guess its name by typing or choosing from multiple
+        choice. Hard mode requires typing the exact name. Build streaks for bonus flair!
+      </HowToGuide>
 
       {/* ── Score Bar ─────────────────────────────────────────────────────── */}
       <div className="glass rounded-xl p-4 mb-6">
@@ -467,9 +473,9 @@ export default function QuizPage() {
         <Card pokemonType="ghost" className="relative overflow-hidden">
           {/* Background glow */}
           <div
-            className="absolute inset-0 opacity-10 pointer-events-none"
+            className="absolute inset-0 opacity-50 pointer-events-none"
             style={{
-              background: `radial-gradient(ellipse at center, ${primaryColor}30 0%, transparent 70%)`,
+              background: `radial-gradient(ellipse at center, ${primaryColor}60 0%, transparent 70%)`,
             }}
           />
 
@@ -496,21 +502,16 @@ export default function QuizPage() {
                 shakeWrong && 'animate-[shake_0.5s_ease-in-out]',
               ].join(' ')}
               style={{
-                filter: gameState === 'guessing' ? 'brightness(0) contrast(0.8)' : 'none',
+                filter:
+                  gameState === 'guessing'
+                    ? 'brightness(0.08) contrast(1.2) drop-shadow(0 0 20px rgba(255,255,255,0.35))'
+                    : 'none',
                 transition:
                   gameState === 'revealed'
                     ? 'filter 0.6s ease-out, transform 0.5s ease-out'
                     : 'filter 0.3s ease',
               }}
             >
-              {/* Question mark overlay during guessing */}
-              {gameState === 'guessing' && (
-                <div className="absolute -top-10 left-1/2 -translate-x-1/2 z-10">
-                  <span className="text-3xl font-[family-name:var(--font-pixel)] text-[var(--text-muted)] animate-pulse">
-                    ?
-                  </span>
-                </div>
-              )}
               <Image
                 src={getSpriteUrl(currentPokemon.id)}
                 alt={gameState === 'revealed' ? currentPokemon.name : 'Who is this Pokemon?'}

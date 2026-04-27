@@ -1,1 +1,1 @@
-SELECT * FROM {{ ref('stg_pokemon__types') }}
+select * from {{ ref("stg_pokemon__types") }}

@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
+import { HowToGuide } from '@/components/ui/HowToGuide'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { getSpriteUrl } from '@/lib/sprites'
 
@@ -178,10 +179,14 @@ export default function EvolutionVisualizer() {
   }
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <main>
       <h1 className="text-xl sm:text-2xl font-[family-name:var(--font-pixel)] tracking-wider mb-6">
         Evolution Visualizer
       </h1>
+      <HowToGuide title="Evolution Guide">
+        Select a Pokemon to see its full evolution chain. Stages flow left to right. Click any
+        evolved form to view its details in the Pokédex.
+      </HowToGuide>
       <div className="mb-6 flex items-center gap-4">
         <label htmlFor="pokemon-select" className="text-sm text-[var(--text-secondary)]">
           Select Pokemon chain:

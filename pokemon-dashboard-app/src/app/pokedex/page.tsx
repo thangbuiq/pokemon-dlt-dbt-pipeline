@@ -13,6 +13,7 @@ import {
 } from 'recharts'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
+import { HowToGuide } from '@/components/ui/HowToGuide'
 import { type PokemonType, typeColorMap } from '@/lib/design-tokens'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
@@ -196,6 +197,16 @@ interface EvolutionPathRow {
   chain_id: number
 }
 
+interface PokemonMoveRow {
+  pokemon_id: number
+  move_name: string
+  move_type: string
+  power: number | null
+  accuracy: number | null
+  pp: number | null
+  damage_class: string
+}
+
 interface EvolutionChainNode {
   name: string
   stage: number
@@ -266,6 +277,117 @@ function MatchupTooltip({
   )
 }
 
+function EvolutionGraph({
+  nodes,
+  selectedName,
+  onSelect,
+}: {
+  nodes: EvolutionChainNode[]
+  selectedName: string
+  onSelect: (pokemon: PokemonRow | null) => void
+}) {
+  const stageMap = useMemo(() => {
+    const map = new Map<number, EvolutionChainNode[]>()
+    for (const node of nodes) {
+      const list = map.get(node.stage) ?? []
+      list.push(node)
+      map.set(node.stage, list)
+    }
+    for (const list of map.values()) {
+      list.sort((a, b) => a.name.localeCompare(b.name))
+    }
+    return map
+  }, [nodes])
+
+  const stages = useMemo(() => {
+    return Array.from(stageMap.keys()).sort((a, b) => a - b)
+  }, [stageMap])
+
+  const getSprite = (node: EvolutionChainNode) => {
+    if (node.pokemon) {
+      return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${node.pokemon.id}.png`
+    }
+    return null
+  }
+
+  return (
+    <div className="flex items-start gap-2 overflow-x-auto pb-2">
+      {stages.map((stage, stageIdx) => {
+        const stageNodes = stageMap.get(stage) ?? []
+        const isLast = stageIdx === stages.length - 1
+        return (
+          <div key={stage} className="flex items-center gap-2 shrink-0">
+            <div
+              className="grid gap-2"
+              style={{
+                gridTemplateColumns: `repeat(${Math.min(stageNodes.length, 3)}, minmax(0, 1fr))`,
+              }}
+            >
+              {stageNodes.map((node) => {
+                const isCurrent = node.name === selectedName.toLowerCase()
+                const sprite = getSprite(node)
+                const primary = node.pokemon ? primaryTypeOf(node.pokemon) : 'normal'
+                return (
+                  <button
+                    key={node.name}
+                    onClick={() => onSelect(node.pokemon)}
+                    disabled={!node.pokemon}
+                    className={[
+                      'flex items-center gap-2 px-2 py-1.5 rounded-lg border transition-all duration-300',
+                      node.pokemon
+                        ? 'hover:border-[var(--text-secondary)] hover:bg-[var(--surface)]'
+                        : 'opacity-70 cursor-default',
+                    ].join(' ')}
+                    style={{
+                      borderColor: isCurrent ? typeColorMap[primary] : 'var(--card-border)',
+                      boxShadow: isCurrent ? `0 0 10px ${typeColorMap[primary]}40` : 'none',
+                    }}
+                  >
+                    {sprite ? (
+                      <img
+                        src={sprite}
+                        alt={node.name}
+                        className="w-8 h-8 object-contain shrink-0"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-[var(--card-border)] shrink-0" />
+                    )}
+                    <div className="flex flex-col items-start min-w-0">
+                      <span className="text-[10px] text-[var(--text-primary)] capitalize font-semibold truncate">
+                        {node.name}
+                      </span>
+                      {node.trigger && (
+                        <span className="text-[9px] text-[var(--text-muted)] capitalize truncate">
+                          {node.trigger}
+                        </span>
+                      )}
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+            {!isLast && (
+              <div className="flex items-center justify-center text-[var(--text-muted)] shrink-0 px-1">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </div>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 function useJSONQuery<T>(jsonFile: string) {
   const [data, setData] = useState<T[]>([])
   const [loading, setLoading] = useState(true)
@@ -303,10 +425,23 @@ export default function Home() {
   const [sortBy, setSortBy] = useState<SortKey>('id')
   const [selected, setSelected] = useState<PokemonRow | null>(null)
   const [detailReady, setDetailReady] = useState(false)
+  const [moveSearch, setMoveSearch] = useState('')
+
+  useEffect(() => {
+    if (selected) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [selected])
 
   const { data, loading, error } = useJSONQuery<PokemonRow>('pokemon.json')
   const { data: evolutionTree } = useJSONQuery<EvolutionTreeRow>('evolution_tree.json')
   const { data: evolutionPaths } = useJSONQuery<EvolutionPathRow>('evolution_paths.json')
+  const { data: pokemonMovesData } = useJSONQuery<PokemonMoveRow>('pokemon_moves.json')
 
   const pokemonByName = useMemo(() => {
     const map = new Map<string, PokemonRow>()
@@ -383,6 +518,17 @@ export default function Home() {
       fullMark: STAT_MAX,
     }))
   }, [selected])
+
+  const selectedMoves = useMemo(() => {
+    if (!selected || !pokemonMovesData) return []
+    return pokemonMovesData.filter((m) => m.pokemon_id === selected.id)
+  }, [selected, pokemonMovesData])
+
+  const filteredMoves = useMemo(() => {
+    const q = moveSearch.trim().toLowerCase()
+    if (!q) return selectedMoves
+    return selectedMoves.filter((m) => m.move_name.replace(/-/g, ' ').toLowerCase().includes(q))
+  }, [selectedMoves, moveSearch])
 
   const matchupBuckets = useMemo(() => {
     if (!selected)
@@ -491,7 +637,7 @@ export default function Home() {
   // ─── Render ──────────────────────────────────────────────────────────────
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div>
       {/* ── Header ──────────────────────────────────────────────────────── */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-3 mb-2">
@@ -503,13 +649,18 @@ export default function Home() {
             className="w-8 sm:w-10"
           />
           <h1 className="text-xl sm:text-2xl font-[family-name:var(--font-pixel)] text-[var(--text-primary)] tracking-wider">
-            Pokédex
+            pokeXgen
           </h1>
         </div>
-        <p className="text-[var(--text-muted)] text-sm">
-          Browse and search the complete Pokemon database
+        <p className="text-[var(--text-muted)] text-base sm:text-lg">
+          A next-gen Pokédex for exploring Pokémon data, evolutions, and matchup strategy.
         </p>
       </div>
+
+      <HowToGuide title="Pokédex Guide">
+        Search or filter by type, then click any Pokémon to view stats, type matchups, evolution
+        chain, and moves. Use the sort buttons to reorder by ID, name, or total stats.
+      </HowToGuide>
 
       {/* ── Search & Sort ──────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
@@ -626,7 +777,7 @@ export default function Home() {
             <Card key={pokemon.id} pokemonType={primary} hover className="cursor-pointer group">
               <button
                 onClick={() => setSelected(pokemon)}
-                className="w-full text-left bg-transparent border-0 p-0 m-0"
+                className="w-full text-left bg-transparent border-0 p-0 m-0 cursor-pointer"
               >
                 <div className="relative w-full aspect-square mb-3 flex items-center justify-center overflow-hidden rounded-lg">
                   <div
@@ -685,7 +836,7 @@ export default function Home() {
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={() => setSelected(null)}
         >
-          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-lg" />
 
           <div
             className="relative glass rounded-2xl p-6 sm:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-[slide-in_0.3s_ease-out]"
@@ -762,7 +913,13 @@ export default function Home() {
                   </h3>
 
                   <div className="w-full min-w-0 h-[280px] min-h-[280px]">
-                    <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={280}>
+                    <ResponsiveContainer
+                      key={`radar-${selected.id}`}
+                      width="100%"
+                      height="100%"
+                      minWidth={0}
+                      minHeight={280}
+                    >
                       <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="68%">
                         <PolarGrid stroke="var(--card-border)" strokeDasharray="3 3" />
                         <PolarAngleAxis
@@ -891,54 +1048,70 @@ export default function Home() {
                   <h3 className="text-[var(--text-secondary)] text-xs font-semibold uppercase tracking-wider mb-3">
                     Evolution Chain
                   </h3>
-
-                  <div className="flex flex-wrap items-center gap-2">
-                    {evolutionChain.map((node, index) => {
-                      const isCurrent = node.name === selected.name
-                      return (
-                        <div key={`${node.name}-${node.stage}`} className="flex items-center gap-2">
-                          <button
-                            onClick={() => {
-                              if (node.pokemon) setSelected(node.pokemon)
-                            }}
-                            className={[
-                              'px-2 py-2 rounded-lg border transition-all duration-300 text-left min-w-[92px]',
-                              node.pokemon
-                                ? 'hover:border-[var(--text-secondary)] hover:bg-[var(--surface)]'
-                                : 'opacity-70 cursor-default',
-                            ].join(' ')}
-                            style={{
-                              borderColor: isCurrent
-                                ? typeColorMap[primaryTypeOf(selected)]
-                                : 'var(--card-border)',
-                              boxShadow: isCurrent
-                                ? `0 0 10px ${typeColorMap[primaryTypeOf(selected)]}40`
-                                : 'none',
-                            }}
-                            disabled={!node.pokemon}
-                          >
-                            <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-1">
-                              Stage {node.stage}
-                            </div>
-                            <div className="text-xs text-[var(--text-primary)] capitalize font-semibold">
-                              {node.name}
-                            </div>
-                            {node.trigger && (
-                              <div className="text-[10px] text-[var(--text-muted)] mt-1 capitalize">
-                                via {node.trigger}
-                              </div>
-                            )}
-                          </button>
-
-                          {index < evolutionChain.length - 1 && (
-                            <span className="text-[var(--text-muted)] text-xs">→</span>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
+                  <EvolutionGraph
+                    nodes={evolutionChain}
+                    selectedName={selected.name}
+                    onSelect={(pokemon) => {
+                      if (pokemon) setSelected(pokemon)
+                    }}
+                  />
                 </div>
               )}
+
+              <div className="mb-2 pt-3 border-t border-[var(--card-border)]">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-[var(--text-primary)] text-xs font-[family-name:var(--font-pixel)] uppercase tracking-wider">
+                    Moves
+                  </h3>
+                  <span
+                    className="text-[10px] text-[var(--text-muted)] font-mono cursor-help"
+                    title="power / accuracy / pp"
+                  >
+                    power / acc / pp
+                  </span>
+                </div>
+                {selectedMoves.length > 0 && (
+                  <div className="mb-2">
+                    <input
+                      type="text"
+                      value={moveSearch}
+                      onChange={(e) => setMoveSearch(e.target.value)}
+                      placeholder="Search moves..."
+                      className="w-full pl-2.5 pr-2 py-1 rounded-md glass text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none focus:ring-1 focus:ring-[var(--type-fighting)]"
+                    />
+                  </div>
+                )}
+                {filteredMoves.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-48 overflow-y-auto pr-1">
+                    {filteredMoves.map((move) => (
+                      <div
+                        key={`move-${selected.id}-${move.move_name}`}
+                        className="flex items-center justify-between px-2.5 py-1.5 rounded-md bg-[var(--surface)]/40 border border-[var(--card-border)]"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <Badge
+                            type={(move.move_type ?? 'normal') as PokemonType}
+                            className="shrink-0"
+                          />
+                          <span className="text-xs text-[var(--text-primary)] capitalize font-medium truncate">
+                            {move.move_name.replace(/-/g, ' ')}
+                          </span>
+                        </div>
+                        <span
+                          className="text-[10px] text-[var(--text-muted)] font-mono shrink-0 ml-2 cursor-help"
+                          title="power / accuracy / pp"
+                        >
+                          {move.power ?? '-'} / {move.accuracy ?? '-'} / {move.pp ?? '-'}pp
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-[var(--text-muted)] text-xs">
+                    {moveSearch ? 'No moves match your search' : 'No moves data available'}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </div>

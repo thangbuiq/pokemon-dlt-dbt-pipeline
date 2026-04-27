@@ -7,7 +7,7 @@
 
 **A modern approach to the Pokédex, gotta catch 'em all with data-driven insights!**
 
-[![Pipeline Status](https://img.shields.io/badge/pipeline-passing-brightgreen)](#)
+[![Pipeline Status](https://github.com/thangbuiq/pokedexgen/actions/workflows/ci.yml/badge.svg)](#)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 ![GitHub Stars](https://img.shields.io/github/stars/thangbuiq/pokemon-dlt-dbt-pipeline?style=social)
 
@@ -17,11 +17,13 @@
 
 ## Why This Slaps ⚡
 
-Yeah, yeah, there are a ton of Pokédex apps. But how many actually go hard with a modern data stack and clean, reliable data? Exactly.
+Yeah, yeah, there are a ton of Pokédex apps. But how many actually go hard with a modern data stack and clean, reliable data source? Exactly.
 
-This isn’t just a Pokédex, it’s your all-in-one battle HQ: deep stats, slick team builder, and a type matchup matrix that actually helps you win. No more endless scrolling or tab-hopping.
+This isn’t just a Pokédex, it’s your all-in-one battle HQ: deep stats, slick team builder, and a type matchup matrix that actually helps you win more Pokemon games. No more endless scrolling or tab-hopping.
 
-![catch-em-if-you-can](.github/assets/banner.png)
+<div align="center">
+  <img src=".github/assets/banner.png" alt="Pokédexgen banner" width="50%" />
+</div>
 
 ## Motivation why I built this
 
@@ -36,9 +38,15 @@ Sometimes the best reason to build something is that you genuinely want it to ex
 
 > tl;dr - I built this for fun, to learn, and to have a cool dashboard that I actually wanted to use. No other reason than that.
 
-## Architecture
+## project flow
+
+okay, enough of the backstory. Let's talk about how this thing actually works.
 
 ![architecture](.github/assets/architecture.png)
+
+and the dagster orchestration looks like this:
+
+![dagster](.github/assets/dagster.png)
 
 ## monorepo Structure
 
@@ -83,7 +91,6 @@ pokemon-dlt-dbt-pipeline/
 | Frontend      | [Next.js 16](https://nextjs.org), React            |
 | Data Delivery | Static JSON files materialized from DuckDB marts   |
 | Styling       | Tailwind CSS                                       |
-| Testing       | Vitest, Playwright                                 |
 | Task Runner   | [Just](https://just.systems)                       |
 
 ## Quickstart
@@ -114,6 +121,23 @@ just pipeline    # Extract data from PokeAPI
 just transform   # Run dbt transformations
 just export      # Materialize mart layer to JSON files
 ```
+
+### Dagster Orchestration
+
+```bash
+# Start Dagster UI
+just dagster
+
+# One-shot materialization (pipeline -> transform -> export)
+just dagster-materialize
+```
+
+Dagster project is in `pokemon-dagster-app/` and includes a daily schedule for
+`pokemon_data_job`.
+
+Incremental dlt note (short): `pokemon_list` now paginates by `offset` and
+stores the latest cursor in `data/pokemon_offset_checkpoint.json`, so the next
+run resumes from the saved offset instead of re-reading from the first page.
 
 ### Development
 

@@ -12,5 +12,7 @@ sources:
       - name: pokemon_types
       - name: pokemon_abilities
       - name: pokemon_moves
+      - name: pokemon_details__moves
       - name: evolution_chains
       - name: evolution_chains__chain__evolves_to
+      - name: evolution_chains__chain__evolves_to__evolves_to

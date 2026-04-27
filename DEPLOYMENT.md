@@ -54,28 +54,6 @@ Before deploying, ensure:
    just data  # Re-run pipeline, transform, export
    ```
 
-## Deployment Commands
-
-### Quick Deploy (Production)
-
-```bash
-just deploy
-```
-
-This runs: `cd pokemon-dashboard-app && vercel --prod`
-
-### Deploy Preview (Non-Production)
-
-```bash
-cd pokemon-dashboard-app && vercel
-```
-
-### Deploy from Root with Vercel CLI
-
-```bash
-vercel --cwd pokemon-dashboard-app --prod
-```
-
 ## Configuration
 
 The deployment uses these configuration files:
@@ -90,19 +68,6 @@ The deployment uses these configuration files:
 - **Output Directory**: `dist/`
 - **Install Command**: `bun install`
 - **Framework**: Next.js (static export)
-
-## Environment Variables
-
-No environment variables are required for this static export deployment. The DuckDB WASM client loads pokemon.db directly from the public folder.
-
-If you need to add variables in the future:
-
-```bash
-cd pokemon-dashboard-app
-vercel env add VARIABLE_NAME
-```
-
-Or set them in the [Vercel Dashboard](https://vercel.com/dashboard).
 
 ## Post-Deployment Verification
 
@@ -141,31 +106,6 @@ cd pokemon-dashboard-app
 bun run build
 # Fix any TypeScript errors
 ```
-
-### DuckDB WASM Issues
-
-**Error: "Failed to load DuckDB"**
-
-- Ensure `serverExternalPackages: ["@duckdb/duckdb-wasm"]` is in next.config.ts
-- Check webpack config has `asyncWebAssembly: true`
-
-**Error: "Cannot open database"**
-
-- Verify pokemon.db is in public/ folder
-- Check pokemon.db is not in .vercelignore
-- Test: `ls -la pokemon-dashboard-app/public/pokemon.db`
-
-### Static Export Issues
-
-**Error: "Image optimization not supported"**
-
-- Already configured with `images: { unoptimized: true }`
-- This is expected for static export
-
-**Error: "API routes not supported"**
-
-- This app doesn't use API routes (all data from DuckDB WASM)
-- If you add API routes, you need serverless deployment (not static export)
 
 ### Deployment Stuck
 
@@ -207,4 +147,3 @@ To use a custom domain:
 
 - [Vercel Documentation](https://vercel.com/docs)
 - [Next.js Static Export](https://nextjs.org/docs/app/building-your-application/deploying/static-exports)
-- [DuckDB WASM](https://duckdb.org/docs/api/wasm/overview.html)

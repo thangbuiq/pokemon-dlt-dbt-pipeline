@@ -3,6 +3,7 @@
 import { useMemo } from 'react'
 import { Badge } from '@/components/ui/Badge'
 import { Card } from '@/components/ui/Card'
+import { HowToGuide } from '@/components/ui/HowToGuide'
 import { type PokemonType, typeColorMap } from '@/lib/design-tokens'
 
 const TYPES: PokemonType[] = [
@@ -138,7 +139,7 @@ function multiplierLabel(multiplier: number): string {
 function cellStyles(multiplier: number): { backgroundColor: string; color: string } {
   if (multiplier === 0) return { backgroundColor: '#201122', color: '#FFFFFF' }
   if (multiplier === 0.5) return { backgroundColor: '#8B1A1A', color: '#FFFFFF' }
-  if (multiplier === 1) return { backgroundColor: 'var(--surface)', color: '#000000' }
+  if (multiplier === 1) return { backgroundColor: 'var(--surface)', color: '#FFFFFF' }
   return { backgroundColor: '#166534', color: '#FFFFFF' }
 }
 
@@ -163,7 +164,7 @@ export default function TypeMatchupPage() {
   )
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-8">
+    <div className="space-y-8">
       <div className="text-center space-y-3">
         <h1 className="text-xl sm:text-2xl font-[family-name:var(--font-pixel)] tracking-wider text-[var(--text-primary)]">
           Type Matchup Matrix
@@ -173,6 +174,11 @@ export default function TypeMatchupPage() {
           Use the notes below to interpret the colors and multipliers.
         </p>
       </div>
+
+      <HowToGuide title="Type Matchup Guide">
+        Green cells mean super effective (2x). Red cells mean not very effective (0.5x) or no effect
+        (0x). White cells are neutral (1x). Use this to plan your team coverage.
+      </HowToGuide>
 
       <Card className="space-y-4">
         <h2 className="text-sm font-[family-name:var(--font-pixel)] tracking-wider text-[var(--text-secondary)]">

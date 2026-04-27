@@ -11,9 +11,17 @@ def create_pipeline():
     )
 
 
-def run_pipeline():
+def run_pipeline(
+    checkpoint_path: str | None = "../data/pokemon_offset_checkpoint.json",
+    resume_from_checkpoint: bool = True,
+):
     pipeline = create_pipeline()
-    load_info = pipeline.run(pokemon_source())
+    load_info = pipeline.run(
+        pokemon_source(
+            checkpoint_path=checkpoint_path,
+            resume_from_checkpoint=resume_from_checkpoint,
+        )
+    )
     print(load_info)
     return load_info
 

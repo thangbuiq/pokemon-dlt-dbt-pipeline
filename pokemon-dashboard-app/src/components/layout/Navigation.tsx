@@ -16,17 +16,17 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   {
-    label: 'Pokedex',
+    label: 'Pokédex',
     href: '/pokedex',
     pokemonType: 'fire',
-    description: 'Browse all Pokemon',
+    description: 'Next-gen Pokémon index',
     icon: (
       <svg
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
         strokeWidth={2}
-        className="w-5 h-5"
+        className="w-4 h-4"
       >
         <path
           strokeLinecap="round"
@@ -37,7 +37,7 @@ const navItems: NavItem[] = [
     ),
   },
   {
-    label: 'Type Matchup',
+    label: 'Types',
     href: '/type-matchup',
     pokemonType: 'grass',
     description: 'Type effectiveness matrix',
@@ -47,7 +47,7 @@ const navItems: NavItem[] = [
         fill="none"
         stroke="currentColor"
         strokeWidth={2}
-        className="w-5 h-5"
+        className="w-4 h-4"
       >
         <path
           strokeLinecap="round"
@@ -58,8 +58,8 @@ const navItems: NavItem[] = [
     ),
   },
   {
-    label: 'Pokemon Matchup',
-    href: '/analysis',
+    label: 'Matchups',
+    href: '/matchups',
     pokemonType: 'dragon',
     description: 'Stat comparison & radar charts',
     icon: (
@@ -68,12 +68,33 @@ const navItems: NavItem[] = [
         fill="none"
         stroke="currentColor"
         strokeWidth={2}
-        className="w-5 h-5"
+        className="w-4 h-4"
       >
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
           d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+        />
+      </svg>
+    ),
+  },
+  {
+    label: 'Team',
+    href: '/team',
+    pokemonType: 'electric',
+    description: 'Build & analyze teams',
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        className="w-4 h-4"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M17 20h5v-2a3 3 0 00-5.354-1.853M17 20H7m10 0v-2c0-.656-.126-1.283-.354-1.853M7 20H2v-2a3 3 0 015.354-1.853M7 20v-2c0-.656.126-1.283.354-1.853m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
         />
       </svg>
     ),
@@ -89,33 +110,12 @@ const navItems: NavItem[] = [
         fill="none"
         stroke="currentColor"
         strokeWidth={2}
-        className="w-5 h-5"
+        className="w-4 h-4"
       >
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
           d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.271 2.28-2.534 2.782-.715.271-1.466.529-1.466 1.178M12 17h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-    ),
-  },
-  {
-    label: 'Team Builder',
-    href: '/tools',
-    pokemonType: 'electric',
-    description: 'Build & analyze teams',
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={2}
-        className="w-5 h-5"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M17 20h5v-2a3 3 0 00-5.354-1.853M17 20H7m10 0v-2c0-.656-.126-1.283-.354-1.853M7 20H2v-2a3 3 0 015.354-1.853M7 20v-2c0-.656.126-1.283.354-1.853m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
         />
       </svg>
     ),
@@ -127,29 +127,28 @@ export function Navigation() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <nav
-      className="glass sticky top-0 z-50 border-b-2"
-      style={{ borderColor: 'var(--card-border)' }}
-    >
-      <div className="max-w-7xl mx-auto px-3 sm:px-6">
+    <nav className="sticky top-0 z-50 w-full border-b border-[var(--card-border)] bg-[var(--background)]/80 backdrop-blur-xl">
+      <div className="container-centered">
         <div className="flex items-center justify-between h-14 sm:h-16">
-          <Link href="/" className="flex items-center gap-2 sm:gap-3 group shrink-0">
+          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
             <Image
               src="/pokeball.png"
-              alt="Pokédex"
-              width={32}
-              height={32}
-              className="w-7 h-7 sm:w-8 sm:h-8"
+              alt="pokeXgen"
+              width={28}
+              height={28}
+              className="w-6 h-6 sm:w-7 sm:h-7 group-hover:rotate-16 transition-transform duration-300"
             />
-            <span
-              className="font-[family-name:var(--font-pixel)] text-[10px] sm:text-xs tracking-wider"
-              style={{ color: 'var(--text-primary)' }}
-            >
-              Pokédex
-            </span>
+            <div className="flex items-center gap-2 leading-none">
+              <span className="font-[family-name:var(--font-pixel)] text-[9px] sm:text-[10px] tracking-wider text-[var(--text-primary)]">
+                pokeXgen
+              </span>
+              <span className="hidden sm:inline text-[9px] tracking-wide text-[var(--text-muted)]">
+                Pokédex Next Gen
+              </span>
+            </div>
           </Link>
 
-          <div className="hidden xl:flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
               const isActive = pathname === item.href
               return (
@@ -157,20 +156,20 @@ export function Navigation() {
                   key={item.href}
                   href={item.href}
                   className={[
-                    'flex items-center gap-1.5 px-3 py-2 rounded-md font-[family-name:var(--font-pixel)] text-[9px] tracking-wider transition-all duration-300 relative',
+                    'flex items-center gap-1.5 px-3 py-2 rounded-lg text-[11px] tracking-wide transition-all duration-200 relative',
                     isActive
-                      ? ''
-                      : 'after:absolute after:bottom-1 after:left-3 after:right-3 after:h-0.5 after:bg-current after:scale-x-0 hover:after:scale-x-100 after:origin-left',
+                      ? 'text-[var(--text-primary)] bg-[var(--surface-light)]'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface)]',
                   ].join(' ')}
-                  style={
-                    {
-                      '--glow': `var(--type-${item.pokemonType})`,
-                      color: isActive ? `var(--type-${item.pokemonType})` : 'var(--text-secondary)',
-                    } as React.CSSProperties
-                  }
                 >
                   {item.icon}
                   <span>{item.label}</span>
+                  {isActive && (
+                    <span
+                      className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full"
+                      style={{ backgroundColor: `var(--type-${item.pokemonType})` }}
+                    />
+                  )}
                 </Link>
               )
             })}
@@ -178,8 +177,7 @@ export function Navigation() {
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="xl:hidden p-2 rounded-md transition-colors"
-            style={{ color: 'var(--text-primary)' }}
+            className="md:hidden p-2 rounded-lg transition-colors text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface)]"
             aria-label="Toggle navigation menu"
           >
             {mobileOpen ? (
@@ -208,11 +206,8 @@ export function Navigation() {
       </div>
 
       {mobileOpen && (
-        <div
-          className="xl:hidden glass border-t-2 animate-[slide-in_0.3s_ease-out]"
-          style={{ borderColor: 'var(--card-border)' }}
-        >
-          <div className="px-3 py-2 space-y-1">
+        <div className="md:hidden border-t border-[var(--card-border)] bg-[var(--background)]/95 backdrop-blur-xl animate-[slide-in_0.2s_ease-out]">
+          <div className="container-centered py-2 space-y-0.5">
             {navItems.map((item) => {
               const isActive = pathname === item.href
               return (
@@ -221,20 +216,20 @@ export function Navigation() {
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
                   className={[
-                    'flex items-center gap-3 px-3 py-2.5 rounded-md font-[family-name:var(--font-pixel)] text-[10px] tracking-wider transition-all duration-300',
-                    isActive ? 'bg-[var(--surface-light)]' : 'hover:bg-[var(--surface-light)]',
+                    'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200',
+                    isActive
+                      ? 'bg-[var(--surface-light)] text-[var(--text-primary)]'
+                      : 'text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]',
                   ].join(' ')}
-                  style={{
-                    color: isActive ? `var(--type-${item.pokemonType})` : 'var(--text-primary)',
-                  }}
                 >
                   {item.icon}
-                  <div className="flex flex-col">
-                    <span>{item.label}</span>
-                    <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
-                      {item.description}
-                    </span>
-                  </div>
+                  <span>{item.label}</span>
+                  {isActive && (
+                    <span
+                      className="ml-auto w-1.5 h-1.5 rounded-full"
+                      style={{ backgroundColor: `var(--type-${item.pokemonType})` }}
+                    />
+                  )}
                 </Link>
               )
             })}
