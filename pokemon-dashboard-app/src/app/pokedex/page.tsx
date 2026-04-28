@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import Image from 'next/image'
+import { motion } from 'framer-motion'
 import {
   RadarChart,
   PolarGrid,
@@ -15,6 +16,7 @@ import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { HowToGuide } from '@/components/ui/HowToGuide'
 import { type PokemonType, typeColorMap } from '@/lib/design-tokens'
+import { isSpriteMissing, getSpriteUrl as OFFICIAL_ARTWORK } from '@/lib/sprites'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -61,9 +63,6 @@ const STAT_META: {
 ]
 
 const STAT_MAX = 255
-
-const OFFICIAL_ARTWORK = (id: number) =>
-  `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
 
 const TYPE_EFFECTIVENESS: Partial<Record<PokemonType, Partial<Record<PokemonType, number>>>> = {
   normal: { rock: 0.5, ghost: 0, steel: 0.5 },
@@ -305,18 +304,21 @@ function EvolutionGraph({
 
   const getSprite = (node: EvolutionChainNode) => {
     if (node.pokemon) {
-      return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${node.pokemon.id}.png`
+      return OFFICIAL_ARTWORK(node.pokemon.id)
     }
     return null
   }
 
   return (
-    <div className="flex items-start gap-2 overflow-x-auto pb-2">
+    <div className="flex lg:flex-col items-start gap-2 overflow-x-auto lg:overflow-x-visible lg:overflow-y-auto pb-2 lg:pb-0 lg:max-h-[60vh] lg:pr-2 custom-scrollbar">
       {stages.map((stage, stageIdx) => {
         const stageNodes = stageMap.get(stage) ?? []
         const isLast = stageIdx === stages.length - 1
         return (
-          <div key={stage} className="flex items-center gap-2 shrink-0">
+          <div
+            key={stage}
+            className="flex lg:flex-col items-center lg:items-stretch gap-2 shrink-0 w-full"
+          >
             <div
               className="grid gap-2"
               style={{
@@ -347,7 +349,12 @@ function EvolutionGraph({
                       <img
                         src={sprite}
                         alt={node.name}
-                        className="w-8 h-8 object-contain shrink-0"
+                        className={[
+                          'w-8 h-8 object-contain shrink-0',
+                          node.pokemon && isSpriteMissing(node.pokemon.id)
+                            ? 'brightness-0 opacity-50'
+                            : '',
+                        ].join(' ')}
                         loading="lazy"
                       />
                     ) : (
@@ -368,7 +375,7 @@ function EvolutionGraph({
               })}
             </div>
             {!isLast && (
-              <div className="flex items-center justify-center text-[var(--text-muted)] shrink-0 px-1">
+              <div className="flex items-center justify-center text-[var(--text-muted)] shrink-0 px-1 lg:px-0 lg:py-1">
                 <svg
                   width="14"
                   height="14"
@@ -376,6 +383,7 @@ function EvolutionGraph({
                   fill="none"
                   stroke="currentColor"
                   strokeWidth={2}
+                  className="transform lg:rotate-90"
                 >
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
@@ -426,7 +434,11 @@ export default function Home() {
   const [selected, setSelected] = useState<PokemonRow | null>(null)
   const [detailReady, setDetailReady] = useState(false)
   const [moveSearch, setMoveSearch] = useState('')
+  const [visibleCount, setVisibleCount] = useState(52)
 
+  useEffect(() => {
+    setVisibleCount(52)
+  }, [search, activeTypes, sortBy])
   useEffect(() => {
     if (selected) {
       document.body.style.overflow = 'hidden'
@@ -767,60 +779,81 @@ export default function Home() {
       <p className="text-[var(--text-muted)] text-xs mb-4">{filtered.length} Pokemon found</p>
 
       {/* ── Pokemon Grid ──────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {filtered.map((pokemon) => {
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+        {filtered.slice(0, visibleCount).map((pokemon, index) => {
           const types = parseTypes(pokemon)
           const primary = primaryTypeOf(pokemon)
           const primaryColor = typeColorMap[primary]
 
           return (
-            <Card key={pokemon.id} pokemonType={primary} hover className="cursor-pointer group">
-              <button
-                onClick={() => setSelected(pokemon)}
-                className="w-full text-left bg-transparent border-0 p-0 m-0 cursor-pointer"
-              >
-                <div className="relative w-full aspect-square mb-3 flex items-center justify-center overflow-hidden rounded-lg">
-                  <div
-                    className="absolute inset-0 opacity-20 group-hover:opacity-35 transition-opacity duration-500"
-                    style={{
-                      background: `radial-gradient(circle at center, ${primaryColor}50 0%, transparent 70%)`,
-                    }}
-                  />
-                  <Image
-                    src={OFFICIAL_ARTWORK(pokemon.id)}
-                    alt={pokemon.name}
-                    width={120}
-                    height={120}
-                    className="relative z-10 group-hover:scale-110 transition-transform duration-500"
-                    unoptimized
-                  />
-                </div>
+            <motion.div
+              key={pokemon.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.5) }}
+            >
+              <Card pokemonType={primary} hover className="cursor-pointer group h-full">
+                <button
+                  onClick={() => setSelected(pokemon)}
+                  className="w-full text-left bg-transparent border-0 p-0 m-0 cursor-pointer"
+                >
+                  <div className="relative w-full aspect-square mb-3 flex items-center justify-center overflow-hidden rounded-lg">
+                    <div
+                      className="absolute inset-0 opacity-20 group-hover:opacity-35 transition-opacity duration-500"
+                      style={{
+                        background: `radial-gradient(circle at center, ${primaryColor}50 0%, transparent 70%)`,
+                      }}
+                    />
+                    <Image
+                      src={OFFICIAL_ARTWORK(pokemon.id)}
+                      alt={pokemon.name}
+                      width={120}
+                      height={120}
+                      className={[
+                        'relative z-10 group-hover:scale-110 transition-transform duration-500',
+                        isSpriteMissing(pokemon.id) ? 'brightness-0 opacity-50' : '',
+                      ].join(' ')}
+                      unoptimized
+                    />
+                  </div>
 
-                <h3 className="text-[var(--text-primary)] font-semibold text-sm capitalize mb-0.5 group-hover:text-[var(--text-secondary)] transition-colors duration-300">
-                  {pokemon.name}
-                </h3>
+                  <h3 className="text-[var(--text-primary)] font-semibold text-sm capitalize mb-0.5 group-hover:text-[var(--text-secondary)] transition-colors duration-300">
+                    {pokemon.name}
+                  </h3>
 
-                <p className="text-[var(--text-muted)] text-[10px] mb-2 font-[family-name:var(--font-pixel)] tracking-wider">
-                  #{String(pokemon.id).padStart(3, '0')}
-                </p>
+                  <p className="text-[var(--text-muted)] text-[10px] mb-2 font-[family-name:var(--font-pixel)] tracking-wider">
+                    #{String(pokemon.id).padStart(3, '0')}
+                  </p>
 
-                <div className="flex flex-wrap gap-1.5 mb-3">
-                  {types.map((type) => (
-                    <Badge key={`${pokemon.id}-${type}`} type={type} />
-                  ))}
-                </div>
+                  <div className="flex flex-wrap gap-1.5 mb-3">
+                    {types.map((type) => (
+                      <Badge key={`${pokemon.id}-${type}`} type={type} />
+                    ))}
+                  </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-[var(--card-border)]">
-                  <span className="text-[var(--text-muted)] text-xs">Total</span>
-                  <span className="text-sm font-bold" style={{ color: primaryColor }}>
-                    {pokemon.total_stats}
-                  </span>
-                </div>
-              </button>
-            </Card>
+                  <div className="flex items-center justify-between pt-2 border-t border-[var(--card-border)]">
+                    <span className="text-[var(--text-muted)] text-xs">Total</span>
+                    <span className="text-sm font-bold" style={{ color: primaryColor }}>
+                      {pokemon.total_stats}
+                    </span>
+                  </div>
+                </button>
+              </Card>
+            </motion.div>
           )
         })}
       </div>
+
+      {visibleCount < filtered.length && (
+        <div className="flex justify-center mt-8 mb-4">
+          <button
+            onClick={() => setVisibleCount((c) => c + 52)}
+            className="px-6 py-3 rounded-xl glass text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
+          >
+            Show next...
+          </button>
+        </div>
+      )}
 
       {/* ── Empty State ────────────────────────────────────────────────── */}
       {filtered.length === 0 && !loading && (
@@ -839,7 +872,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-black/50 backdrop-blur-lg" />
 
           <div
-            className="relative glass rounded-2xl p-6 sm:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-[slide-in_0.3s_ease-out]"
+            className="relative glass bg-white/95 dark:bg-[var(--surface)] rounded-2xl p-6 sm:p-8 max-w-2xl lg:max-w-6xl xl:max-w-7xl w-full max-h-[90vh] overflow-y-auto animate-[slide-in_0.3s_ease-out] custom-scrollbar"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -858,207 +891,9 @@ export default function Home() {
               </svg>
             </button>
 
-            <div className="flex flex-col items-center mb-6">
-              <div className="relative mb-4">
-                <div
-                  className="absolute inset-0 rounded-full opacity-30 scale-150"
-                  style={{
-                    background: `radial-gradient(circle at center, ${typeColorMap[primaryTypeOf(selected)]}60 0%, transparent 70%)`,
-                  }}
-                />
-                <Image
-                  src={OFFICIAL_ARTWORK(selected.id)}
-                  alt={selected.name}
-                  width={180}
-                  height={180}
-                  className="relative z-10"
-                  unoptimized
-                />
-              </div>
-
-              <h2 className="text-2xl font-bold text-[var(--text-primary)] capitalize mb-1">
-                {selected.name}
-              </h2>
-              <p className="text-[var(--text-muted)] text-sm font-[family-name:var(--font-pixel)] tracking-wider">
-                #{String(selected.id).padStart(3, '0')}
-              </p>
-
-              <div className="flex gap-2 mt-3">
-                {parseTypes(selected).map((type) => (
-                  <Badge key={`${selected.id}-${type}`} type={type} />
-                ))}
-              </div>
-
-              <div className="flex gap-8 mt-4 text-sm">
-                <div className="text-center">
-                  <p className="text-[var(--text-muted)] text-xs mb-0.5">Height</p>
-                  <p className="text-[var(--text-primary)] font-semibold">
-                    {(selected.height / 10).toFixed(1)} m
-                  </p>
-                </div>
-                <div className="text-center">
-                  <p className="text-[var(--text-muted)] text-xs mb-0.5">Weight</p>
-                  <p className="text-[var(--text-primary)] font-semibold">
-                    {(selected.weight / 10).toFixed(1)} kg
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-                <div>
-                  <h3 className="text-[var(--text-secondary)] text-xs font-semibold uppercase tracking-wider">
-                    Radar
-                  </h3>
-
-                  <div className="w-full min-w-0 h-[280px] min-h-[280px]">
-                    <ResponsiveContainer
-                      key={`radar-${selected.id}`}
-                      width="100%"
-                      height="100%"
-                      minWidth={0}
-                      minHeight={280}
-                    >
-                      <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="68%">
-                        <PolarGrid stroke="var(--card-border)" strokeDasharray="3 3" />
-                        <PolarAngleAxis
-                          dataKey="stat"
-                          tick={{ fill: 'var(--text-secondary)', fontSize: 11, fontWeight: 600 }}
-                        />
-                        <PolarRadiusAxis
-                          angle={90}
-                          domain={[0, STAT_MAX]}
-                          tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
-                          tickCount={6}
-                          axisLine={false}
-                        />
-                        <Radar
-                          name={selected.name}
-                          dataKey="value"
-                          stroke={typeColorMap[primaryTypeOf(selected)]}
-                          fill={typeColorMap[primaryTypeOf(selected)]}
-                          fillOpacity={0.2}
-                          strokeWidth={2}
-                          dot={{ r: 3, fill: typeColorMap[primaryTypeOf(selected)] }}
-                          activeDot={{
-                            r: 5,
-                            fill: typeColorMap[primaryTypeOf(selected)],
-                            stroke: '#fff',
-                            strokeWidth: 1,
-                          }}
-                        />
-                        <Tooltip content={<MatchupTooltip />} />
-                      </RadarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-[var(--text-secondary)] text-xs font-semibold uppercase tracking-wider mb-8 ">
-                    Base Stats
-                  </h3>
-
-                  <div className="space-y-3">
-                    {STAT_META.map(({ key, label }) => {
-                      const value = selected[key] as number
-                      const pct = Math.min((value / STAT_MAX) * 100, 100)
-                      const color = typeColorMap[primaryTypeOf(selected)]
-
-                      return (
-                        <div key={key} className="flex items-center gap-3">
-                          <span className="text-[var(--text-secondary)] text-xs w-14 text-right font-semibold shrink-0">
-                            {label}
-                          </span>
-                          <div className="flex-1 h-2 rounded-full bg-[var(--surface)] overflow-hidden">
-                            <div
-                              className="h-full rounded-full"
-                              style={{
-                                width: detailReady ? `${pct}%` : '0%',
-                                background: `linear-gradient(90deg, ${color}80, ${color})`,
-                                boxShadow: detailReady ? `0 0 8px ${color}40` : 'none',
-                                transition: 'width 0.7s ease-out, box-shadow 0.7s ease-out',
-                              }}
-                            />
-                          </div>
-                          <span className="text-[var(--text-secondary)] text-xs w-8 text-right font-mono shrink-0">
-                            {value}
-                          </span>
-                        </div>
-                      )
-                    })}
-
-                    <div className="flex items-center gap-3 pt-3 border-t border-[var(--card-border)]">
-                      <span className="text-[var(--text-secondary)] text-xs w-14 text-right font-bold shrink-0">
-                        TOTAL
-                      </span>
-                      <div className="flex-1" />
-                      <span
-                        className="text-sm font-bold shrink-0"
-                        style={{ color: typeColorMap[primaryTypeOf(selected)] }}
-                      >
-                        {selected.total_stats}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <h3 className="text-[var(--text-primary)] text-xs font-[family-name:var(--font-pixel)] uppercase tracking-wider mb-2">
-                  Type Matchup
-                </h3>
-                <p className="text-[11px] text-[var(--text-secondary)] font-[family-name:var(--font-pixel)] tracking-wide mb-3">
-                  OFFENSE PROFILE (USING THIS POKEMON&apos;S TYPES)
-                </p>
-
-                <div className="space-y-2.5">
-                  {[
-                    { label: '2x', key: 'x2' as const },
-                    { label: '1/2x', key: 'x05' as const },
-                    { label: '0x', key: 'x0' as const },
-                  ].map(({ label, key }) => {
-                    const types = matchupBuckets[key]
-                    return (
-                      <div
-                        key={label}
-                        className="flex items-start gap-2 rounded-lg border border-[var(--card-border)] bg-[var(--surface)]/40 px-2.5 py-2"
-                      >
-                        <span className="text-[11px] text-[var(--text-primary)] font-[family-name:var(--font-pixel)] tracking-wider min-w-[38px]">
-                          {label}
-                        </span>
-                        <span className="text-[var(--text-secondary)] text-sm leading-6">→</span>
-                        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
-                          {types.length > 0 ? (
-                            types.map((type) => <Badge key={`${label}-${type}`} type={type} />)
-                          ) : (
-                            <span className="text-[11px] text-[var(--text-muted)] font-[family-name:var(--font-pixel)] tracking-wider">
-                              NONE
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-
-              {evolutionChain.length > 0 && (
-                <div className="mb-2 pt-3 border-t border-[var(--card-border)]">
-                  <h3 className="text-[var(--text-secondary)] text-xs font-semibold uppercase tracking-wider mb-3">
-                    Evolution Chain
-                  </h3>
-                  <EvolutionGraph
-                    nodes={evolutionChain}
-                    selectedName={selected.name}
-                    onSelect={(pokemon) => {
-                      if (pokemon) setSelected(pokemon)
-                    }}
-                  />
-                </div>
-              )}
-
-              <div className="mb-2 pt-3 border-t border-[var(--card-border)]">
+            <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 lg:gap-10 mt-2">
+              {/* ── Left Column: Moves ── */}
+              <div className="lg:col-span-3 flex flex-col order-3 lg:order-1 pt-6 lg:pt-0 border-t lg:border-t-0 border-[var(--card-border)]">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-[var(--text-primary)] text-xs font-[family-name:var(--font-pixel)] uppercase tracking-wider">
                     Moves
@@ -1082,11 +917,11 @@ export default function Home() {
                   </div>
                 )}
                 {filteredMoves.length > 0 ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-48 overflow-y-auto pr-1">
+                  <div className="flex flex-col gap-1.5 max-h-48 lg:max-h-[60vh] lg:flex-1 overflow-y-auto pr-1 custom-scrollbar">
                     {filteredMoves.map((move) => (
                       <div
                         key={`move-${selected.id}-${move.move_name}`}
-                        className="flex items-center justify-between px-2.5 py-1.5 rounded-md bg-[var(--surface)]/40 border border-[var(--card-border)]"
+                        className="flex items-center justify-between px-2.5 py-1.5 rounded-md bg-[var(--surface-hover)] border border-[var(--card-border)]"
                       >
                         <div className="flex items-center gap-2 min-w-0">
                           <Badge
@@ -1110,6 +945,214 @@ export default function Home() {
                   <p className="text-[var(--text-muted)] text-xs">
                     {moveSearch ? 'No moves match your search' : 'No moves data available'}
                   </p>
+                )}
+              </div>
+
+              {/* ── Center Column: Info & Stats ── */}
+              <div className="lg:col-span-6 flex flex-col order-1 lg:order-2">
+                <div className="flex flex-col items-center mb-6">
+                  <div className="relative mb-4">
+                    <div
+                      className="absolute inset-0 rounded-full opacity-30 scale-150"
+                      style={{
+                        background: `radial-gradient(circle at center, ${typeColorMap[primaryTypeOf(selected)]}60 0%, transparent 70%)`,
+                      }}
+                    />
+                    <Image
+                      src={OFFICIAL_ARTWORK(selected.id)}
+                      alt={selected.name}
+                      width={180}
+                      height={180}
+                      className={[
+                        'relative z-10 transition-transform duration-500 hover:scale-110 drop-shadow-2xl',
+                        isSpriteMissing(selected.id) ? 'brightness-0 opacity-50' : '',
+                      ].join(' ')}
+                      unoptimized
+                    />
+                  </div>
+
+                  <h2 className="text-2xl font-bold text-[var(--text-primary)] capitalize mb-1">
+                    {selected.name}
+                  </h2>
+                  <p className="text-[var(--text-muted)] text-sm font-[family-name:var(--font-pixel)] tracking-wider">
+                    #{String(selected.id).padStart(3, '0')}
+                  </p>
+
+                  <div className="flex gap-2 mt-3">
+                    {parseTypes(selected).map((type) => (
+                      <Badge key={`${selected.id}-${type}`} type={type} />
+                    ))}
+                  </div>
+
+                  <div className="flex gap-8 mt-4 text-sm">
+                    <div className="text-center">
+                      <p className="text-[var(--text-muted)] text-xs mb-0.5">Height</p>
+                      <p className="text-[var(--text-primary)] font-semibold">
+                        {(selected.height / 10).toFixed(1)} m
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[var(--text-muted)] text-xs mb-0.5">Weight</p>
+                      <p className="text-[var(--text-primary)] font-semibold">
+                        {(selected.weight / 10).toFixed(1)} kg
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
+                  <div>
+                    <h3 className="text-[var(--text-secondary)] text-xs font-semibold uppercase tracking-wider mb-2">
+                      Radar
+                    </h3>
+
+                    <div className="w-full min-w-0 h-[220px] min-h-[220px]">
+                      <ResponsiveContainer
+                        key={`radar-${selected.id}`}
+                        width="100%"
+                        height="100%"
+                        minWidth={0}
+                        minHeight={220}
+                      >
+                        <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="68%">
+                          <PolarGrid stroke="var(--card-border)" strokeDasharray="3 3" />
+                          <PolarAngleAxis
+                            dataKey="stat"
+                            tick={{ fill: 'var(--text-secondary)', fontSize: 11, fontWeight: 600 }}
+                          />
+                          <PolarRadiusAxis
+                            angle={90}
+                            domain={[0, STAT_MAX]}
+                            tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
+                            tickCount={6}
+                            axisLine={false}
+                          />
+                          <Radar
+                            name={selected.name}
+                            dataKey="value"
+                            stroke={typeColorMap[primaryTypeOf(selected)]}
+                            fill={typeColorMap[primaryTypeOf(selected)]}
+                            fillOpacity={0.2}
+                            strokeWidth={2}
+                            dot={{ r: 3, fill: typeColorMap[primaryTypeOf(selected)] }}
+                            activeDot={{
+                              r: 5,
+                              fill: typeColorMap[primaryTypeOf(selected)],
+                              stroke: '#fff',
+                              strokeWidth: 1,
+                            }}
+                          />
+                          <Tooltip content={<MatchupTooltip />} />
+                        </RadarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-[var(--text-secondary)] text-xs font-semibold uppercase tracking-wider mb-6">
+                      Base Stats
+                    </h3>
+
+                    <div className="space-y-3">
+                      {STAT_META.map(({ key, label }) => {
+                        const value = selected[key] as number
+                        const pct = Math.min((value / STAT_MAX) * 100, 100)
+                        const color = typeColorMap[primaryTypeOf(selected)]
+
+                        return (
+                          <div key={key} className="flex items-center gap-3">
+                            <span className="text-[var(--text-secondary)] text-xs w-14 text-right font-semibold shrink-0">
+                              {label}
+                            </span>
+                            <div className="flex-1 h-2 rounded-full bg-[var(--surface-hover)] overflow-hidden">
+                              <div
+                                className="h-full rounded-full"
+                                style={{
+                                  width: detailReady ? `${pct}%` : '0%',
+                                  background: `linear-gradient(90deg, ${color}80, ${color})`,
+                                  boxShadow: detailReady ? `0 0 8px ${color}40` : 'none',
+                                  transition: 'width 0.7s ease-out, box-shadow 0.7s ease-out',
+                                }}
+                              />
+                            </div>
+                            <span className="text-[var(--text-secondary)] text-xs w-8 text-right font-mono shrink-0">
+                              {value}
+                            </span>
+                          </div>
+                        )
+                      })}
+
+                      <div className="flex items-center gap-3 pt-3 border-t border-[var(--card-border)]">
+                        <span className="text-[var(--text-secondary)] text-xs w-14 text-right font-bold shrink-0">
+                          TOTAL
+                        </span>
+                        <div className="flex-1" />
+                        <span
+                          className="text-sm font-bold shrink-0"
+                          style={{ color: typeColorMap[primaryTypeOf(selected)] }}
+                        >
+                          {selected.total_stats}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mb-0">
+                  <h3 className="text-[var(--text-primary)] text-xs font-[family-name:var(--font-pixel)] uppercase tracking-wider mb-2">
+                    Type Matchup
+                  </h3>
+                  <p className="text-[11px] text-[var(--text-secondary)] font-[family-name:var(--font-pixel)] tracking-wide mb-3">
+                    OFFENSE PROFILE (USING THIS POKEMON&apos;S TYPES)
+                  </p>
+
+                  <div className="space-y-2.5">
+                    {[
+                      { label: '2x', key: 'x2' as const },
+                      { label: '1/2x', key: 'x05' as const },
+                      { label: '0x', key: 'x0' as const },
+                    ].map(({ label, key }) => {
+                      const types = matchupBuckets[key]
+                      return (
+                        <div
+                          key={label}
+                          className="flex items-start gap-2 rounded-lg border border-[var(--card-border)] bg-[var(--surface-hover)] px-2.5 py-2"
+                        >
+                          <span className="text-[11px] text-[var(--text-primary)] font-[family-name:var(--font-pixel)] tracking-wider min-w-[38px]">
+                            {label}
+                          </span>
+                          <span className="text-[var(--text-secondary)] text-sm leading-6">→</span>
+                          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
+                            {types.length > 0 ? (
+                              types.map((type) => <Badge key={`${label}-${type}`} type={type} />)
+                            ) : (
+                              <span className="text-[11px] text-[var(--text-muted)] font-[family-name:var(--font-pixel)] tracking-wider">
+                                NONE
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* ── Right Column: Evolution Chain ── */}
+              <div className="lg:col-span-3 flex flex-col order-2 lg:order-3 pt-6 lg:pt-0 border-t lg:border-t-0 border-[var(--card-border)]">
+                <h3 className="text-[var(--text-secondary)] text-xs font-semibold uppercase tracking-wider mb-3">
+                  Evolution Chain
+                </h3>
+                {evolutionChain.length > 0 ? (
+                  <EvolutionGraph
+                    nodes={evolutionChain}
+                    selectedName={selected.name}
+                    onSelect={(pokemon) => {
+                      if (pokemon) setSelected(pokemon)
+                    }}
+                  />
+                ) : (
+                  <p className="text-[var(--text-muted)] text-xs">No evolution data</p>
                 )}
               </div>
             </div>

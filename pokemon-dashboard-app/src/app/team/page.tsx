@@ -2,18 +2,21 @@
 
 import React, { useMemo, useState, useCallback, useEffect } from 'react'
 import { HowToGuide } from '@/components/ui/HowToGuide'
+import { isSpriteMissing, getSpriteUrl } from '@/lib/sprites'
 import styles from './team-builder.module.css'
 
 interface Pokemon {
   id: number
   name: string
   type_names: string[]
+  sprite_url: string | null
 }
 
 interface PokemonJSON {
   id: number
   name: string
   type_names: string
+  sprite_url: string | null
 }
 
 function useJSONQuery<T>(jsonFile: string) {
@@ -59,6 +62,7 @@ function parsePokemon(raw: PokemonJSON[]): Pokemon[] {
             .filter(Boolean)
         ),
       ].map((t) => t.charAt(0).toUpperCase() + t.slice(1)),
+      sprite_url: p.sprite_url,
     }))
     .filter((p) => {
       if (seen.has(p.id)) return false
@@ -155,10 +159,6 @@ function multAgainst(p: Pokemon, targetType: string): number {
     m *= getEffectiveness(t, targetType)
   }
   return m
-}
-
-function getSpriteURL(id: number): string {
-  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
 }
 
 const TYPE_COLORS: { [type: string]: string } = {
@@ -359,8 +359,11 @@ export default function TeamBuilderPage(): React.ReactElement {
                     {p.isDuplicate && <span className="text-[10px] text-red-400">Duplicate</span>}
                     <span className={styles.dropdownThumb}>
                       <img
-                        src={getSpriteURL(p.id)}
+                        src={getSpriteUrl(p.id)}
                         alt={p.name}
+                        style={{
+                          filter: isSpriteMissing(p.id) ? 'brightness(0) opacity(0.5)' : 'none',
+                        }}
                         onError={(e) => {
                           ;(e.target as HTMLImageElement).src = ''
                         }}
@@ -411,9 +414,10 @@ export default function TeamBuilderPage(): React.ReactElement {
                 disabled={p.isDuplicate}
               >
                 <img
-                  src={getSpriteURL(p.id)}
+                  src={getSpriteUrl(p.id)}
                   alt={p.name}
                   className={styles.boardSprite}
+                  style={{ filter: isSpriteMissing(p.id) ? 'brightness(0) opacity(0.5)' : 'none' }}
                   onError={(e) => {
                     ;(e.target as HTMLImageElement).src = ''
                   }}
@@ -444,7 +448,14 @@ export default function TeamBuilderPage(): React.ReactElement {
             {p ? (
               <div className={styles.slotContent}>
                 <div className={styles.slotTop}>
-                  <img className={styles.sprite} src={getSpriteURL(p.id)} alt={p.name} />
+                  <img
+                    className={styles.sprite}
+                    src={getSpriteUrl(p.id)}
+                    alt={p.name}
+                    style={{
+                      filter: isSpriteMissing(p.id) ? 'brightness(0) opacity(0.5)' : 'none',
+                    }}
+                  />
                   <div className={styles.slotInfo}>
                     <div className={styles.slotName}>{p.name}</div>
                     <div className={styles.slotTypes}>

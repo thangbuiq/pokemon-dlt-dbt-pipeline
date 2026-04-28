@@ -139,7 +139,7 @@ function multiplierLabel(multiplier: number): string {
 function cellStyles(multiplier: number): { backgroundColor: string; color: string } {
   if (multiplier === 0) return { backgroundColor: '#201122', color: '#FFFFFF' }
   if (multiplier === 0.5) return { backgroundColor: '#8B1A1A', color: '#FFFFFF' }
-  if (multiplier === 1) return { backgroundColor: 'var(--surface)', color: '#FFFFFF' }
+  if (multiplier === 1) return { backgroundColor: 'var(--surface)', color: '#7f7f7fff' }
   return { backgroundColor: '#166534', color: '#FFFFFF' }
 }
 

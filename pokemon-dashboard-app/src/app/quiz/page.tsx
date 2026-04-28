@@ -6,7 +6,7 @@ import { Card } from '@/components/ui/Card'
 import { HowToGuide } from '@/components/ui/HowToGuide'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { type PokemonType, typeColorMap } from '@/lib/design-tokens'
-import { getSpriteUrl } from '@/lib/sprites'
+import { getSpriteUrl, isSpriteMissing } from '@/lib/sprites'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -149,7 +149,11 @@ function StreakFire({ streak }: { streak: number }) {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function QuizPage() {
-  const { data, loading, error } = useJSONQuery<PokemonRow>('pokemon.json')
+  const { data: rawData, loading, error } = useJSONQuery<PokemonRow>('pokemon.json')
+  const data = useMemo(
+    () => (rawData ? rawData.filter((p) => !isSpriteMissing(p.id)) : []),
+    [rawData]
+  )
 
   const [difficulty, setDifficulty] = useState<Difficulty>('easy')
   const [score, setScore] = useState(0)
@@ -496,6 +500,7 @@ export default function QuizPage() {
           <div className="relative z-10 flex flex-col items-center py-6 sm:py-10">
             {/* Silhouette */}
             <div
+              onContextMenu={(e) => e.preventDefault()}
               className={[
                 'relative mb-6 transition-all duration-700 ease-out',
                 revealAnimation && isCorrect && 'scale-110',
@@ -520,6 +525,14 @@ export default function QuizPage() {
                 loading="eager"
                 priority
                 unoptimized
+                className={[
+                  'pointer-events-none select-none',
+                  !currentPokemon.sprite_url ? 'brightness-0 opacity-50' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+                draggable={false}
+                onContextMenu={(e) => e.preventDefault()}
               />
             </div>
 
