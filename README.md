@@ -29,30 +29,48 @@ This isn’t just a Pokédex, it’s your all-in-one battle HQ: deep stats, slic
 
 - **Pokedex Search**: Find any Pokemon in a flash with detailed stats, radar chart, evolution chain, and more
 
-<div>
-  <img src=".github/assets/pokedex-search.png" width="49%" />
-  <img src=".github/assets/pokedex-search-detailed.png" width="49%" />
-</div>
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <img src=".github/assets/pokedex-search.png" width="100%" />
+    </td>
+    <td width="50%" valign="top">
+      <img src=".github/assets/pokedex-search-detailed.png" width="100%" />
+    </td>
+  </tr>
+</table>
 
 - **Team Builder And Coverage Analysis**: Build your dream team and analyze type coverage
 
-<div>
-  <img src=".github/assets/team-builder.png" width="49%" />
-  <img src=".github/assets/team-analysis.png" width="49%" />
-</div>
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <img src=".github/assets/team-builder.png" width="100%" />
+    </td>
+    <td width="50%" valign="top">
+      <img src=".github/assets/team-analysis.png" width="100%" />
+    </td>
+  </tr>
+</table>
 
 - **Mini Features**
 
 <table>
   <tr>
-    <td width="49%" valign="top">
+    <td width="50%" valign="top">
       <strong>Who's That Pokemon?</strong><br/>
-      Classic silhouette guessing game that never gets old.<br/><br/>
+      Classic silhouette guessing game that never gets old.
+    </td>
+    <td width="50%" valign="top">
+      <strong>Pokemon Origins</strong><br/>
+      Dive into lore, generations, and legendary status of your favorite Pokémon.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
       <img src=".github/assets/whos-that-pokemon.png" width="100%" />
     </td>
-    <td width="49%" valign="top">
-      <strong>Pokemon Origins</strong><br/>
-      Dive into lore, generations, and legendary status of your favorite Pokémon.<br/><br/>
+    <td width="50%" valign="top">
       <img src=".github/assets/origins.png" width="100%" />
     </td>
   </tr>
