@@ -519,25 +519,47 @@
 
 @media (max-width: 480px) {
   .teamGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
   }
   .coverageGrid {
     grid-template-columns: repeat(2, 1fr);
     gap: 6px;
   }
+  .slot {
+    min-height: 90px;
+    padding: 6px;
+  }
   .slotContent {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
+    align-items: center;
+    gap: 2px;
+  }
+  .slotTop {
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
   }
   .sprite {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
+  }
+  .slotName {
+    font-size: 9px;
+  }
+  .slotTypes {
+    justify-content: center;
+  }
+  .typeBadge {
+    font-size: 7px;
+    padding: 1px 4px;
   }
   .removeBtn {
-    margin-left: 0;
-    margin-top: 4px;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    padding: 2px 4px;
+    font-size: 8px;
   }
   .title {
     font-size: 16px;

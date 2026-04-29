@@ -1,69 +1,119 @@
 'use client'
 
-import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import Image from 'next/image'
-import {
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
-  Legend,
-  ResponsiveContainer,
-  Tooltip,
-} from 'recharts'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { HowToGuide } from '@/components/ui/HowToGuide'
 import { PokemonSprite } from '@/components/ui/PokemonSprite'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { type PokemonType, typeColorMap } from '@/lib/design-tokens'
+import { getSpriteUrl, isSpriteMissing } from '@/lib/sprites'
+import styles from '../team/team-builder.module.css'
 
-// ─── Stat Comparison Types ──────────────────────────────────────────────────────
-
-interface PokemonStats {
+interface PokemonData {
   id: number
   name: string
+  type_names: string
   hp: number
   attack: number
   defense: number
   special_attack: number
   special_defense: number
   speed: number
+  types: PokemonType[]
 }
 
-interface RadarDataPoint {
-  stat: string
-  fullMark: number
-  [key: string]: string | number
-}
-
-const STAT_LABELS: Record<string, string> = {
-  hp: 'HP',
-  attack: 'Attack',
-  defense: 'Defense',
-  special_attack: 'Sp. Atk',
-  special_defense: 'Sp. Def',
-  speed: 'Speed',
-}
-const STAT_KEYS = ['hp', 'attack', 'defense', 'special_attack', 'special_defense', 'speed'] as const
 const MAX_STAT = 255
 const COMPARISON_COLORS = ['#ff6b35', '#3b82f6', '#22c55e', '#facc15', '#ec4899', '#67e8f9']
-const ALL_POKEMON_QUERY = `SELECT id, name, hp, attack, defense, special_attack, special_defense, speed FROM pokemon_db.dim_pokemon ORDER BY id`
 const MAX_SELECTED = 6
 
-function buildRadarData(pokemonList: PokemonStats[]): RadarDataPoint[] {
-  return STAT_KEYS.map((key) => {
-    const point: RadarDataPoint = { stat: STAT_LABELS[key], fullMark: MAX_STAT }
-    for (const p of pokemonList) {
-      point[p.name] = p[key]
-    }
-    return point
-  })
+function parseTypes(type_names: string): PokemonType[] {
+  return [
+    ...new Set(
+      type_names
+        .split(',')
+        .map((t) => t.trim().toLowerCase())
+        .filter((t): t is PokemonType => ALL_TYPES.includes(t as PokemonType))
+    ),
+  ]
 }
 
-function getTotalStats(p: PokemonStats): number {
+function getTotalStats(p: PokemonData): number {
   return p.hp + p.attack + p.defense + p.special_attack + p.special_defense + p.speed
+}
+
+function getPhysicalBulk(p: PokemonData): number {
+  return p.hp * p.defense
+}
+
+function getSpecialBulk(p: PokemonData): number {
+  return p.hp * p.special_defense
+}
+
+function getSpeedTier(speed: number): { label: string; color: string } {
+  if (speed >= 130) return { label: 'Extreme', color: '#dc2626' }
+  if (speed >= 120) return { label: 'Very Fast', color: '#ea580c' }
+  if (speed >= 100) return { label: 'Fast', color: '#ca8a04' }
+  if (speed >= 90) return { label: 'Average', color: '#65a30d' }
+  if (speed >= 70) return { label: 'Below Avg', color: '#0891b2' }
+  if (speed >= 50) return { label: 'Slow', color: '#2563eb' }
+  return { label: 'Trick Room', color: '#7c3aed' }
+}
+
+function getStatTier(value: number): { label: string; color: string } {
+  if (value >= 150) return { label: 'Godly', color: '#dc2626' }
+  if (value >= 120) return { label: 'Excellent', color: '#ea580c' }
+  if (value >= 100) return { label: 'Great', color: '#ca8a04' }
+  if (value >= 80) return { label: 'Good', color: '#65a30d' }
+  if (value >= 60) return { label: 'Average', color: '#0891b2' }
+  return { label: 'Poor', color: '#6b7280' }
+}
+
+function getRole(p: PokemonData): { label: string; icon: string; desc: string } {
+  const bulk = getPhysicalBulk(p) + getSpecialBulk(p)
+  const off = Math.max(p.attack, p.special_attack)
+  const def = Math.max(p.defense, p.special_defense)
+
+  if (p.speed >= 100 && off >= 100) {
+    return { label: 'Sweeper', icon: '⚡', desc: 'Fast hard hitter' }
+  }
+  if (off >= 120 && p.speed >= 70) {
+    return { label: 'Wallbreaker', icon: '💥', desc: 'Breaks through walls' }
+  }
+  if (bulk >= 15000 && off >= 80) {
+    return { label: 'Tank', icon: '🛡️', desc: 'Hits back while taking hits' }
+  }
+  if (bulk >= 16000 && off < 80) {
+    return { label: 'Wall', icon: '🧱', desc: 'Absorbs damage' }
+  }
+  if (p.speed < 60 && off >= 90) {
+    return { label: 'TR Attacker', icon: '🐢', desc: 'Trick Room sweeper' }
+  }
+  if (def >= 100 && p.hp >= 80 && off < 90) {
+    return { label: 'Support', icon: '🔧', desc: 'Utility & setup' }
+  }
+  if (off >= 90 && def >= 80 && p.speed >= 70) {
+    return { label: 'All-Rounder', icon: '⭐', desc: 'Balanced stats' }
+  }
+  return { label: 'Specialist', icon: '🔮', desc: 'Niche role' }
+}
+
+function getBSTTier(total: number): { label: string; color: string } {
+  if (total >= 680) return { label: 'Legendary', color: '#dc2626' }
+  if (total >= 580) return { label: 'Pseudo-Legend', color: '#ea580c' }
+  if (total >= 530) return { label: 'Fully Evolved', color: '#ca8a04' }
+  if (total >= 480) return { label: 'Mid Stage', color: '#65a30d' }
+  if (total >= 400) return { label: 'Early Stage', color: '#0891b2' }
+  return { label: 'Baby', color: '#6b7280' }
+}
+
+function inferRole(p: PokemonData): string {
+  if (p.attack >= 100 && p.speed >= 90) return 'Physical Sweeper'
+  if (p.special_attack >= 100 && p.speed >= 90) return 'Special Sweeper'
+  if (p.hp >= 90 && (p.defense >= 85 || p.special_defense >= 85)) return 'Tank'
+  if (p.defense >= 110 || p.special_defense >= 110) return 'Wall'
+  return 'Support/Utility'
 }
 
 function useJSONQuery<T>(jsonFile: string) {
@@ -94,291 +144,6 @@ function useJSONQuery<T>(jsonFile: string) {
 
   return { data, loading, error, refetch: fetchData }
 }
-
-function CustomTooltip({ active, payload, label }: any) {
-  if (!active || !payload?.length) return null
-  return (
-    <div className="glass rounded-lg px-3 py-2 text-xs border border-[var(--card-border)]">
-      <p className="text-[var(--text-primary)] font-semibold mb-1">{label}</p>
-      {payload.map((entry: any, i: number) => (
-        <div key={i} className="flex items-center gap-2">
-          <span
-            className="w-2 h-2 rounded-full inline-block"
-            style={{ backgroundColor: entry.color }}
-          />
-          <span className="text-[var(--text-secondary)]">{entry.name}:</span>
-          <span className="text-[var(--text-primary)] font-medium">{entry.value}</span>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-// ─── Stat Comparison Panel ────────────────────────────────────────────────────
-
-function PokemonSelector({
-  allPokemon,
-  selected,
-  onToggle,
-}: {
-  allPokemon: PokemonStats[]
-  selected: PokemonStats[]
-  onToggle: (pokemon: PokemonStats) => void
-}) {
-  const [search, setSearch] = useState('')
-  const [isOpen, setIsOpen] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) setIsOpen(false)
-    }
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
-  }, [])
-
-  const filtered = useMemo(() => {
-    const q = search.toLowerCase().trim()
-    if (!q) return allPokemon.slice(0, 50)
-    return allPokemon.filter((p) => p.name.toLowerCase().includes(q)).slice(0, 50)
-  }, [allPokemon, search])
-
-  const selectedIds = useMemo(() => new Set(selected.map((p) => p.id)), [selected])
-  const canSelectMore = selected.length < MAX_SELECTED
-
-  return (
-    <div ref={containerRef} className="relative">
-      <label className="block text-xs font-[family-name:var(--font-pixel)] text-[var(--text-secondary)] tracking-wider mb-2">
-        ADD POKEMON
-      </label>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full glass rounded-lg px-4 py-3 text-left text-sm text-[var(--text-secondary)] hover:bg-[var(--surface)] transition-colors flex items-center justify-between"
-      >
-        <span>{canSelectMore ? 'Search Pokemon...' : `Max ${MAX_SELECTED} selected`}</span>
-        <svg
-          className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-      {isOpen && (
-        <div className="absolute z-40 mt-2 w-full glass rounded-lg border border-[var(--card-border)] shadow-xl shadow-black/50 max-h-80 overflow-hidden flex flex-col">
-          <div className="p-2 border-b border-[var(--card-border)]">
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Type to search..."
-              className="w-full bg-[var(--surface)] rounded-md px-3 py-2 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none focus:ring-1 focus:ring-[var(--type-fighting)]"
-              autoFocus
-            />
-          </div>
-          <div className="overflow-y-auto flex-1">
-            {filtered.length === 0 ? (
-              <div className="px-4 py-6 text-center text-[var(--text-muted)] text-sm">
-                No Pokemon found
-              </div>
-            ) : (
-              filtered.map((p) => {
-                const isSelected = selectedIds.has(p.id)
-                const isDisabled = !isSelected && !canSelectMore
-                return (
-                  <button
-                    key={p.id}
-                    onClick={() => {
-                      if (!isDisabled) onToggle(p)
-                    }}
-                    disabled={isDisabled}
-                    className={[
-                      'w-full flex items-center gap-3 px-3 py-2 text-sm transition-colors',
-                      isSelected
-                        ? 'bg-[var(--surface)] text-[var(--text-primary)]'
-                        : isDisabled
-                          ? 'text-[var(--text-muted)] cursor-not-allowed'
-                          : 'text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]',
-                    ].join(' ')}
-                  >
-                    <PokemonSprite pokemonId={p.id} size={28} alt={p.name} />
-                    <span className="capitalize font-medium">{p.name}</span>
-                    <span className="ml-auto text-[var(--text-muted)] text-xs">
-                      #{String(p.id).padStart(3, '0')}
-                    </span>
-                    {isSelected && (
-                      <svg
-                        className="w-4 h-4 text-[var(--type-fighting)]"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    )}
-                  </button>
-                )
-              })
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
-
-function SelectedChips({
-  selected,
-  onRemove,
-}: {
-  selected: PokemonStats[]
-  onRemove: (id: number) => void
-}) {
-  if (selected.length === 0) return null
-  return (
-    <div className="flex flex-wrap gap-2">
-      {selected.map((p, i) => (
-        <div
-          key={p.id}
-          className="group flex items-center gap-2 glass rounded-full pl-1 pr-3 py-1 transition-all duration-300 hover:shadow-[0_0_12px_var(--glow)]"
-          style={{ '--glow': COMPARISON_COLORS[i] } as React.CSSProperties}
-        >
-          <div
-            className="w-7 h-7 rounded-full flex items-center justify-center overflow-hidden"
-            style={{
-              backgroundColor: `${COMPARISON_COLORS[i]}20`,
-              border: `1px solid ${COMPARISON_COLORS[i]}60`,
-            }}
-          >
-            <PokemonSprite pokemonId={p.id} size={24} alt={p.name} />
-          </div>
-          <span className="text-sm text-[var(--text-primary)] capitalize font-medium">
-            {p.name}
-          </span>
-          <button
-            onClick={() => onRemove(p.id)}
-            className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
-            aria-label={`Remove ${p.name}`}
-          >
-            <svg
-              className="w-3.5 h-3.5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2.5}
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-function StatsTable({ selected }: { selected: PokemonStats[] }) {
-  if (selected.length === 0) return null
-  return (
-    <Card className="overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-[var(--card-border)]">
-              <th className="text-left py-3 px-4 text-[var(--text-muted)] font-normal text-xs uppercase tracking-wider">
-                Stat
-              </th>
-              {selected.map((p, i) => (
-                <th
-                  key={p.id}
-                  className="text-center py-3 px-4 font-semibold text-xs uppercase tracking-wider"
-                  style={{ color: COMPARISON_COLORS[i] }}
-                >
-                  {p.name}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {STAT_KEYS.map((key) => {
-              const values = selected.map((p) => p[key])
-              const maxVal = Math.max(...values)
-              return (
-                <tr
-                  key={key}
-                  className="border-b border-[var(--card-border)] hover:bg-[var(--surface)] transition-colors"
-                >
-                  <td className="py-3 px-4 text-[var(--text-secondary)] font-medium">
-                    {STAT_LABELS[key]}
-                  </td>
-                  {selected.map((p, i) => {
-                    const val = p[key]
-                    const isMax = val === maxVal && selected.length > 1
-                    const barWidth = (val / MAX_STAT) * 100
-                    return (
-                      <td key={p.id} className="py-3 px-4 text-center">
-                        <div className="flex flex-col items-center gap-1">
-                          <span
-                            className={[
-                              'font-bold tabular-nums',
-                              isMax ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]',
-                            ].join(' ')}
-                            style={isMax ? { color: COMPARISON_COLORS[i] } : undefined}
-                          >
-                            {val}
-                          </span>
-                          <div className="w-full h-1 rounded-full bg-[var(--surface)] overflow-hidden">
-                            <div
-                              className="h-full rounded-full transition-all duration-500"
-                              style={{
-                                width: `${barWidth}%`,
-                                backgroundColor: COMPARISON_COLORS[i],
-                                opacity: isMax ? 1 : 0.5,
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </td>
-                    )
-                  })}
-                </tr>
-              )
-            })}
-            <tr className="border-t-2 border-[var(--card-border)]">
-              <td className="py-3 px-4 text-[var(--text-primary)] font-bold">Total</td>
-              {selected.map((p, i) => {
-                const total = getTotalStats(p)
-                const totals = selected.map(getTotalStats)
-                const isMax = total === Math.max(...totals) && selected.length > 1
-                return (
-                  <td key={p.id} className="py-3 px-4 text-center">
-                    <span
-                      className="font-bold tabular-nums text-lg"
-                      style={{ color: isMax ? COMPARISON_COLORS[i] : 'var(--text-secondary)' }}
-                    >
-                      {total}
-                    </span>
-                  </td>
-                )
-              })}
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </Card>
-  )
-}
-
-const PRESETS = [
-  { label: 'Starter Trio', ids: [1, 4, 7] },
-  { label: 'Legendary Birds', ids: [144, 145, 146] },
-  { label: 'Mewtwo vs Mew', ids: [150, 151] },
-  { label: 'Eeveelutions', ids: [134, 135, 136] },
-]
 
 const ALL_TYPES: PokemonType[] = [
   'normal',
@@ -460,25 +225,212 @@ function getEffectiveness(attacker: PokemonType, defender: PokemonType): number 
   return TYPE_EFFECTIVENESS[attacker]?.[defender] ?? 1
 }
 
-interface TypeMatchupSectionProps {
-  selected: PokemonStats[]
+function getCoverageTypes(pokemonList: PokemonData[]): PokemonType[] {
+  const covered = new Set<PokemonType>()
+  for (const p of pokemonList) {
+    for (const t of p.types) {
+      covered.add(t)
+      for (const def of ALL_TYPES) {
+        if (getEffectiveness(t, def) >= 2) {
+          covered.add(def)
+        }
+      }
+    }
+  }
+  return Array.from(covered)
 }
 
-function TypeMatchupSection({ selected }: TypeMatchupSectionProps) {
-  const { data: allPokemon } = useJSONQuery<{ id: number; name: string; type_names: string }>(
-    'pokemon.json'
-  )
+function getDefensiveWeaknesses(
+  pokemonList: PokemonData[]
+): { type: PokemonType; count: number }[] {
+  const weaknesses: Record<string, number> = {}
+  for (const p of pokemonList) {
+    for (const atk of ALL_TYPES) {
+      let mult = 1
+      for (const def of p.types) {
+        mult *= getEffectiveness(atk, def)
+      }
+      if (mult > 1) {
+        weaknesses[atk] = (weaknesses[atk] || 0) + 1
+      }
+    }
+  }
+  return Object.entries(weaknesses)
+    .map(([type, count]) => ({ type: type as PokemonType, count }))
+    .filter((w) => w.count >= pokemonList.length)
+    .sort((a, b) => b.count - a.count)
+}
 
+function CompetitiveInsights({ selected }: { selected: PokemonData[] }) {
   if (selected.length === 0) return null
 
-  const pokemonWithTypes = selected.map((p) => {
-    const full = allPokemon?.find((ap) => ap.id === p.id)
-    const types = (full?.type_names ?? '')
-      .split(',')
-      .map((t) => t.trim().toLowerCase())
-      .filter((t): t is PokemonType => ALL_TYPES.includes(t as PokemonType))
-    return { ...p, types: [...new Set(types)] }
-  })
+  return (
+    <Card className="space-y-4">
+      <h3 className="text-sm font-[family-name:var(--font-pixel)] tracking-wider text-[var(--text-secondary)]">
+        Competitive Analysis
+      </h3>
+      <div className="space-y-3">
+        {selected.map((p, i) => {
+          const speedTier = getSpeedTier(p.speed)
+          const physBulk = getPhysicalBulk(p)
+          const specBulk = getSpecialBulk(p)
+          const role = getRole(p)
+          const bst = getTotalStats(p)
+          const bstTier = getBSTTier(bst)
+          const atkTier = getStatTier(p.attack)
+          const spatkTier = getStatTier(p.special_attack)
+
+          return (
+            <div
+              key={p.id}
+              className="rounded-lg border border-[var(--card-border)] p-3 space-y-2"
+              style={{ borderLeft: `3px solid ${COMPARISON_COLORS[i]}` }}
+            >
+              <div className="flex items-center gap-2 flex-wrap">
+                <PokemonSprite pokemonId={p.id} size={28} alt={p.name} />
+                <span
+                  className="text-sm font-semibold capitalize"
+                  style={{ color: COMPARISON_COLORS[i] }}
+                >
+                  {p.name}
+                </span>
+                <span
+                  className="text-[10px] px-1.5 py-0.5 rounded font-mono text-white"
+                  style={{ backgroundColor: bstTier.color }}
+                >
+                  {bstTier.label} · BST {bst}
+                </span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--surface)] border border-[var(--card-border)]">
+                  {role.icon} {role.label}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                <div className="bg-[var(--surface)] rounded-md px-2 py-1.5 text-center">
+                  <div className="text-[var(--text-muted)] mb-0.5">Speed</div>
+                  <div className="font-bold tabular-nums" style={{ color: speedTier.color }}>
+                    {p.speed}
+                  </div>
+                  <div className="text-[10px]" style={{ color: speedTier.color }}>
+                    {speedTier.label}
+                  </div>
+                </div>
+                <div className="bg-[var(--surface)] rounded-md px-2 py-1.5 text-center">
+                  <div className="text-[var(--text-muted)] mb-0.5">Phys Bulk</div>
+                  <div className="font-bold tabular-nums text-[var(--text-primary)]">
+                    {physBulk.toLocaleString()}
+                  </div>
+                  <div className="text-[10px] text-[var(--text-muted)]">HP×Def</div>
+                </div>
+                <div className="bg-[var(--surface)] rounded-md px-2 py-1.5 text-center">
+                  <div className="text-[var(--text-muted)] mb-0.5">Spec Bulk</div>
+                  <div className="font-bold tabular-nums text-[var(--text-primary)]">
+                    {specBulk.toLocaleString()}
+                  </div>
+                  <div className="text-[10px] text-[var(--text-muted)]">HP×SpDef</div>
+                </div>
+                <div className="bg-[var(--surface)] rounded-md px-2 py-1.5 text-center">
+                  <div className="text-[var(--text-muted)] mb-0.5">Offense</div>
+                  <div className="font-bold tabular-nums" style={{ color: atkTier.color }}>
+                    {p.attack}
+                  </div>
+                  <div className="text-[10px]" style={{ color: spatkTier.color }}>
+                    SpA {p.special_attack}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-[10px] text-[var(--text-muted)]">Weak to:</span>
+                {(() => {
+                  const weaknesses = ALL_TYPES.map((t) => ({
+                    type: t,
+                    mult: p.types.reduce((m, pt) => m * getEffectiveness(t, pt), 1),
+                  }))
+                    .filter((w) => w.mult > 1)
+                    .sort((a, b) => b.mult - a.mult)
+                  if (weaknesses.length === 0) {
+                    return <span className="text-[10px] text-green-500">None</span>
+                  }
+                  return weaknesses.map((w) => (
+                    <span key={w.type} className="inline-flex items-center gap-0.5">
+                      <Badge type={w.type} />
+                      <span className="text-[9px] text-red-400 font-mono">{w.mult}x</span>
+                    </span>
+                  ))
+                })()}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </Card>
+  )
+}
+
+function CoverageAnalysis({ selected }: { selected: PokemonData[] }) {
+  if (selected.length < 2) return null
+
+  const coverage = getCoverageTypes(selected)
+  const weaknesses = getDefensiveWeaknesses(selected)
+  const uncovered = ALL_TYPES.filter((t) => !coverage.includes(t))
+
+  return (
+    <Card className="space-y-4">
+      <h3 className="text-sm font-[family-name:var(--font-pixel)] tracking-wider text-[var(--text-secondary)]">
+        Team Coverage Analysis
+      </h3>
+
+      <div className="space-y-3">
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-[var(--text-secondary)]">Offensive Coverage</span>
+            <span className="text-xs font-bold text-[var(--text-primary)]">
+              {coverage.length}/18 types covered
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-1">
+            {ALL_TYPES.map((t) => (
+              <Badge
+                key={t}
+                type={t}
+                className={!coverage.includes(t) ? 'opacity-30 grayscale' : ''}
+              />
+            ))}
+          </div>
+          {uncovered.length > 0 && (
+            <p className="text-[10px] text-[var(--text-muted)] mt-1.5">
+              Not covered: {uncovered.map((t) => t).join(', ')}
+            </p>
+          )}
+        </div>
+
+        {weaknesses.length > 0 && (
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs text-[var(--text-secondary)]">Shared Weaknesses</span>
+              <span className="text-[10px] text-[var(--text-muted)]">All team members weak to</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {weaknesses.map((w) => (
+                <span
+                  key={w.type}
+                  className="text-[10px] px-2 py-1 rounded-md font-semibold text-white"
+                  style={{ backgroundColor: '#dc2626' }}
+                >
+                  {w.type}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </Card>
+  )
+}
+
+function TypeMatchupSection({ selected }: { selected: PokemonData[] }) {
+  if (selected.length === 0) return null
 
   return (
     <Card className="space-y-4">
@@ -486,7 +438,7 @@ function TypeMatchupSection({ selected }: TypeMatchupSectionProps) {
         Type Effectiveness
       </h3>
       <div className="space-y-3">
-        {pokemonWithTypes.map((p, i) => (
+        {selected.map((p, i) => (
           <PokemonTypeMatchup key={p.id} pokemon={p} color={COMPARISON_COLORS[i]} />
         ))}
       </div>
@@ -494,21 +446,11 @@ function TypeMatchupSection({ selected }: TypeMatchupSectionProps) {
   )
 }
 
-function PokemonTypeMatchup({
-  pokemon,
-  color,
-}: {
-  pokemon: PokemonStats & { types: PokemonType[] }
-  color: string
-}) {
-  const [showAll, setShowAll] = useState(false)
-
+function PokemonTypeMatchup({ pokemon, color }: { pokemon: PokemonData; color: string }) {
   const matchups = ALL_TYPES.map((t) => {
-    const multiplier = pokemon.types.reduce((m, pt) => m * getEffectiveness(pt, t), 1)
+    const multiplier = pokemon.types.reduce((m, pt) => m * getEffectiveness(t, pt), 1)
     return { type: t, multiplier }
   }).filter((m) => m.multiplier !== 1)
-
-  const visible = showAll ? matchups : matchups.slice(0, 3)
 
   return (
     <div className="space-y-1.5">
@@ -519,7 +461,7 @@ function PokemonTypeMatchup({
         </span>
       </div>
       <div className="flex flex-wrap gap-1.5">
-        {visible.map((m) => {
+        {matchups.map((m) => {
           const bg = m.multiplier > 1 ? '#166534' : m.multiplier === 0 ? '#201122' : '#8B1A1A'
           return (
             <span
@@ -531,14 +473,6 @@ function PokemonTypeMatchup({
             </span>
           )
         })}
-        {matchups.length > 3 && (
-          <button
-            onClick={() => setShowAll((s) => !s)}
-            className="text-[10px] px-1.5 py-0.5 rounded text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
-          >
-            {showAll ? 'Show less' : `+${matchups.length - 3} more`}
-          </button>
-        )}
       </div>
     </div>
   )
@@ -554,7 +488,7 @@ interface PokemonMoveRow {
   damage_class: string
 }
 
-function MovesSection({ selected }: { selected: PokemonStats[] }) {
+function MovesSection({ selected }: { selected: PokemonData[] }) {
   const { data: pokemonMovesData, loading } = useJSONQuery<PokemonMoveRow>('pokemon_moves.json')
 
   if (selected.length === 0) return null
@@ -616,34 +550,453 @@ function MovesSection({ selected }: { selected: PokemonStats[] }) {
   )
 }
 
-function StatComparePanel() {
+function TeamAnalysis({ selected }: { selected: PokemonData[] }) {
+  if (selected.length === 0) return null
+
+  const fastest = [...selected].sort((a, b) => b.speed - a.speed)[0]
+  let speedTier = 'Slow (< 70)'
+  if (fastest.speed >= 100) speedTier = 'Fast (> 100)'
+  else if (fastest.speed >= 70) speedTier = 'Average (70-100)'
+
+  const types = new Set(selected.flatMap((p) => p.types))
+  const weatherHints = []
+  if (types.has('fire')) weatherHints.push('Sun (Boosts Fire)')
+  if (types.has('water') || types.has('electric'))
+    weatherHints.push('Rain (Boosts Water, Electric never misses)')
+  if (types.has('ice')) weatherHints.push('Hail/Snow (Boosts Ice Def/Evade)')
+  if (types.has('rock')) weatherHints.push('Sandstorm (Boosts Rock Sp.Def)')
+
+  const utilityHints = []
+  if (types.has('flying') || types.has('fire'))
+    utilityHints.push('Hazard Removal (Defog/Rapid Spin)')
+  if (types.has('rock') || types.has('ground'))
+    utilityHints.push('Entry Hazards (Stealth Rock/Spikes)')
+
+  const coverage = getCoverageTypes(selected)
+  const uncovered = ALL_TYPES.filter((t) => !coverage.includes(t))
+  const offensiveScore = Math.round((coverage.length / ALL_TYPES.length) * 100)
+
+  const def = ALL_TYPES.map((t) => {
+    const vals = selected.map((p) => {
+      let m = 1
+      for (const tt of p.types) m *= getEffectiveness(t, tt)
+      return m
+    })
+    const avg = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 1
+    return { type: t, averageDef: avg }
+  })
+
+  const resistCount = def.filter((d) => d.averageDef < 1).length
+  const weakCount = def.filter((d) => d.averageDef > 1).length
+  const neutralCount = def.filter((d) => d.averageDef === 1).length
+
+  const significantWeaknesses = def
+    .filter((d) => d.averageDef >= 1.25)
+    .sort((a, b) => b.averageDef - a.averageDef)
+
+  let synergyScore = 0
+  if (selected.length > 0) {
+    const totalDef = def.reduce((acc, curr) => acc + curr.averageDef, 0)
+    synergyScore = Math.round(
+      Math.max(0, Math.min(100, 100 - (totalDef / ALL_TYPES.length - 1) * 100))
+    )
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <Card className="flex flex-col gap-3 p-4 bg-[var(--surface-light)] border border-[var(--card-border)]">
+        <div className="text-xs font-[family-name:var(--font-pixel)] text-[var(--text-secondary)] uppercase tracking-wider border-b border-[var(--card-border)] pb-2 flex justify-between">
+          <span>Offensive & Speed</span>
+          <span
+            className={
+              offensiveScore > 75
+                ? 'text-green-500'
+                : offensiveScore > 40
+                  ? 'text-yellow-500'
+                  : 'text-red-500'
+            }
+          >
+            Score: {offensiveScore}/100
+          </span>
+        </div>
+        <div className="text-sm">
+          <span className="text-[var(--text-muted)]">Fastest: </span>
+          <span className="text-[var(--text-primary)] font-medium">
+            {fastest.name} (Speed: {fastest.speed}) - {speedTier}
+          </span>
+        </div>
+        <div className="text-sm">
+          <span className="text-[var(--text-muted)]">Coverage Gaps: </span>
+          {uncovered.length === 0 ? (
+            <span className="text-green-500 font-medium">
+              Full coverage! All 18 types hit super effectively.
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1 flex-wrap">
+              <span className="text-red-400 font-medium">Cannot hit</span>
+              {uncovered.map((t) => (
+                <Badge key={t} type={t} />
+              ))}
+            </span>
+          )}
+        </div>
+      </Card>
+
+      <Card className="flex flex-col gap-3 p-4 bg-[var(--surface-light)] border border-[var(--card-border)]">
+        <div className="text-xs font-[family-name:var(--font-pixel)] text-[var(--text-secondary)] uppercase tracking-wider border-b border-[var(--card-border)] pb-2 flex justify-between">
+          <span>Defensive & Synergy</span>
+          <span
+            className={
+              synergyScore > 75
+                ? 'text-green-500'
+                : synergyScore > 40
+                  ? 'text-yellow-500'
+                  : 'text-red-500'
+            }
+          >
+            Score: {synergyScore}/100
+          </span>
+        </div>
+        <div className="flex items-center gap-3 text-sm">
+          <span className="text-green-500 font-medium">Resists {resistCount}</span>
+          <span className="text-[var(--text-muted)]">|</span>
+          <span className="text-[var(--text-secondary)]">Neutral {neutralCount}</span>
+          <span className="text-[var(--text-muted)]">|</span>
+          <span className="text-red-400 font-medium">Weak to {weakCount}</span>
+        </div>
+        {significantWeaknesses.length > 0 && (
+          <div className="text-sm">
+            <span className="text-[var(--text-muted)]">Major weaknesses: </span>
+            <span className="inline-flex items-center gap-1 flex-wrap">
+              {significantWeaknesses.slice(0, 6).map((d) => (
+                <span key={d.type} className="inline-flex items-center gap-1">
+                  <Badge type={d.type} />
+                  <span className="text-[10px] text-red-400 font-mono">
+                    {d.averageDef.toFixed(2)}x
+                  </span>
+                </span>
+              ))}
+              {significantWeaknesses.length > 6 && (
+                <span className="text-[10px] text-[var(--text-muted)]">
+                  +{significantWeaknesses.length - 6} more
+                </span>
+              )}
+            </span>
+          </div>
+        )}
+        {(weatherHints.length > 0 || utilityHints.length > 0) && (
+          <div className="text-sm border-t border-[var(--card-border)] pt-2 mt-1">
+            <span className="text-[var(--text-muted)] block mb-1">Suggested Utility:</span>
+            <ul className="list-disc list-inside pl-4 space-y-1 text-[var(--text-secondary)] text-xs">
+              {weatherHints.map((h) => (
+                <li key={h}>{h}</li>
+              ))}
+              {utilityHints.map((h) => (
+                <li key={h}>{h}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </Card>
+    </div>
+  )
+}
+
+function CoverageGrid({ selected }: { selected: PokemonData[] }) {
+  if (selected.length === 0) return null
+
+  const def = ALL_TYPES.map((t) => {
+    const vals = selected.map((p) => {
+      let m = 1
+      for (const tt of p.types) m *= getEffectiveness(t, tt)
+      return m
+    })
+    const avg = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 1
+    return { type: t, avg }
+  })
+
+  const byType = ALL_TYPES.map((t) => {
+    let superEff = false
+    for (const p of selected) {
+      for (const at of p.types) {
+        if (getEffectiveness(at, t) >= 2) {
+          superEff = true
+          break
+        }
+      }
+      if (superEff) break
+    }
+    return { type: t, superEffective: superEff }
+  })
+
+  const gaps = ALL_TYPES.filter((t) => {
+    const mins = selected.map((p) => {
+      let m = 1
+      for (const tt of p.types) m *= getEffectiveness(t, tt)
+      return m
+    })
+    if (mins.length === 0) return true
+    return Math.min(...mins) >= 1
+  })
+
+  return (
+    <section>
+      <h2 className={styles.sectionTitle}>Coverage Grid</h2>
+      <div className={styles.coverageGrid}>
+        {ALL_TYPES.map((t) => {
+          const defFor = def.find((d) => d.type === t)
+          const avg = defFor?.avg ?? 1
+          const color = avg < 1 ? '#34d399' : avg > 1.25 ? '#f87171' : 'var(--surface)'
+          const bySuper = byType.find((b) => b.type === t)?.superEffective ?? false
+          const gap = gaps.includes(t)
+          return (
+            <div key={t} className={styles.coverageCard}>
+              <div className={styles.coverageHeader}>
+                <span className={styles.typeName}>{t}</span>
+                <span className={styles.badge} style={{ background: color }}>
+                  {' '}
+                </span>
+              </div>
+              <div className={styles.coverageBody}>
+                <div className={styles.coverageLine}>
+                  <span>Super effective: {bySuper ? 'Yes' : 'No'}</span>
+                </div>
+                <div className={styles.coverageLineSmall}>
+                  <span>Defensive multiplier: {avg.toFixed(2)}x</span>
+                </div>
+                {gap && <div className={styles.gapLabel}>Coverage gap: weak to {t}</div>}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </section>
+  )
+}
+
+function multiplierLabel(multiplier: number): string {
+  if (multiplier === 0) return '0'
+  if (multiplier === 0.5) return '1/2'
+  if (multiplier === 1) return '1'
+  if (multiplier === 2) return '2'
+  return `${multiplier}`
+}
+
+function cellStyles(multiplier: number): { backgroundColor: string; color: string } {
+  if (multiplier === 0) return { backgroundColor: '#201122', color: '#FFFFFF' }
+  if (multiplier === 0.5) return { backgroundColor: '#8B1A1A', color: '#FFFFFF' }
+  if (multiplier === 1) return { backgroundColor: 'var(--surface)', color: '#7f7f7fff' }
+  return { backgroundColor: '#166534', color: '#FFFFFF' }
+}
+
+function TypeMatrixTab() {
+  const guideItems = [
+    { multiplier: 2, description: 'Super effective. Strong damage.' },
+    { multiplier: 1, description: 'Normal damage. No modifier.' },
+    { multiplier: 0.5, description: 'Not very effective. Reduced damage.' },
+    { multiplier: 0, description: 'Immune. No damage lands.' },
+  ] as const
+
+  const matrix = useMemo(
+    () =>
+      ALL_TYPES.map((attacker) =>
+        ALL_TYPES.map((defender) => ({
+          attacker,
+          defender,
+          multiplier: getEffectiveness(attacker, defender),
+        }))
+      ),
+    []
+  )
+
+  return (
+    <div className="space-y-8 animate-[fade-in_0.3s_ease-out]">
+      <div className="text-center space-y-3 mb-6">
+        <h2 className="text-xl font-[family-name:var(--font-pixel)] tracking-wider text-[var(--text-primary)]">
+          Type Matchup Matrix
+        </h2>
+        <p className="text-sm text-[var(--text-muted)] max-w-2xl mx-auto">
+          Read across the row to see how one attacking type performs against each defending type.
+        </p>
+      </div>
+
+      <HowToGuide title="Type Matchup Guide">
+        Green cells mean super effective (2x). Red cells mean not very effective (0.5x) or no effect
+        (0x). White cells are neutral (1x). Use this to plan your team coverage.
+      </HowToGuide>
+
+      <Card className="space-y-4">
+        <h2 className="text-sm font-[family-name:var(--font-pixel)] tracking-wider text-[var(--text-secondary)]">
+          Notes
+        </h2>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 text-sm">
+          {guideItems.map((item) => {
+            const styles = cellStyles(item.multiplier)
+            return (
+              <div
+                key={item.multiplier}
+                className="rounded-lg border border-[var(--card-border)] p-3 font-[family-name:var(--font-pixel)] tracking-wider"
+                style={{ backgroundColor: styles.backgroundColor, color: styles.color }}
+              >
+                <div className="font-semibold mb-1">{multiplierLabel(item.multiplier)}</div>
+                <div>{item.description}</div>
+              </div>
+            )
+          })}
+        </div>
+      </Card>
+
+      <Card className="overflow-hidden">
+        <div className="overflow-auto">
+          <table className="min-w-max w-full border-collapse text-xs font-[family-name:var(--font-pixel)] tracking-wider">
+            <thead>
+              <tr>
+                <th className="sticky left-0 z-20 bg-[var(--surface)] border border-[var(--card-border)] px-2 py-2 text-[var(--text-secondary)] font-[family-name:var(--font-pixel)] tracking-wider">
+                  ATK\DEF
+                </th>
+                {ALL_TYPES.map((type) => (
+                  <th
+                    key={type}
+                    className="sticky top-0 z-10 bg-[var(--surface)] border border-[var(--card-border)] px-2 py-2"
+                  >
+                    <Badge type={type} />
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {matrix.map((row, rowIndex) => (
+                <tr key={ALL_TYPES[rowIndex]}>
+                  <th className="sticky left-0 z-10 bg-[var(--surface)] border border-[var(--card-border)] px-2 py-2 text-left">
+                    <Badge type={ALL_TYPES[rowIndex]} />
+                  </th>
+                  {row.map((cell) => {
+                    const styles = cellStyles(cell.multiplier)
+                    return (
+                      <td
+                        key={`${cell.attacker}-${cell.defender}`}
+                        className="border border-[var(--card-border)] px-2 py-2 text-center font-semibold text-white"
+                        style={styles}
+                        title={`${cell.attacker} vs ${cell.defender}: ${multiplierLabel(cell.multiplier)}`}
+                      >
+                        {multiplierLabel(cell.multiplier)}
+                      </td>
+                    )
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  )
+}
+
+export default function MatchupsPage() {
+  const [activeTab, setActiveTab] = useState<'builder' | 'matrix'>('builder')
+
   const {
-    data: allPokemon,
+    data: rawPokemon,
     loading: dataLoading,
     error: dataError,
-  } = useJSONQuery<PokemonStats>('pokemon.json')
-  const [selectedIds, setSelectedIds] = useState<number[]>([])
+  } = useJSONQuery<PokemonData>('pokemon.json')
 
-  const selectedPokemon = useMemo(() => {
-    if (!allPokemon) return []
-    return selectedIds
-      .map((id) => allPokemon.find((p) => p.id === id))
-      .filter(Boolean) as PokemonStats[]
-  }, [allPokemon, selectedIds])
+  const allPokemon = useMemo(() => {
+    if (!rawPokemon) return []
+    const seen = new Set<number>()
+    return rawPokemon
+      .map((p) => ({
+        ...p,
+        types: parseTypes(p.type_names),
+        name: p.name.charAt(0).toUpperCase() + p.name.slice(1),
+      }))
+      .filter((p) => {
+        if (seen.has(p.id)) return false
+        seen.add(p.id)
+        return true
+      })
+  }, [rawPokemon])
 
-  const radarData = useMemo(() => buildRadarData(selectedPokemon), [selectedPokemon])
+  const [team, setTeam] = useState<(PokemonData | null)[]>(Array(6).fill(null))
+  const [query, setQuery] = useState('')
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
 
-  const handleToggle = useCallback((pokemon: PokemonStats) => {
-    setSelectedIds((prev) => {
-      if (prev.includes(pokemon.id)) return prev.filter((id) => id !== pokemon.id)
-      if (prev.length >= MAX_SELECTED) return prev
-      return [...prev, pokemon.id]
+  const filledTeam = useMemo(() => team.filter((p): p is PokemonData => p !== null), [team])
+  const filledCount = filledTeam.length
+
+  const isDuplicate = useCallback(
+    (p: PokemonData) => team.some((slot) => slot?.id === p.id),
+    [team]
+  )
+
+  const showToast = useCallback((message: string, type: 'success' | 'error') => {
+    setToast({ message, type })
+    setTimeout(() => setToast(null), 2500)
+  }, [])
+
+  const addPokemonToFirstEmpty = useCallback((p: PokemonData) => {
+    setTeam((prev) => {
+      const idx = prev.findIndex((slot) => slot === null)
+      if (idx === -1) {
+        return prev
+      }
+      const next = prev.slice()
+      next[idx] = p
+      return next
     })
   }, [])
 
-  const handleRemove = useCallback((id: number) => {
-    setSelectedIds((prev) => prev.filter((pid) => pid !== id))
+  const handleAddPokemon = useCallback(
+    (p: PokemonData) => {
+      if (filledCount >= 6) {
+        showToast('Team is full! Remove a Pokemon first.', 'error')
+        return
+      }
+      if (isDuplicate(p)) {
+        showToast(`${p.name} is already on your team!`, 'error')
+        return
+      }
+      addPokemonToFirstEmpty(p)
+      showToast(`${p.name} added to team!`, 'success')
+    },
+    [filledCount, isDuplicate, addPokemonToFirstEmpty, showToast]
+  )
+
+  const removePokemonFromSlot = useCallback((idx: number) => {
+    setTeam((prev) => {
+      const next = prev.slice()
+      next[idx] = null
+      return next
+    })
   }, [])
+
+  const filteredPokemons = useMemo(() => {
+    if (!query) return allPokemon
+    const q = query.toLowerCase()
+    return allPokemon.filter(
+      (p) => p.name.toLowerCase().includes(q) || p.types.join(',').toLowerCase().includes(q)
+    )
+  }, [allPokemon, query])
+
+  const availablePokemons = useMemo(() => {
+    return filteredPokemons
+      .map((p) => ({ ...p, isDuplicate: isDuplicate(p) }))
+      .filter((p) => !p.isDuplicate || !team.some((t) => t !== null))
+  }, [filteredPokemons, isDuplicate, team])
+
+  const copyTeamText = async () => {
+    const lines = team.map((p, i) => {
+      if (!p) return `${i + 1}. [Empty slot]`
+      const types = p.types.map((t) => t.charAt(0).toUpperCase() + t.slice(1)).join('/')
+      return `${i + 1}. ${p.name} (${types})`
+    })
+    const text = lines.join('\n')
+    try {
+      await navigator.clipboard.writeText(text)
+      alert('Team copied to clipboard')
+    } catch {}
+  }
 
   if (dataLoading) {
     return (
@@ -666,135 +1019,6 @@ function StatComparePanel() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="max-w-3xl mx-auto text-center mb-6">
-        <p className="text-[var(--text-muted)] text-sm">
-          Compare base stats across Pokemon with radar charts. Select up to 6 Pokemon.
-        </p>
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
-        <div className="space-y-4">
-          <Card>
-            <PokemonSelector
-              allPokemon={allPokemon ?? []}
-              selected={selectedPokemon}
-              onToggle={handleToggle}
-            />
-          </Card>
-          <SelectedChips selected={selectedPokemon} onRemove={handleRemove} />
-          <Card>
-            <label className="block text-xs font-[family-name:var(--font-pixel)] text-[var(--text-secondary)] tracking-wider mb-3">
-              QUICK COMPARE
-            </label>
-            <div className="space-y-2">
-              {PRESETS.map(({ label, ids }) => {
-                const isActive =
-                  ids.length === selectedIds.length && ids.every((id) => selectedIds.includes(id))
-                return (
-                  <button
-                    key={label}
-                    onClick={() => setSelectedIds(isActive ? [] : ids)}
-                    className={[
-                      'w-full text-left px-3 py-2 rounded-md text-sm transition-all duration-200',
-                      isActive
-                        ? 'bg-[var(--type-fighting)]/20 text-[var(--text-primary)] border border-[var(--type-fighting)]/40'
-                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface)] border border-transparent',
-                    ].join(' ')}
-                  >
-                    {label}
-                  </button>
-                )
-              })}
-            </div>
-          </Card>
-        </div>
-        <div className="space-y-6">
-          <Card className="flex flex-col items-center">
-            {selectedPokemon.length === 0 ? (
-              <div className="py-16 sm:py-24 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--surface)] flex items-center justify-center">
-                  <svg
-                    className="w-8 h-8 text-[var(--text-muted)]"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={1.5}
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                    />
-                  </svg>
-                </div>
-                <p className="text-[var(--text-muted)] text-sm">
-                  Select Pokemon to compare their stats
-                </p>
-                <p className="text-[var(--text-muted)] text-xs mt-1">
-                  Choose up to {MAX_SELECTED} Pokemon from the sidebar
-                </p>
-              </div>
-            ) : (
-              <div className="w-full" style={{ minHeight: 380 }}>
-                <ResponsiveContainer width="100%" height={380}>
-                  <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="70%">
-                    <PolarGrid stroke="var(--card-border)" strokeDasharray="3 3" />
-                    <PolarAngleAxis
-                      dataKey="stat"
-                      tick={{ fill: 'var(--text-secondary)', fontSize: 12, fontWeight: 600 }}
-                    />
-                    <PolarRadiusAxis
-                      angle={90}
-                      domain={[0, MAX_STAT]}
-                      tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
-                      tickCount={6}
-                      axisLine={false}
-                    />
-                    {selectedPokemon.map((p, i) => (
-                      <Radar
-                        key={p.id}
-                        name={p.name}
-                        dataKey={p.name}
-                        stroke={COMPARISON_COLORS[i]}
-                        fill={COMPARISON_COLORS[i]}
-                        fillOpacity={0.15}
-                        strokeWidth={2}
-                        dot={{ r: 3, fill: COMPARISON_COLORS[i] }}
-                        activeDot={{
-                          r: 5,
-                          fill: COMPARISON_COLORS[i],
-                          stroke: '#fff',
-                          strokeWidth: 1,
-                        }}
-                      />
-                    ))}
-                    <Tooltip content={<CustomTooltip />} />
-                    <Legend
-                      wrapperStyle={{ fontSize: 12, color: 'var(--text-secondary)' }}
-                      formatter={(value: string) => (
-                        <span style={{ color: 'var(--text-secondary)' }} className="capitalize">
-                          {value}
-                        </span>
-                      )}
-                    />
-                  </RadarChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-          </Card>
-          <StatsTable selected={selectedPokemon} />
-          <TypeMatchupSection selected={selectedPokemon} />
-          <MovesSection selected={selectedPokemon} />
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ─── Main Analysis Page ──────────────────────────────────────────────────────
-
-export default function MatchupsPage() {
-  return (
     <div>
       <div className="text-center mb-8 sm:mb-10">
         <div className="flex items-center justify-center gap-3 mb-4">
@@ -806,20 +1030,182 @@ export default function MatchupsPage() {
             className="w-8 sm:w-10"
           />
           <h1 className="text-xl sm:text-2xl font-[family-name:var(--font-pixel)] text-[var(--text-primary)] tracking-wider">
-            Pokemon Matchups
+            Matchups & Analysis
           </h1>
         </div>
         <p className="text-[var(--text-muted)] text-sm max-w-lg mx-auto">
-          Compare base stats, type effectiveness, and moves across Pokemon
+          Build your team, compare stats with competitive tiers, analyze bulk & speed, and master
+          type effectiveness.
         </p>
       </div>
 
-      <HowToGuide title="Matchups Guide">
-        Select up to 6 Pokemon to compare stats on the radar chart. Check type effectiveness and
-        moves for each selected Pokemon to find the best team composition.
-      </HowToGuide>
+      <div className="flex justify-center mb-8">
+        <div className="inline-flex bg-[var(--surface)] rounded-lg p-1 border border-[var(--card-border)]">
+          <button
+            onClick={() => setActiveTab('builder')}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+              activeTab === 'builder'
+                ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/30'
+                : 'text-[var(--text-secondary)] hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
+            }`}
+          >
+            Team Builder
+          </button>
+          <button
+            onClick={() => setActiveTab('matrix')}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+              activeTab === 'matrix'
+                ? 'bg-blue-500 text-white shadow-md shadow-blue-500/30'
+                : 'text-[var(--text-secondary)] hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20'
+            }`}
+          >
+            Type Matrix
+          </button>
+        </div>
+      </div>
 
-      <StatComparePanel />
+      {activeTab === 'builder' ? (
+        <div className="animate-[fade-in_0.3s_ease-out] space-y-6">
+          <HowToGuide title="Team Builder Guide">
+            Click any Pokemon from the board below to add it to your team (max 6). Filter the board
+            by typing a name or type. Analyze competitive roles, speed tiers, and coverage.
+          </HowToGuide>
+
+          {toast && (
+            <div
+              className={`fixed top-20 left-1/2 -translate-x-1/2 z-[60] px-4 py-2.5 rounded-lg text-sm font-medium shadow-lg border transition-all duration-300 ${
+                toast.type === 'success'
+                  ? 'bg-emerald-500/90 text-white border-emerald-400/50'
+                  : 'bg-red-500/90 text-white border-red-400/50'
+              }`}
+            >
+              {toast.message}
+            </div>
+          )}
+
+          <div className={styles.gridToolbar}>
+            <div className={styles.searchBox}>
+              <input
+                placeholder="Filter Pokemon board by name or type..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className={styles.searchInput}
+              />
+            </div>
+            <div className="flex gap-2">
+              <button className={styles.copyBtn} onClick={copyTeamText}>
+                Copy Team
+              </button>
+            </div>
+          </div>
+
+          <div className={styles.boardContainer}>
+            <div className={styles.boardGrid}>
+              {availablePokemons.length > 0 ? (
+                availablePokemons.map((p) => (
+                  <button
+                    key={p.id}
+                    className={`${styles.boardCard} ${p.isDuplicate ? styles.boardCardDisabled : ''}`}
+                    onClick={() => handleAddPokemon(p)}
+                    disabled={p.isDuplicate}
+                  >
+                    <img
+                      src={getSpriteUrl(p.id)}
+                      alt={p.name}
+                      className={styles.boardSprite}
+                      style={{
+                        filter: isSpriteMissing(p.id) ? 'brightness(0) opacity(0.5)' : 'none',
+                      }}
+                      onError={(e) => {
+                        ;(e.target as HTMLImageElement).src = ''
+                      }}
+                    />
+                    <span className={styles.boardName}>{p.name}</span>
+                    <span className={styles.boardTypes}>
+                      {p.types.map((t) => (
+                        <span
+                          key={t}
+                          className={styles.smallType}
+                          style={{ background: typeColorMap[t] ?? '#999' }}
+                        >
+                          {t.charAt(0).toUpperCase() + t.slice(1)}
+                        </span>
+                      ))}
+                    </span>
+                    {p.isDuplicate && <span className={styles.boardDuplicate}>In Team</span>}
+                  </button>
+                ))
+              ) : (
+                <div className="col-span-full text-center text-sm text-[var(--text-muted)] py-8">
+                  No Pokemon match your filter
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <h2 className={styles.sectionTitle}>Your Team</h2>
+            <span className="text-xs text-[var(--text-muted)]">{filledCount}/6</span>
+          </div>
+          <div className={styles.teamGrid}>
+            {team.map((p, idx) => (
+              <div key={idx} className={styles.slot} aria-label={`Slot ${idx + 1}`}>
+                {p ? (
+                  <div className={styles.slotContent}>
+                    <div className={styles.slotTop}>
+                      <img
+                        className={styles.sprite}
+                        src={getSpriteUrl(p.id)}
+                        alt={p.name}
+                        style={{
+                          filter: isSpriteMissing(p.id) ? 'brightness(0) opacity(0.5)' : 'none',
+                        }}
+                      />
+                      <div className={styles.slotInfo}>
+                        <div className={styles.slotName}>{p.name}</div>
+                        <div className={styles.slotTypes}>
+                          {p.types.map((t) => (
+                            <span
+                              key={t}
+                              className={styles.typeBadge}
+                              style={{ background: typeColorMap[t] ?? '#999' }}
+                            >
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                        <div className="text-[9px] mt-1 text-[var(--text-muted)] border border-[var(--card-border)] rounded px-1.5 py-0.5 inline-block bg-[var(--surface)]">
+                          {inferRole(p)}
+                        </div>
+                      </div>
+                    </div>
+                    <button className={styles.removeBtn} onClick={() => removePokemonFromSlot(idx)}>
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <div className={styles.slotEmpty}>
+                    <span className={styles.plus}>+</span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {filledCount > 0 && (
+            <div className="space-y-6 animate-[fade-in_0.3s_ease-out]">
+              <TeamAnalysis selected={filledTeam} />
+              <CoverageAnalysis selected={filledTeam} />
+              <CoverageGrid selected={filledTeam} />
+              <CompetitiveInsights selected={filledTeam} />
+              <TypeMatchupSection selected={filledTeam} />
+              <MovesSection selected={filledTeam} />
+            </div>
+          )}
+        </div>
+      ) : (
+        <TypeMatrixTab />
+      )}
     </div>
   )
 }

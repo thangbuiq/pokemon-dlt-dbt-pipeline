@@ -19,7 +19,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   {
     label: 'Pokédex',
-    href: '/pokedex',
+    href: '/',
     pokemonType: 'fire',
     description: 'Next-gen Pokémon index',
     icon: (
@@ -39,10 +39,10 @@ const navItems: NavItem[] = [
     ),
   },
   {
-    label: 'Types',
-    href: '/type-matchup',
-    pokemonType: 'grass',
-    description: 'Type effectiveness matrix',
+    label: 'Origins',
+    href: '/origins',
+    pokemonType: 'psychic',
+    description: 'The Pokemon creation myth',
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -54,7 +54,7 @@ const navItems: NavItem[] = [
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
-          d="M4 6h16M4 12h16M4 18h16M8 4v16M16 4v16"
+          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
         />
       </svg>
     ),
@@ -63,28 +63,7 @@ const navItems: NavItem[] = [
     label: 'Matchups',
     href: '/matchups',
     pokemonType: 'dragon',
-    description: 'Stat comparison & radar charts',
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={2}
-        className="w-4 h-4"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-        />
-      </svg>
-    ),
-  },
-  {
-    label: 'Team',
-    href: '/team',
-    pokemonType: 'electric',
-    description: 'Build & analyze teams',
+    description: 'Team builder, stats & type matrix',
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -102,7 +81,7 @@ const navItems: NavItem[] = [
     ),
   },
   {
-    label: 'Quiz',
+    label: "Who's That Pokémon?",
     href: '/quiz',
     pokemonType: 'ghost',
     description: "Who's That Pokemon?",

@@ -10,8 +10,27 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'pokeXgen',
-  description: 'The next-gen Pokédex for exploring Pokémon data, matchups, and team strategy.',
+  title: 'pokeXgen · Pokedex for Next-gen',
+  description:
+    'The next-gen Pokédex for exploring Pokémon data, matchups, and team strategy. Built by a fan, for fans.',
+  keywords: [
+    'pokemon',
+    'pokedex',
+    'team builder',
+    'type matchup',
+    'pokemon stats',
+    'next-gen pokedex',
+  ],
+  openGraph: {
+    title: 'pokeXgen · Pokedex for Next-gen',
+    description:
+      'The next-gen Pokédex for exploring Pokémon data, matchups, and team strategy. Built by a fan, for fans.',
+    type: 'website',
+    siteName: 'pokeXgen',
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
 }
 
 export default function RootLayout({

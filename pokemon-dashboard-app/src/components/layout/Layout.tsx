@@ -1,8 +1,20 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
 import { Navigation } from './Navigation'
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
+  const isOrigins = pathname === '/origins'
+
+  if (isOrigins) {
+    return (
+      <div className="min-h-screen flex flex-col bg-[var(--background)]">
+        <main className="flex-1 w-full">{children}</main>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-[var(--background)]">
       <Navigation />

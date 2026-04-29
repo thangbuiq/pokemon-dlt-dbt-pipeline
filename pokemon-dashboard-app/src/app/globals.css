@@ -98,6 +98,9 @@
 
   --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
   --animate-slide-in: slide-in 0.3s ease-out;
+  --animate-spin-slow: spin-slow 20s linear infinite;
+  --animate-spin-reverse: spin-reverse 15s linear infinite;
+  --animate-spin-slower: spin-slower 25s linear infinite;
 }
 
 @layer base {
@@ -143,6 +146,33 @@
   }
 }
 
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes spin-slower {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes shake {
   0%,
   100% {
@@ -174,6 +204,36 @@
   }
 }
 
+@keyframes purple-pulse-border {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(168, 85, 247, 0.7),
+      inset 0 0 0 0 rgba(168, 85, 247, 0.3);
+    border-color: rgba(168, 85, 247, 0.9);
+  }
+  50% {
+    box-shadow:
+      0 0 0 4px rgba(168, 85, 247, 0),
+      inset 0 0 0 2px rgba(168, 85, 247, 0.15);
+    border-color: rgba(168, 85, 247, 1);
+  }
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(168, 85, 247, 0),
+      inset 0 0 0 0 rgba(168, 85, 247, 0.3);
+    border-color: rgba(168, 85, 247, 0.9);
+  }
+}
+
+.selected-pulse {
+  border: 2px solid rgba(168, 85, 247, 0.9) !important;
+  animation: purple-pulse-border 1.6s ease-in-out infinite;
+}
+
+.selected-pulse:hover {
+  border-color: rgba(168, 85, 247, 1) !important;
+}
+
 .glass {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
@@ -192,6 +252,14 @@
     0 0 20px var(--accent-glow),
     var(--glass-highlight);
   transform: translateY(-2px);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .container-centered {

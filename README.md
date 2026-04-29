@@ -15,7 +15,7 @@
 
 ---
 
-## Why This Slaps ⚡
+## why this project slaps
 
 Yeah, yeah, there are a ton of Pokédex apps. But how many actually go hard with a modern data stack and clean, reliable data source? Exactly.
 
@@ -29,21 +29,34 @@ This isn’t just a Pokédex, it’s your all-in-one battle HQ: deep stats, slic
 
 - **Pokedex Search**: Find any Pokemon in a flash with detailed stats, radar chart, evolution chain, and more
 
-  ![pokedex-search](.github/assets/pokedex-search.png)
-  ![pokedex-search1](.github/assets/pokedex-search-1.png)
-  ![pokedex-search2](.github/assets/pokedex-search-2.png)
+<div>
+  <img src=".github/assets/pokedex-search.png" width="49%" />
+  <img src=".github/assets/pokedex-search-detailed.png" width="49%" />
+</div>
 
 - **Team Builder And Coverage Analysis**: Build your dream team and analyze type coverage
 
-  ![team-builder](.github/assets/team-builder.png)
+<div>
+  <img src=".github/assets/team-builder.png" width="49%" />
+  <img src=".github/assets/team-analysis.png" width="49%" />
+</div>
 
-- **Type Effectiveness Matrix**: Calculate battle advantages with an interactive type matchup chart
+- **Mini Features**
 
-  ![type-matrix](.github/assets/type-matrix.png)
-
-- **Who's That Pokemon?**: and can't forget the classic silhouette guessing game that never gets old
-
-  ![whos-that-pokemon](.github/assets/whos-that-pokemon.png)
+<table>
+  <tr>
+    <td width="49%" valign="top">
+      <strong>Who's That Pokemon?</strong><br/>
+      Classic silhouette guessing game that never gets old.<br/><br/>
+      <img src=".github/assets/whos-that-pokemon.png" width="100%" />
+    </td>
+    <td width="49%" valign="top">
+      <strong>Pokemon Origins</strong><br/>
+      Dive into lore, generations, and legendary status of your favorite Pokémon.<br/><br/>
+      <img src=".github/assets/origins.png" width="100%" />
+    </td>
+  </tr>
+</table>
 
 ## Motivation why I built this
 
